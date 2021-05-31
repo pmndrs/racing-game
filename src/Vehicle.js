@@ -102,11 +102,11 @@ function Vehicle({ radius = 0.7, width = 1.2, height = -0.04, front = 1.3, back 
         intensity={1}
         castShadow
         shadow-bias={-0.001}
-        shadow-mapSize={[2048, 2048]}
-        shadow-camera-left={-80}
-        shadow-camera-right={80}
-        shadow-camera-top={80}
-        shadow-camera-bottom={-80}
+        shadow-mapSize={[4096, 4096]}
+        shadow-camera-left={-100}
+        shadow-camera-right={100}
+        shadow-camera-top={100}
+        shadow-camera-bottom={-100}
       />
       <group ref={vehicle} position={[0, -0.4, 0]} rotation={[0, 0, 0]}>
         <Chassis ref={chassis} rotation={props.rotation} position={props.position} angularVelocity={props.angularVelocity}>

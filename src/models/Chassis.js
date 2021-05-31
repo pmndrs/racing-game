@@ -18,7 +18,7 @@ const Chassis = forwardRef(({ args = [1.7, 1, 4], mass = 500, children, ...props
   return (
     <group ref={ref} api={api} dispose={null}>
       {children}
-      <group position={[0, 0, 0]} scale={[0.35, 0.35, 2.2]}>
+      <group position={[0, 0, 0]} scale={[0.4, 0.35, 2.2]}>
         <group rotation={[-Math.PI / 2, 0, 0]}>
           <group rotation={[Math.PI / 2, 0, 0]}>
             <mesh castShadow receiveShadow geometry={nodes.Mesh_0.geometry} material={materials['Material.001']} material-color="#e0b030" />
