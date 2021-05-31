@@ -6,8 +6,13 @@ import { useRaycastVehicle } from '@react-three/cannon'
 import { useControls } from './utils/useControls'
 import { Chassis } from './models/Chassis'
 import { Wheel } from './models/Wheel'
+import { useStore } from './store'
+
+const vec = new THREE.Vector3()
 
 function Vehicle({ radius = 0.7, width = 1.2, height = -0.04, front = 1.3, back = -1.15, steer = 0.5, force = 1500, maxBrake = 50, ...props }) {
+  const set = useStore((state) => state.set)
+
   const chassis = useRef()
   const camera = useRef()
   const wheel1 = useRef()
@@ -43,14 +48,20 @@ function Vehicle({ radius = 0.7, width = 1.2, height = -0.04, front = 1.3, back 
   }))
 
   const velocity = useRef(0)
-  const vec = new THREE.Vector3()
   useEffect(() => {
-    chassis.current.api.velocity.subscribe((current) => {
-      velocity.current = vec.set(...current).length()
-    })
+
+console.log(chassis.current.api)
+
+    const vSub = chassis.current.api.velocity.subscribe((current) => set({ velocity: vec.set(...current).length() }))
+    return () => {
+      vSub()
+    }
   }, [])
 
   useFrame((state) => {
+
+    const velocity = useStore.getState().velocity
+
     const { forward, backward, left, right, brake, reset } = controls.current
     const engineValue = forward || backward ? force * (forward && !backward ? -1 : 1) : 0
     for (let e = 2; e < 4; e++) api.applyEngineForce(engineValue, 2)
@@ -58,14 +69,13 @@ function Vehicle({ radius = 0.7, width = 1.2, height = -0.04, front = 1.3, back 
     for (let s = 0; s < 2; s++) api.setSteeringValue(steeringValue, s)
     for (let b = 2; b < 4; b++) api.setBrake(brake ? maxBrake : 0, b)
     if (reset) {
-      console.log()
       chassis.current.api.position.set(0, 0.5, 0)
       chassis.current.api.velocity.set(0, 0, 0)
       chassis.current.api.angularVelocity.set(0, 0.5, 0)
       chassis.current.api.rotation.set(0, -Math.PI / 4, 0)
     }
-    camera.current.position.x = THREE.MathUtils.lerp(camera.current.position.x, (Math.sin(steeringValue) * velocity.current) / 2, 0.025)
-    camera.current.position.z = THREE.MathUtils.lerp(camera.current.position.z, -5.5 + Math.cos(steeringValue) - velocity.current / 10, 0.025)
+    camera.current.position.x = THREE.MathUtils.lerp(camera.current.position.x, (Math.sin(steeringValue) * velocity) / 2, 0.025)
+    camera.current.position.z = THREE.MathUtils.lerp(camera.current.position.z, -5.5 + Math.cos(steeringValue) - velocity / 10, 0.025)
     camera.current.position.y = THREE.MathUtils.lerp(camera.current.position.y, 1.25 + (engineValue / 1000) * -0.5, 0.01)
     camera.current.lookAt(chassis.current.position)
   })
