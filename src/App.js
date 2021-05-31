@@ -17,7 +17,7 @@ export default function App() {
             <Plane rotation={[-Math.PI / 2, 0, 0]} userData={{ id: 'floor' }} />
             <Vehicle rotation={[0, Math.PI / 2, 0]} position={[0, 6, 0]} angularVelocity={[0, 0.5, 0]} wheelRadius={0.3} />
           </Physics>
-          <Track position={[80, 0, -230]} scale={26} />
+          <Track position={[80, 0, -210]} scale={26} />
           <Environment preset="night" />
         </Suspense>
       </Canvas>

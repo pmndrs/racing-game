@@ -9,7 +9,7 @@ import { useStore } from './utils/store'
 
 const vec = new THREE.Vector3()
 
-function Vehicle({ radius = 0.7, width = 1.2, height = -0.04, front = 1.3, back = -1.15, steer = 0.5, force = 3500, maxBrake = 50, ...props }) {
+function Vehicle({ radius = 0.7, width = 1.2, height = -0.04, front = 1.3, back = -1.15, steer = 0.5, force = 3500, maxBrake = 75, ...props }) {
   const set = useStore((state) => state.set)
 
   const chassis = useRef()
@@ -103,10 +103,10 @@ function Vehicle({ radius = 0.7, width = 1.2, height = -0.04, front = 1.3, back 
         castShadow
         shadow-bias={-0.001}
         shadow-mapSize={[4096, 4096]}
-        shadow-camera-left={-100}
-        shadow-camera-right={100}
-        shadow-camera-top={100}
-        shadow-camera-bottom={-100}
+        shadow-camera-left={-150}
+        shadow-camera-right={150}
+        shadow-camera-top={150}
+        shadow-camera-bottom={-150}
       />
       <group ref={vehicle} position={[0, -0.4, 0]} rotation={[0, 0, 0]}>
         <Chassis ref={chassis} rotation={props.rotation} position={props.position} angularVelocity={props.angularVelocity}>
