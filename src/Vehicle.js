@@ -1,16 +1,15 @@
 import * as THREE from 'three'
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useLayoutEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { PerspectiveCamera } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
-import { useControls } from './utils/useControls'
 import { Chassis } from './models/Chassis'
 import { Wheel } from './models/Wheel'
-import { useStore } from './store'
+import { useStore } from './utils/store'
 
 const vec = new THREE.Vector3()
 
-function Vehicle({ radius = 0.7, width = 1.2, height = -0.04, front = 1.3, back = -1.15, steer = 0.5, force = 1500, maxBrake = 50, ...props }) {
+function Vehicle({ radius = 0.7, width = 1.2, height = -0.04, front = 1.3, back = -1.15, steer = 0.5, force = 3500, maxBrake = 50, ...props }) {
   const set = useStore((state) => state.set)
 
   const chassis = useRef()
@@ -19,7 +18,6 @@ function Vehicle({ radius = 0.7, width = 1.2, height = -0.04, front = 1.3, back 
   const wheel2 = useRef()
   const wheel3 = useRef()
   const wheel4 = useRef()
-  const controls = useControls()
 
   const wheelInfo = {
     radius,
@@ -30,7 +28,8 @@ function Vehicle({ radius = 0.7, width = 1.2, height = -0.04, front = 1.3, back 
     chassisConnectionPointLocal: [1, 0, 1],
     useCustomSlidingRotationalSpeed: true,
     customSlidingRotationalSpeed: -0.1,
-    frictionSlip: 1.5
+    frictionSlip: 1.5,
+    sideAcceleration: 2
   }
 
   const wheelInfo1 = { ...wheelInfo, isFrontWheel: true, chassisConnectionPointLocal: [-width / 2, height, front] }
@@ -49,8 +48,7 @@ function Vehicle({ radius = 0.7, width = 1.2, height = -0.04, front = 1.3, back 
 
   const velocity = useRef(0)
   useEffect(() => {
-
-console.log(chassis.current.api)
+    console.log(chassis.current.api)
 
     const vSub = chassis.current.api.velocity.subscribe((current) => set({ velocity: vec.set(...current).length() }))
     return () => {
@@ -58,11 +56,17 @@ console.log(chassis.current.api)
     }
   }, [])
 
-  useFrame((state) => {
+  const t = new THREE.Vector3()
+  const p = new THREE.Vector3()
+  const m = new THREE.Matrix4()
+  const o = new THREE.Object3D()
+  const q = new THREE.Quaternion()
 
+  const target = useRef()
+  useFrame((state, delta) => {
     const velocity = useStore.getState().velocity
+    const { forward, backward, left, right, brake, reset } = useStore.getState().controls
 
-    const { forward, backward, left, right, brake, reset } = controls.current
     const engineValue = forward || backward ? force * (forward && !backward ? -1 : 1) : 0
     for (let e = 2; e < 4; e++) api.applyEngineForce(engineValue, 2)
     const steeringValue = left || right ? steer * (left && !right ? 1 : -1) : 0
@@ -74,11 +78,20 @@ console.log(chassis.current.api)
       chassis.current.api.angularVelocity.set(0, 0.5, 0)
       chassis.current.api.rotation.set(0, -Math.PI / 4, 0)
     }
-    camera.current.position.x = THREE.MathUtils.lerp(camera.current.position.x, (Math.sin(steeringValue) * velocity) / 2, 0.025)
-    camera.current.position.z = THREE.MathUtils.lerp(camera.current.position.z, -5.5 + Math.cos(steeringValue) - velocity / 10, 0.025)
-    camera.current.position.y = THREE.MathUtils.lerp(camera.current.position.y, 1.25 + (engineValue / 1000) * -0.5, 0.01)
-    camera.current.lookAt(chassis.current.position)
+
+    camera.current.position.lerp(
+      p.set(
+        (Math.sin(steeringValue) * velocity) / 5, 
+        1.25 + (engineValue / 1000) * -0.5, 
+        -5.5 + (Math.cos(steeringValue) - velocity / 20)),
+      0.025
+    )
+    camera.current.rotation.z = THREE.MathUtils.lerp(camera.current.rotation.z, Math.PI + (-steeringValue * velocity) / 50, 0.025)
   })
+
+  useLayoutEffect(() => {
+    camera.current.lookAt(chassis.current.position)
+  }, [])
 
   const [light, setLight] = useState()
   return (
@@ -97,7 +110,7 @@ console.log(chassis.current.api)
       />
       <group ref={vehicle} position={[0, -0.4, 0]} rotation={[0, 0, 0]}>
         <Chassis ref={chassis} rotation={props.rotation} position={props.position} angularVelocity={props.angularVelocity}>
-          <PerspectiveCamera ref={camera} makeDefault fov={75} rotation={[0.5, Math.PI, 0]} position={[-100, 80, -100]} />
+          <PerspectiveCamera ref={camera} makeDefault fov={75} rotation={[0, Math.PI, 0]} position={[0, 10, -20]} />
           {light && <primitive object={light.target} />}
         </Chassis>
         <Wheel ref={wheel1} radius={radius} leftSide />
