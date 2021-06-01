@@ -1,17 +1,14 @@
-import { useMemo, useRef, useEffect } from 'react'
+import * as THREE from 'three'
 import { useTexture } from '@react-three/drei'
+import { useRef, useEffect, Suspense, useMemo } from 'react'
 
-export function fromImage() {
-  const heightmap = useTexture('/heightmap_512.png')
-  const matrix = useMemo(() => createHeightfieldMatrix(heightmap.image), [heightmap])
-  return matrix
-}
+import { useHeightfield } from '@react-three/cannon'
 
 // returns matrix data to be passed to heightfield
 // set elementSize as `size` / matrix[0].length
 // rotate hf => .quaternion.setFromEuler(-Math.PI/2, 0, 0)
 // and .rotation.x = -Math.PI/2;
-export function createHeightfieldMatrix(image) {
+function createHeightfieldMatrix(image) {
   let matrix = []
   const w = image.width
   const h = image.height
@@ -68,7 +65,9 @@ function HeightmapGeometry({ heights, elementSize, ...rest }) {
 }
 
 export function Heightfield(props) {
-  const { elementSize, heights, position, rotation, ...rest } = props
+  const { elementSize, position, rotation, ...rest } = props
+  const heightmap = useTexture('/heightmap_512.png')
+  const heights = useMemo(() => createHeightfieldMatrix(heightmap.image), [heightmap])
 
   const [ref] = useHeightfield(() => ({
     args: [
@@ -82,9 +81,11 @@ export function Heightfield(props) {
   }))
 
   return (
-    <mesh ref={ref} castShadow receiveShadow {...rest}>
-      <meshPhongMaterial color={niceColors[17][4]} />
-      <HeightmapGeometry heights={heights} elementSize={elementSize} />
-    </mesh>
+    <Suspense fallback={null}>
+      <mesh ref={ref} castShadow receiveShadow {...rest}>
+        <meshPhongMaterial color={'#fed8b1'} flatShading />
+        <HeightmapGeometry heights={heights} elementSize={elementSize} />
+      </mesh>
+    </Suspense>
   )
 }
