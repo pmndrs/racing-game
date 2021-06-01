@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { useRef, useEffect, useState, useLayoutEffect } from 'react'
+import { useRef, useEffect, useState, useLayoutEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { PerspectiveCamera } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
@@ -9,10 +9,11 @@ import { useStore } from './utils/store'
 
 const vec = new THREE.Vector3()
 
-function Vehicle({ radius = 0.7, width = 1.2, height = -0.04, front = 1.3, back = -1.15, steer = 0.5, force = 3500, maxBrake = 75, ...props }) {
+function Vehicle({ radius = 0.7, width = 1.2, height = -0.04, front = 1.3, back = -1.15, steer = 0.5, force = 3000, maxBrake = 75, ...props }) {
   const set = useStore((state) => state.set)
 
   const chassis = useRef()
+  const chassisWrap = useRef()
   const camera = useRef()
   const wheel1 = useRef()
   const wheel2 = useRef()
@@ -46,11 +47,11 @@ function Vehicle({ radius = 0.7, width = 1.2, height = -0.04, front = 1.3, back 
     indexUpAxis: 1
   }))
 
-  const velocity = useRef(0)
-  useEffect(() => {
-    console.log(chassis.current.api)
 
-    const vSub = chassis.current.api.velocity.subscribe((current) => set({ velocity: vec.set(...current).length() }))
+  useEffect(() => {
+    const vSub = chassis.current.api.velocity.subscribe((current) => {
+      set({ velocity: current, speed: p.set(...current).length() })
+    })
     return () => {
       vSub()
     }
@@ -61,10 +62,11 @@ function Vehicle({ radius = 0.7, width = 1.2, height = -0.04, front = 1.3, back 
   const m = new THREE.Matrix4()
   const o = new THREE.Object3D()
   const q = new THREE.Quaternion()
+  const e = new THREE.Euler()
 
   const target = useRef()
   useFrame((state, delta) => {
-    const velocity = useStore.getState().velocity
+    const speed = useStore.getState().speed
     const { forward, backward, left, right, brake, reset } = useStore.getState().controls
 
     const engineValue = forward || backward ? force * (forward && !backward ? -1 : 1) : 0
@@ -81,17 +83,61 @@ function Vehicle({ radius = 0.7, width = 1.2, height = -0.04, front = 1.3, back 
 
     camera.current.position.lerp(
       p.set(
-        (Math.sin(steeringValue) * velocity) / 5, 
-        1.25 + (engineValue / 1000) * -0.5, 
-        -5.5 + (Math.cos(steeringValue) - velocity / 20)),
+        // left-right
+        (Math.sin(steeringValue) * speed) / 5,
+        // up-down
+        1.25 + (engineValue / 1000) * -0.5,
+        // near-far
+        -5 - speed / 20
+      ),
       0.025
     )
-    camera.current.rotation.z = THREE.MathUtils.lerp(camera.current.rotation.z, Math.PI + (-steeringValue * velocity) / 50, 0.025)
+    // left-right swivel
+    camera.current.rotation.z = THREE.MathUtils.lerp(camera.current.rotation.z, Math.PI + (-steeringValue * speed) / 50, 0.025)
+    // lean chassis
+    chassis.current.children[0].rotation.z = THREE.MathUtils.lerp(chassis.current.children[0].rotation.z, (-steeringValue * speed) / 200, 0.1)
   })
 
+  // Look at is causing the weird spin in the beginning
   useLayoutEffect(() => {
     camera.current.lookAt(chassis.current.position)
   }, [])
+
+  // Needs cleanup!
+  let trail = useRef()
+  let index = 0
+  let time = 0
+
+  function setItemAt(target, obj, i) {
+    const { controls, speed } = useStore.getState()
+    let scale = (Math.random() * controls.brake * speed) / 30
+    o.position.set(obj.position.x, obj.position.y - 0.25, obj.position.z)
+    o.scale.set(scale, scale, scale)
+    o.updateMatrix()
+    target.setMatrixAt(i, o.matrix)
+    trail.current.instanceMatrix.needsUpdate = true
+  }
+
+  useFrame((state) => {
+    if (state.clock.getElapsedTime() - time > 0.04) {
+      time = state.clock.getElapsedTime()
+    } else {
+      for (let i = 0; i < 100; i++) {
+        trail.current.getMatrixAt(i, m)
+        m.decompose(p, q, t)
+        o.position.copy(p)
+        const s = Math.max(0, t.x - 0.01)
+        o.scale.set(s, s, s)
+        o.updateMatrix()
+        trail.current.setMatrixAt(i, o.matrix)
+        trail.current.instanceMatrix.needsUpdate = true
+      }
+      return
+    }
+    setItemAt(trail.current, wheel3.current, index++)
+    setItemAt(trail.current, wheel4.current, index++)
+    if (index === 100) index = 0
+  })
 
   const [light, setLight] = useState()
   return (
@@ -108,7 +154,7 @@ function Vehicle({ radius = 0.7, width = 1.2, height = -0.04, front = 1.3, back 
         shadow-camera-top={150}
         shadow-camera-bottom={-150}
       />
-      <group ref={vehicle} position={[0, -0.4, 0]} rotation={[0, 0, 0]}>
+      <group ref={vehicle} position={[0, -0.4, 0]}>
         <Chassis ref={chassis} rotation={props.rotation} position={props.position} angularVelocity={props.angularVelocity}>
           <PerspectiveCamera ref={camera} makeDefault fov={75} rotation={[0, Math.PI, 0]} position={[0, 10, -20]} />
           {light && <primitive object={light.target} />}
@@ -117,6 +163,10 @@ function Vehicle({ radius = 0.7, width = 1.2, height = -0.04, front = 1.3, back 
         <Wheel ref={wheel2} radius={radius} />
         <Wheel ref={wheel3} radius={radius} leftSide />
         <Wheel ref={wheel4} radius={radius} />
+        <instancedMesh ref={trail} args={[null, null, 100]}>
+          <sphereGeometry args={[1, 16, 16]} />
+          <meshBasicMaterial color="white" transparent opacity={0.15} />
+        </instancedMesh>
       </group>
     </>
   )

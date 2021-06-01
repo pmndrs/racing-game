@@ -19,7 +19,9 @@ const useStore = create((set, get) => {
     set,
     get,
     controls: { forward: false, backward: false, left: false, right: false, brake: false, reset: false },
-    velocity: 0
+    velocity: [0, 0, 0],
+    speed: 0,
+    positions: [...Array(20).map(() => [0, 0, 0])]
   }
 })
 
