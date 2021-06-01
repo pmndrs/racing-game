@@ -4,6 +4,9 @@ import { Physics, usePlane } from '@react-three/cannon'
 import { Sky, Environment } from '@react-three/drei'
 import { Track } from './models/Track'
 import Vehicle from './Vehicle'
+import { Heightfield, fromImage } from './utils/terrain'
+
+const scale = 10
 
 export default function App() {
   return (
@@ -16,6 +19,7 @@ export default function App() {
           <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
             <Plane rotation={[-Math.PI / 2, 0, 0]} userData={{ id: 'floor' }} />
             <Vehicle rotation={[0, Math.PI / 2, 0]} position={[0, 6, 0]} angularVelocity={[0, 0.5, 0]} wheelRadius={0.3} />
+            <Heightfield elementSize={(scale * 1) / 512} heights={fromImage()} position={[-scale / 2, 0, scale / 2]} rotation={[-Math.PI / 2, 0, 0]} />
           </Physics>
           <Track position={[80, 0, -210]} scale={26} />
           <Environment preset="night" />
