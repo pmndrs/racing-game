@@ -21,6 +21,21 @@ body {
 
 .speed {
   position: absolute;
-  bottom: 40px;
-  left: 40px;
+  bottom: 60px;
+  left: 60px;
+  font-size: 4em;
+  font-weight: 200;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -5px;
+}
+
+.speed > span {
+  font-weight: 600;
+  font-size: 1.5em;
+}
+
+.controls {
+  position: absolute;
+  bottom: 60px;
+  right: 60px;
 }

@@ -10,20 +10,14 @@ function registerKeys(target, event) {
 
 const useStore = create((set, get) => {
   // Register keys
-  registerKeys(['ArrowUp', 'w'], (pressed) =>
-    set((state) => ({ ...state, controls: { ...state.controls, forward: pressed } }))
+  registerKeys(['ArrowUp', 'w'], (forward) => set((state) => ({ ...state, controls: { ...state.controls, forward } })))
+  registerKeys(['ArrowDown', 's'], (backward) =>
+    set((state) => ({ ...state, controls: { ...state.controls, backward } }))
   )
-  registerKeys(['ArrowDown', 's'], (pressed) =>
-    set((state) => ({ ...state, controls: { ...state.controls, backward: pressed } }))
-  )
-  registerKeys(['ArrowLeft', 'a'], (pressed) =>
-    set((state) => ({ ...state, controls: { ...state.controls, left: pressed } }))
-  )
-  registerKeys(['ArrowRight', 'd'], (pressed) =>
-    set((state) => ({ ...state, controls: { ...state.controls, right: pressed } }))
-  )
-  registerKeys([' '], (pressed) => set((state) => ({ ...state, controls: { ...state.controls, brake: pressed } })))
-  registerKeys(['r'], (pressed) => set((state) => ({ ...state, controls: { ...state.controls, reset: pressed } })))
+  registerKeys(['ArrowLeft', 'a'], (left) => set((state) => ({ ...state, controls: { ...state.controls, left } })))
+  registerKeys(['ArrowRight', 'd'], (right) => set((state) => ({ ...state, controls: { ...state.controls, right } })))
+  registerKeys([' '], (brake) => set((state) => ({ ...state, controls: { ...state.controls, brake } })))
+  registerKeys(['r'], (reset) => set((state) => ({ ...state, controls: { ...state.controls, reset } })))
 
   // Vehicle config
   const config = {
@@ -32,9 +26,9 @@ const useStore = create((set, get) => {
     height: -0.04,
     front: 1.3,
     back: -1.15,
-    steer: 0.5,
-    force: 3000,
-    maxBrake: 75
+    steer: 0.3,
+    force: 3500,
+    maxBrake: 65
   }
 
   const wheelInfo = {
@@ -45,9 +39,10 @@ const useStore = create((set, get) => {
     axleLocal: [-1, 0, 0],
     chassisConnectionPointLocal: [1, 0, 1],
     useCustomSlidingRotationalSpeed: true,
-    customSlidingRotationalSpeed: -0.1,
+    customSlidingRotationalSpeed: -0.01,
+    suspensionForce: 100,
     frictionSlip: 1.5,
-    sideAcceleration: 2
+    sideAcceleration: 3
   }
   const wheelInfo1 = {
     ...wheelInfo,
@@ -86,7 +81,7 @@ const useStore = create((set, get) => {
     controls: { forward: false, backward: false, left: false, right: false, brake: false, reset: false },
     velocity: [0, 0, 0],
     speed: 0,
-    positions: [...Array(20).map(() => [0, 0, 0])],
+    positions: [...Array(20).map(() => [0, 0, 0])]
   }
 })
 

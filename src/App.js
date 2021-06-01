@@ -1,10 +1,11 @@
 import React, { Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { Physics, usePlane } from '@react-three/cannon'
+import { Physics, usePlane, useBox } from '@react-three/cannon'
 import { Sky, Environment } from '@react-three/drei'
 import { Track } from './models/Track'
 import { Vehicle } from './models/Vehicle'
 import { Speed } from './ui/Speed'
+import { Controls } from './ui/Controls'
 
 export function App() {
   return (
@@ -18,15 +19,17 @@ export function App() {
             <Plane rotation={[-Math.PI / 2, 0, 0]} userData={{ id: 'floor' }} />
             <Vehicle
               rotation={[0, Math.PI / 2, 0]}
-              position={[0, 6, 0]}
+              position={[0, 1, 0]}
               angularVelocity={[0, 0.5, 0]}
               wheelRadius={0.3}
             />
+            <Ramp position={[120, -1, -50]} />
           </Physics>
           <Track position={[80, 0, -210]} scale={26} />
           <Environment preset="night" />
         </Suspense>
       </Canvas>
+      <Controls />
       <Speed />
     </>
   )
@@ -35,4 +38,14 @@ export function App() {
 function Plane(props) {
   const [ref] = usePlane(() => ({ type: 'Static', material: 'ground', ...props }))
   return null
+}
+
+function Ramp({ args = [10, 2.5, 6], rotation = [0, 0.45, Math.PI / 20], ...props }) {
+  const [ref] = useBox(() => ({ type: 'Static', args, rotation, ...props }))
+  return (
+    <mesh ref={ref}>
+      <boxGeometry args={args} />
+      <meshStandardMaterial color="indianred" />
+    </mesh>
+  )
 }

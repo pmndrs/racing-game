@@ -3,7 +3,7 @@
 
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { useGLTF } from '@react-three/drei'
+import { MeshDistortMaterial, useGLTF } from '@react-three/drei'
 
 useGLTF.preload('/track-draco.glb')
 
@@ -149,7 +149,9 @@ export function Track(props) {
       <mesh geometry={nodes.Plane057_ColorPalette_0.geometry} material={nodes.Plane057_ColorPalette_0.material} {...config} />
       <mesh geometry={nodes.Plane058_ColorPalette_0.geometry} material={nodes.Plane058_ColorPalette_0.material} {...config} />
       <mesh ref={bird4} geometry={nodes.Plane059_ColorPalette_0.geometry} material={nodes.Plane059_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Plane089_ColorPaletteWater_0.geometry} material={materials.ColorPaletteWater} {...config} />
+      <mesh geometry={nodes.Plane089_ColorPaletteWater_0.geometry} {...config}>
+        <MeshDistortMaterial speed={4} map={materials.ColorPaletteWater.map} roughness={0} />
+      </mesh>
       <mesh geometry={nodes.Rock2001_ColorPalette_0.geometry} material={nodes.Rock2001_ColorPalette_0.material} {...config} />
       <mesh geometry={nodes.Rock4001_ColorPalette_0.geometry} material={nodes.Rock4001_ColorPalette_0.material} {...config} />
       <mesh geometry={nodes.Rock4002_ColorPalette_0.geometry} material={nodes.Rock4002_ColorPalette_0.material} {...config} />

@@ -1504,10 +1504,10 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
-"@react-three/cannon@1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@react-three/cannon/-/cannon-1.2.1.tgz#585587480eae8ff72551994536762a6ddb4fc043"
-  integrity sha512-v/yDfDgEnKXSzhRkOzUgURf0Gogt/+RVzYNlE04ywaU9OQb6VBKFOwWH07N7ueEjajwrJt3ZoaQLFu7tdVaKEA==
+"@react-three/cannon@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@react-three/cannon/-/cannon-1.2.2.tgz#383a728c6ced4b9a3259095903eccdb478ec0512"
+  integrity sha512-KCZNRvN9wyHTWSR75fgVKTnSFQ642WuOGkBbfYLR0pF0om5bGyagKoN91mVFmx0q6Ob+/19ikdqZwpGXh8R1/g==
 
 "@react-three/drei@5.3.0":
   version "5.3.0"

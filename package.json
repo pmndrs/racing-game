@@ -10,7 +10,7 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "@react-three/cannon": "1.2.1",
+    "@react-three/cannon": "1.2.2",
     "@react-three/drei": "5.3.0",
     "@react-three/fiber": "6.2.2",
     "@react-three/postprocessing": "2.0.3",
