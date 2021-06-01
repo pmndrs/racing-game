@@ -34,6 +34,7 @@ export function App() {
         </Suspense>
         <OrbitControls />
       </Canvas>
+      <Controls />
       <Speed />
     </>
   )

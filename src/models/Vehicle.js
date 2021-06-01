@@ -22,24 +22,24 @@ export function Vehicle(props) {
     // Look at is causing the weird spin in the beginning
     camera.current.lookAt(raycast.chassisBody.current.position)
     // Subscriptions
-    const vSub = raycast.chassisBody.current.api.velocity.subscribe((velocity) =>
-      set({ velocity, speed: v.set(...velocity).length() })
-    )
+    const vSub = raycast.chassisBody.current.api.velocity.subscribe((velocity) => set({ velocity, speed: v.set(...velocity).length() }))
+    const sSub = api.sliding.subscribe((sliding) => set({ sliding }))
     return () => {
       vSub()
+      sSub()
     }
   }, [])
 
-  useFrame(() => {
+  useFrame((state, delta) => {
     const speed = useStore.getState().speed
     const { forward, backward, left, right, brake, reset } = useStore.getState().controls
     const { force, maxBrake, steer } = config
 
     const engineValue = forward || backward ? force * (forward && !backward ? -1 : 1) : 0
-    for (let e = 2; e < 4; e++) api.applyEngineForce(engineValue, 2)
+    api.applyEngineForce(engineValue, 2)
     const steeringValue = left || right ? steer * (left && !right ? 1 : -1) : 0
     for (let s = 0; s < 2; s++) api.setSteeringValue(steeringValue, s)
-    for (let b = 2; b < 4; b++) api.setBrake(brake ? maxBrake : 0, b)
+    for (let b = 2; b < 4; b++) api.setBrake(brake ? (forward ? maxBrake / 1.5 : maxBrake) : 0, b)
     if (reset) {
       raycast.chassisBody.current.api.position.set(0, 0.5, 0)
       raycast.chassisBody.current.api.velocity.set(0, 0, 0)
@@ -49,20 +49,16 @@ export function Vehicle(props) {
 
     // left-right, up-down, near-far
     camera.current.position.lerp(
-      v.set((Math.sin(steeringValue) * speed) / 5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 20),
-      0.025
+      v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (brake ? 1 : 0)),
+      delta,
     )
     // left-right swivel
-    camera.current.rotation.z = THREE.MathUtils.lerp(
-      camera.current.rotation.z,
-      Math.PI + (-steeringValue * speed) / 50,
-      0.025
-    )
+    camera.current.rotation.z = THREE.MathUtils.lerp(camera.current.rotation.z, Math.PI + (-steeringValue * speed) / 45, delta)
     // lean chassis
     raycast.chassisBody.current.children[0].rotation.z = THREE.MathUtils.lerp(
       raycast.chassisBody.current.children[0].rotation.z,
       (-steeringValue * speed) / 200,
-      0.1
+      delta * 4,
     )
   })
 
@@ -81,11 +77,7 @@ export function Vehicle(props) {
         shadow-camera-bottom={-150}
       />
       <group ref={vehicle} position={[0, -0.4, 0]}>
-        <Chassis
-          ref={raycast.chassisBody}
-          rotation={props.rotation}
-          position={props.position}
-          angularVelocity={props.angularVelocity}>
+        <Chassis ref={raycast.chassisBody} rotation={props.rotation} position={props.position} angularVelocity={props.angularVelocity}>
           <PerspectiveCamera ref={camera} makeDefault fov={75} rotation={[0, Math.PI, 0]} position={[0, 10, -20]} />
           {light && <primitive object={light.target} />}
         </Chassis>
