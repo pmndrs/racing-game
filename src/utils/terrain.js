@@ -14,7 +14,7 @@ function createHeightfieldMatrix(image) {
   const h = image.height
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
-  const scale = 20
+  const scale = 40
   let p, row
 
   canvas.width = w
@@ -81,11 +81,9 @@ export function Heightfield(props) {
   }))
 
   return (
-    <Suspense fallback={null}>
-      <mesh ref={ref} castShadow receiveShadow {...rest}>
-        <meshPhongMaterial color={'#fed8b1'} flatShading />
-        <HeightmapGeometry heights={heights} elementSize={elementSize} />
-      </mesh>
-    </Suspense>
+    <mesh ref={ref} castShadow receiveShadow {...rest}>
+      <meshNormalMaterial flatShading/>
+      <HeightmapGeometry heights={heights} elementSize={elementSize} />
+    </mesh>
   )
 }
