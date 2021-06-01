@@ -17,12 +17,7 @@ export function App() {
         <Suspense fallback={null}>
           <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
             <Plane rotation={[-Math.PI / 2, 0, 0]} userData={{ id: 'floor' }} />
-            <Vehicle
-              rotation={[0, Math.PI / 2, 0]}
-              position={[0, 1, 0]}
-              angularVelocity={[0, 0.5, 0]}
-              wheelRadius={0.3}
-            />
+            <Vehicle rotation={[0, Math.PI / 2, 0]} position={[0, 1, 0]} angularVelocity={[0, 0.5, 0]} wheelRadius={0.3} />
             <Ramp position={[120, -1, -50]} />
           </Physics>
           <Track position={[80, 0, -210]} scale={26} />

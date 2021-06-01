@@ -11,9 +11,7 @@ function registerKeys(target, event) {
 const useStore = create((set, get) => {
   // Register keys
   registerKeys(['ArrowUp', 'w'], (forward) => set((state) => ({ ...state, controls: { ...state.controls, forward } })))
-  registerKeys(['ArrowDown', 's'], (backward) =>
-    set((state) => ({ ...state, controls: { ...state.controls, backward } }))
-  )
+  registerKeys(['ArrowDown', 's'], (backward) => set((state) => ({ ...state, controls: { ...state.controls, backward } })))
   registerKeys(['ArrowLeft', 'a'], (left) => set((state) => ({ ...state, controls: { ...state.controls, left } })))
   registerKeys(['ArrowRight', 'd'], (right) => set((state) => ({ ...state, controls: { ...state.controls, right } })))
   registerKeys([' '], (brake) => set((state) => ({ ...state, controls: { ...state.controls, brake } })))
@@ -28,7 +26,7 @@ const useStore = create((set, get) => {
     back: -1.15,
     steer: 0.3,
     force: 3500,
-    maxBrake: 65
+    maxBrake: 65,
   }
 
   const wheelInfo = {
@@ -42,27 +40,27 @@ const useStore = create((set, get) => {
     customSlidingRotationalSpeed: -0.01,
     suspensionForce: 100,
     frictionSlip: 1.5,
-    sideAcceleration: 3
+    sideAcceleration: 3,
   }
   const wheelInfo1 = {
     ...wheelInfo,
     isFrontWheel: true,
-    chassisConnectionPointLocal: [-config.width / 2, config.height, config.front]
+    chassisConnectionPointLocal: [-config.width / 2, config.height, config.front],
   }
   const wheelInfo2 = {
     ...wheelInfo,
     isFrontWheel: true,
-    chassisConnectionPointLocal: [config.width / 2, config.height, config.front]
+    chassisConnectionPointLocal: [config.width / 2, config.height, config.front],
   }
   const wheelInfo3 = {
     ...wheelInfo,
     isFrontWheel: false,
-    chassisConnectionPointLocal: [-config.width / 2, config.height, config.back]
+    chassisConnectionPointLocal: [-config.width / 2, config.height, config.back],
   }
   const wheelInfo4 = {
     ...wheelInfo,
     isFrontWheel: false,
-    chassisConnectionPointLocal: [config.width / 2, config.height, config.back]
+    chassisConnectionPointLocal: [config.width / 2, config.height, config.back],
   }
   const raycast = {
     chassisBody: createRef(),
@@ -70,7 +68,7 @@ const useStore = create((set, get) => {
     wheelInfos: [wheelInfo1, wheelInfo2, wheelInfo3, wheelInfo4],
     indexForwardAxis: 2,
     indexRightAxis: 0,
-    indexUpAxis: 1
+    indexUpAxis: 1,
   }
 
   return {
@@ -81,7 +79,7 @@ const useStore = create((set, get) => {
     controls: { forward: false, backward: false, left: false, right: false, brake: false, reset: false },
     velocity: [0, 0, 0],
     speed: 0,
-    positions: [...Array(20).map(() => [0, 0, 0])]
+    positions: [...Array(20).map(() => [0, 0, 0])],
   }
 })
 

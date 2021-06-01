@@ -15,21 +15,14 @@ const c = new THREE.Color()
 const Chassis = forwardRef(({ args = [1.7, 1, 4], mass = 500, children, ...props }, ref) => {
   //const brake = useStore((state) => state.controls.brake)
   const { nodes, materials } = useGLTF('/chassis-draco.glb')
-  const [, api] = useBox(
-    () => ({ mass, args, allowSleep: false, onCollide: (e) => console.log('bonk', e.body.userData), ...props }),
-    ref
-  )
+  const [, api] = useBox(() => ({ mass, args, allowSleep: false, onCollide: (e) => console.log('bonk', e.body.userData), ...props }), ref)
 
   const brake = useRef()
   useFrame((state, delta) => {
     const isBreaking = useStore.getState().controls.brake
     brake.current.material.color.lerp(c.set(isBreaking ? '#555' : 'white'), delta * 10)
     brake.current.material.emissive.lerp(c.set(isBreaking ? 'red' : 'red'), delta * 10)
-    brake.current.material.opacity = THREE.MathUtils.lerp(
-      brake.current.material.opacity,
-      isBreaking ? 1 : 0.3,
-      delta * 10
-    )
+    brake.current.material.opacity = THREE.MathUtils.lerp(brake.current.material.opacity, isBreaking ? 1 : 0.3, delta * 10)
   })
 
   console.log(materials['Material.004'])
@@ -46,12 +39,7 @@ const Chassis = forwardRef(({ args = [1.7, 1, 4], mass = 500, children, ...props
               material={materials['Material.001']}
               material-color="#f0c050"
             />
-            <mesh
-              castShadow
-              geometry={nodes.Mesh_0_2.geometry}
-              material={materials['Material.009']}
-              material-color="#353535"
-            />
+            <mesh castShadow geometry={nodes.Mesh_0_2.geometry} material={materials['Material.009']} material-color="#353535" />
             <mesh geometry={nodes.Mesh_1.geometry} material={materials['Material.002']} />
             <mesh
               castShadow
@@ -60,12 +48,7 @@ const Chassis = forwardRef(({ args = [1.7, 1, 4], mass = 500, children, ...props
               material-color="black"
               material-opacity={0.75}
             />
-            <mesh
-              ref={brake}
-              geometry={nodes.Mesh_3.geometry}
-              material={materials['Material.004']}
-              material-transparent
-            />
+            <mesh ref={brake} geometry={nodes.Mesh_3.geometry} material={materials['Material.004']} material-transparent />
             <mesh geometry={nodes.Mesh_4.geometry} material={materials['Material.005']} />
             <mesh geometry={nodes.Mesh_5.geometry} material={materials['Material.006']} />
             <mesh geometry={nodes.Mesh_6.geometry} material={materials['Material.007']} />
