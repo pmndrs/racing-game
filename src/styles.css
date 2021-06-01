@@ -18,3 +18,9 @@ body {
   color: white;
   font-family: 'Inter var', sans-serif;
 }
+
+.speed {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+}

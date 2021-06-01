@@ -3,15 +3,13 @@ import { Canvas } from '@react-three/fiber'
 import { Physics, usePlane } from '@react-three/cannon'
 import { Sky, Environment } from '@react-three/drei'
 import { Track } from './models/Track'
-import Vehicle from './Vehicle'
-import { Heightfield, fromImage } from './utils/terrain'
+import { Vehicle } from './models/Vehicle'
+import { Speed } from './ui/Speed'
 
-const scale = 10
-
-export default function App() {
+export function App() {
   return (
     <>
-      <Canvas dpr={[1, 1.5]} shadows camera={{ position: [0, 5, 15], near: 1, far: 200, fov: 50 }}>
+      <Canvas dpr={[1, 1.5]} shadows camera={{ position: [0, 5, 15], fov: 50 }}>
         <fog attach="fog" args={['white', 0, 500]} />
         <Sky sunPosition={[100, 10, 100]} scale={1000} />
         <ambientLight intensity={0.1} />
@@ -25,6 +23,7 @@ export default function App() {
           <Environment preset="night" />
         </Suspense>
       </Canvas>
+      <Speed />
     </>
   )
 }

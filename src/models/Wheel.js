@@ -10,9 +10,9 @@ const Wheel = forwardRef(({ radius = 0.7, leftSide, ...props }, ref) => {
   return (
     <group ref={ref} dispose={null}>
       <group scale={[leftSide ? -0.5 : 0.5, 0.4, 0.4]} position={[leftSide ? -0.4 : 0.4, 0, 0]}>
-        <mesh geometry={nodes.Mesh_14.geometry} material={materials['Material.002']} />
-        <mesh geometry={nodes.Mesh_15.geometry} material={materials['Material.009']} />
-        <mesh geometry={nodes.Mesh_16.geometry} material={materials['Material.007']} />
+        <mesh castShadow geometry={nodes.Mesh_14.geometry} material={materials['Material.002']} />
+        <mesh castShadow geometry={nodes.Mesh_15.geometry} material={materials['Material.009']} />
+        <mesh castShadow geometry={nodes.Mesh_16.geometry} material={materials['Material.007']} />
       </group>
     </group>
   )
