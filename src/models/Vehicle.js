@@ -19,6 +19,7 @@ export function Vehicle(props) {
   const config = useStore((state) => state.config)
   const raycast = useStore((state) => state.raycast)
   const {cameraType} = useStore((state) => state.controls)
+  const vehicleStart = useStore((state) => state.constants.vehicleStart)
   const [vehicle, api] = useRaycastVehicle(() => raycast)
 
   useLayoutEffect(() => {
