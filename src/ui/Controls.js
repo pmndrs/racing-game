@@ -40,7 +40,7 @@ export function Controls() {
         <div className="popup-content">
           {controlOptions.map(({ key, action }) => (
             <div className="popup-item" key={`control-item-${key}`}>
-              <div>{action}:</div>
+              <div>{action}</div>
               <div style={{ fontFamily: 'monospace' }}>{key}</div>
             </div>
           ))}
