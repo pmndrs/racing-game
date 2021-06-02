@@ -27,7 +27,7 @@ const controlOptions = [
   },
   {
     key: 'C',
-    action: 'Cockpit'
+    action: 'Toggle Camera'
   },
   {
     key: 'R',
