@@ -13,6 +13,7 @@ const v = new THREE.Vector3()
 
 export function Vehicle(props) {
   const camera = useRef()
+
   const [light, setLight] = useState()
   const set = useStore((state) => state.set)
   const config = useStore((state) => state.config)
@@ -44,7 +45,11 @@ export function Vehicle(props) {
     if (reset) {
       raycast.chassisBody.current.api.position.set(vehicleStart.position[0], vehicleStart.position[1], vehicleStart.position[2])
       raycast.chassisBody.current.api.velocity.set(0, 0, 0)
-      raycast.chassisBody.current.api.angularVelocity.set(vehicleStart.angularVelocity[0], vehicleStart.angularVelocity[1], vehicleStart.angularVelocity[2])
+      raycast.chassisBody.current.api.angularVelocity.set(
+        vehicleStart.angularVelocity[0],
+        vehicleStart.angularVelocity[1],
+        vehicleStart.angularVelocity[2],
+      )
       raycast.chassisBody.current.api.rotation.set(vehicleStart.rotation[0], vehicleStart.rotation[1], vehicleStart.rotation[2])
     }
 
@@ -81,7 +86,7 @@ export function Vehicle(props) {
         <Chassis ref={raycast.chassisBody} rotation={props.rotation} position={props.position} angularVelocity={props.angularVelocity}>
           <PerspectiveCamera ref={camera} makeDefault fov={75} rotation={[0, Math.PI, 0]} position={[0, 10, -20]} />
           {light && <primitive object={light.target} />}
-          <PositionalAudio url="/engine.wav" loop distance={10} />
+          <VehicleAudio />
         </Chassis>
         <Wheel ref={raycast.wheels[0]} radius={config.radius} leftSide />
         <Wheel ref={raycast.wheels[1]} radius={config.radius} />
@@ -89,6 +94,30 @@ export function Vehicle(props) {
         <Wheel ref={raycast.wheels[3]} radius={config.radius} />
         <Dust />
       </group>
+    </>
+  )
+}
+
+function VehicleAudio() {
+  const engineAudio = useRef()
+  const honkAudio = useRef()
+
+  useFrame(() => {
+    const { honk } = useStore.getState().controls
+
+    if (honk) {
+      engineAudio.current.setVolume(0.4)
+      honkAudio.current.play()
+    } else {
+      engineAudio.current.setVolume(1)
+      honkAudio.current.stop()
+    }
+  })
+
+  return (
+    <>
+      <PositionalAudio ref={engineAudio} url="/engine.wav" loop distance={5} />
+      <PositionalAudio ref={honkAudio} url="/honk.wav" loop distance={10} />
     </>
   )
 }

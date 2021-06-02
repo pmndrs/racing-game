@@ -22,6 +22,10 @@ const controlOptions = [
     action: 'Drift'
   },
   {
+    key: 'H',
+    action: 'Honk'
+  },
+  {
     key: 'R',
     action: 'Reset'
   }
