@@ -22,8 +22,8 @@ export function Vehicle(props) {
   const [vehicle, api] = useRaycastVehicle(() => raycast)
 
   useLayoutEffect(() => {
-    // Look at is causing the weird spin in the beginning
     defaultCamera.current.lookAt(raycast.chassisBody.current.position)
+    defaultCamera.current.rotation.z = Math.PI // resolves the weird spin in the beginning
     // Subscriptions
     const vSub = raycast.chassisBody.current.api.velocity.subscribe((velocity) => set({ velocity, speed: v.set(...velocity).length() }))
     const sSub = api.sliding.subscribe((sliding) => set({ sliding }))
