@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Physics, usePlane, useBox } from '@react-three/cannon'
-import { Sky, Environment, OrbitControls } from '@react-three/drei'
+import { Sky, Environment, Loader } from '@react-three/drei'
 import { Track } from './models/Track'
 import { Vehicle } from './models/Vehicle'
 import { Speed } from './ui/Speed'
@@ -28,6 +28,7 @@ export function App() {
       </Canvas>
       <Controls />
       <Speed />
+      <Loader />
     </>
   )
 }
