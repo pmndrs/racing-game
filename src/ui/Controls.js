@@ -1,16 +1,17 @@
 export function Controls() {
   return (
     <div className="controls">
-      ↑, w forward
+      <span>↑</span>, <span>w</span> forward
       <br />
-      ←, a left
+      <span>←</span>, <span>a</span> left
       <br />
-      →, d right
+      <span>→</span>, <span>d</span> right
       <br />
-      ↓, s backward
+      <span>↓</span>, <span>s</span> backward
       <br />
-      space break
-      <br />r reset
+      <span>space</span> drift
+      <br />
+      <span>r</span> reset
     </div>
   )
 }

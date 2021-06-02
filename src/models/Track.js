@@ -1,14 +1,16 @@
 // https://sketchfab.com/3d-models/desert-race-game-prototype-map-v2-2ccd3dcbd197415d9f1b97c30b1248c5
 // by: Batuhan13
 
-import { useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { MeshDistortMaterial, useGLTF } from '@react-three/drei'
+import { MeshDistortMaterial, useGLTF, useAnimations } from '@react-three/drei'
 
 useGLTF.preload('/track-draco.glb')
 
 export function Track(props) {
-  const { scene, nodes, materials } = useGLTF('/track-draco.glb')
+  const group = useRef()
+  const { animations, nodes, materials } = useGLTF('/track-draco.glb')
+  const { actions } = useAnimations(animations, group)
   const config = { receiveShadow: true, castShadow: true, 'material-roughness': 1 }
 
   const bird1 = useRef()
@@ -22,17 +24,23 @@ export function Track(props) {
     bird4.current.rotation.y += delta / 4.5
   })
 
+  useLayoutEffect(() => {
+    actions.train.play()
+  }, [actions])
+
   return (
-    <group {...props} dispose={null}>
-      <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_1'].geometry} material={materials.custom7Clone} {...config} />
-      <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_2'].geometry} material={materials.blueSteelClone} {...config} />
-      <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_3'].geometry} material={materials.custom12Clone} {...config} />
-      <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_4'].geometry} material={materials.custom14Clone} {...config} />
-      <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_5'].geometry} material={materials.defaultMatClone} {...config} />
-      <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_6'].geometry} material={materials.glassClone} {...config} />
-      <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_7'].geometry} material={materials.steelClone} {...config} />
-      <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_8'].geometry} material={materials.lightRedClone} {...config} />
-      <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_9'].geometry} material={materials.darkClone} {...config} />
+    <group ref={group} {...props} dispose={null}>
+      <group name="02_Bus_Middle_01_custom7(Clone)_0" position={[-5.16, 0.13, 2.45]}>
+        <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_1'].geometry} material={materials.custom7Clone} />
+        <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_2'].geometry} material={materials.blueSteelClone} />
+        <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_3'].geometry} material={materials.custom12Clone} />
+        <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_4'].geometry} material={materials.custom14Clone} />
+        <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_5'].geometry} material={materials.defaultMatClone} />
+        <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_6'].geometry} material={materials.glassClone} />
+        <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_7'].geometry} material={materials.steelClone} />
+        <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_8'].geometry} material={materials.lightRedClone} />
+        <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_9'].geometry} material={materials.darkClone} />
+      </group>
       <mesh geometry={nodes.Circle133_ColorPalette_0.geometry} material={nodes.Circle133_ColorPalette_0.material} {...config} />
       <mesh geometry={nodes.Circle133_ColorPalette_0001.geometry} material={nodes.Circle133_ColorPalette_0001.material} {...config} />
       <mesh geometry={nodes.Circle133_ColorPalette_0.geometry} material={nodes.Circle133_ColorPalette_0.material} {...config} />
