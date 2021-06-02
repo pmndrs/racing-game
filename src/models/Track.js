@@ -9,19 +9,15 @@ useGLTF.preload('/track-draco.glb')
 
 export function Track(props) {
   const group = useRef()
-  const { animations, nodes, materials } = useGLTF('/track-draco.glb')
+  const { animations, nodes: n, materials: m } = useGLTF('/track-draco.glb')
   const { actions } = useAnimations(animations, group)
   const config = { receiveShadow: true, castShadow: true, 'material-roughness': 1 }
 
-  const bird1 = useRef()
-  const bird2 = useRef()
-  const bird3 = useRef()
-  const bird4 = useRef()
+  const birds = useRef()
+  const clouds = useRef()
   useFrame((state, delta) => {
-    bird1.current.rotation.y += delta / 3.5
-    bird2.current.rotation.y += delta / 4
-    bird3.current.rotation.y += delta / 2.5
-    bird4.current.rotation.y += delta / 4.5
+    birds.current.children.forEach((bird, index) => (bird.rotation.y += delta / index))
+    clouds.current.children.forEach((bird, index) => (bird.rotation.y += delta / 10 / index))
   })
 
   useLayoutEffect(() => {
@@ -30,57 +26,52 @@ export function Track(props) {
 
   return (
     <group ref={group} {...props} dispose={null}>
-      <group name="02_Bus_Middle_01_custom7(Clone)_0" position={[-5.16, 0.13, 2.45]}>
-        <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_1'].geometry} material={materials.custom7Clone} />
-        <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_2'].geometry} material={materials.blueSteelClone} />
-        <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_3'].geometry} material={materials.custom12Clone} />
-        <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_4'].geometry} material={materials.custom14Clone} />
-        <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_5'].geometry} material={materials.defaultMatClone} />
-        <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_6'].geometry} material={materials.glassClone} />
-        <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_7'].geometry} material={materials.steelClone} />
-        <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_8'].geometry} material={materials.lightRedClone} />
-        <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_9'].geometry} material={materials.darkClone} />
+      <group name="train" position={[-5.16, 0.13, 2.45]}>
+        <mesh geometry={n.train_1.geometry} material={m.custom7Clone} {...config} />
+        <mesh geometry={n.train_2.geometry} material={m.blueSteelClone} {...config} />
+        <mesh geometry={n.train_3.geometry} material={m.custom12Clone} {...config} />
+        <mesh geometry={n.train_4.geometry} material={m.custom14Clone} {...config} />
+        <mesh geometry={n.train_5.geometry} material={m.defaultMatClone} {...config} />
+        <mesh geometry={n.train_6.geometry} material={m.glassClone} {...config} />
+        <mesh geometry={n.train_7.geometry} material={m.steelClone} {...config} />
+        <mesh geometry={n.train_8.geometry} material={m.lightRedClone} {...config} />
+        <mesh geometry={n.train_9.geometry} material={m.darkClone} {...config} />
       </group>
-      <mesh geometry={nodes.Circle133_ColorPalette_0.geometry} material={nodes.Circle133_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Circle133_ColorPalette_0001.geometry} material={nodes.Circle133_ColorPalette_0001.material} {...config} />
-      <mesh geometry={nodes.Circle133_ColorPalette_0.geometry} material={nodes.Circle133_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Cliff2019_ColorPalette_0.geometry} material={nodes.Cliff2019_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Cube061_ColorPalette_0.geometry} material={nodes.Cube061_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Cube062_ColorPalette_0.geometry} material={nodes.Cube062_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Cube063_ColorPalette_0.geometry} material={nodes.Cube063_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Cube064_ColorPalette_0.geometry} material={nodes.Cube064_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Cube069_ColorPalette_0.geometry} material={nodes.Cube069_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Cube070_ColorPalette_0.geometry} material={nodes.Cube070_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Cube071_ColorPalette_0.geometry} material={nodes.Cube071_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Cube072_ColorPalette_0.geometry} material={nodes.Cube072_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Cube073_ColorPalette_0.geometry} material={nodes.Cube073_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Cube074_ColorPalette_0.geometry} material={nodes.Cube074_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Cube075_ColorPalette_0.geometry} material={nodes.Cube075_ColorPalette_0.material} position={[0.52, 0, 0.06]} />
-      <mesh
-        geometry={nodes.Cube076_ColorPalette_0.geometry}
-        material={nodes.Cube076_ColorPalette_0.material}
-        position={[7.13, 1.22, 3.59]}
-      />
-      <mesh geometry={nodes.Cube079_ColorPalette_0.geometry} material={nodes.Cube079_ColorPalette_0.material} {...config} />
-      <mesh
-        geometry={nodes.Cube080_ColorPalette_0.geometry}
-        material={nodes.Cube080_ColorPalette_0.material}
-        position={[6.53, 1.03, 5.68]}
-      />
-      <mesh geometry={nodes.Mball001_ColorPalette_0.geometry} material={nodes.Mball001_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Mball002_ColorPalette_0.geometry} material={nodes.Mball002_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Mball003_ColorPalette_0.geometry} material={nodes.Mball003_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Mball004_ColorPalette_0.geometry} material={nodes.Mball004_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Mball005_ColorPalette_0.geometry} material={nodes.Mball005_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Mball006_ColorPalette_0.geometry} material={nodes.Mball006_ColorPalette_0.material} {...config} />
-      <mesh geometry={nodes.Plane006_ColorPalette_0.geometry} material={nodes.Plane006_ColorPalette_0.material} {...config} />
-      <mesh ref={bird1} castShadow geometry={nodes.Plane049_ColorPalette_0.geometry} material={nodes.Plane049_ColorPalette_0.material} />
-      <mesh ref={bird2} castShadow geometry={nodes.Plane050_ColorPalette_0.geometry} material={nodes.Plane050_ColorPalette_0.material} />
-      <mesh ref={bird3} castShadow geometry={nodes.Plane051_ColorPalette_0.geometry} material={nodes.Plane051_ColorPalette_0.material} />
-      <mesh ref={bird4} castShadow geometry={nodes.Plane059_ColorPalette_0.geometry} material={nodes.Plane059_ColorPalette_0.material} />
-      <mesh geometry={nodes.Plane089_ColorPaletteWater_0.geometry}>
-        <MeshDistortMaterial speed={4} map={materials.ColorPaletteWater.map} roughness={0} />
+      <mesh geometry={n.strip.geometry} material={n.strip.material} {...config} />
+      <mesh geometry={n.track.geometry} material={n.track.material} {...config} />
+      <mesh geometry={n.mountains.geometry} material={n.mountains.material} {...config} />
+      <mesh geometry={n.terrain.geometry} material={n.terrain.material} {...config} />
+      <mesh geometry={n.water.geometry}>
+        <MeshDistortMaterial speed={4} map={m.ColorPaletteWater.map} roughness={0} />
       </mesh>
+      <group ref={birds}>
+        <mesh geometry={n.bird001.geometry} material={n.bird001.material} {...config} />
+        <mesh geometry={n.bird002.geometry} material={n.bird002.material} {...config} />
+        <mesh geometry={n.bird003.geometry} material={n.bird003.material} {...config} />
+        <mesh geometry={n.bird.geometry} material={n.bird.material} {...config} />
+      </group>
+      <mesh geometry={n.blade001.geometry} material={n.blade001.material} {...config} />
+      <mesh geometry={n.blade002.geometry} material={n.blade002.material} {...config} />
+      <mesh geometry={n.blade003.geometry} material={n.blade003.material} {...config} />
+      <mesh geometry={n.blade004.geometry} material={n.blade004.material} {...config} />
+      <mesh geometry={n.blade005.geometry} material={n.blade005.material} {...config} />
+      <mesh geometry={n.blade006.geometry} material={n.blade006.material} position={[7.13, 1.22, 3.59]} {...config} />
+      <mesh geometry={n.blade.geometry} material={n.blade.material} position={[6.53, 1.03, 5.68]} {...config} />
+      <group ref={clouds}>
+        <mesh geometry={n.cloud001.geometry} material={n.cloud001.material} position={[0, 1.07, 0]} rotation={[0, 0.26, 0]} {...config} />
+        <mesh geometry={n.cloud003.geometry} material={n.cloud003.material} position={[0, 0.29, 0]} {...config} />
+        <mesh geometry={n.cloud006.geometry} material={n.cloud006.material} position={[-1.32, 0.45, 0.62]} {...config} />
+        <mesh geometry={n.cloud008.geometry} material={n.cloud008.material} position={[0.96, 0.32, 0]} {...config} />
+        <mesh geometry={n.cloud010.geometry} material={n.cloud010.material} position={[0.58, 0.3, 0]} {...config} />
+        <mesh geometry={n.cloud011.geometry} material={n.cloud011.material} position={[0, -0.34, 0]} {...config} />
+        <mesh geometry={n.cloud002.geometry} material={n.cloud002.material} position={[2.23, 1.07, -0.37]} rotation={[-Math.PI, 0.92, -Math.PI]} {...config} />
+        <mesh geometry={n.cloud004.geometry} material={n.cloud004.material} position={[0.74, 0.45, 0.96]} rotation={[-Math.PI, 1.19, -Math.PI]} {...config} />
+        <mesh geometry={n.cloud012.geometry} material={n.cloud012.material} position={[0.77, -0.62, -2.24]} rotation={[-Math.PI, 0.92, -Math.PI]} {...config} />
+        <mesh geometry={n.cloud007.geometry} material={n.cloud007.material} position={[0, 0.88, 0]} rotation={[Math.PI, -1.43, Math.PI]} {...config} />
+        <mesh geometry={n.cloud009.geometry} material={n.cloud009.material} position={[-0.94, 0.69, 0]} rotation={[Math.PI, -0.79, Math.PI]} {...config} />
+        <mesh geometry={n.cloud.geometry} material={n.cloud.material} position={[-2.24, -0.18, -0.37]} rotation={[Math.PI, -0.79, Math.PI]} {...config} />
+        <mesh geometry={n.cloud005.geometry} material={n.cloud005.material} position={[1.33, 1.07, -0.58]} rotation={[-Math.PI, 0.31, -Math.PI]} {...config} />
+      </group>
     </group>
   )
 }

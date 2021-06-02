@@ -10,3 +10,5 @@ this project is a showcase for the feasibility of react in gaming. we would like
 /effects  - dust, trails, skids, shaders
 /ui       - intros, head up displays, leaderboards
 ```
+
+there is a dedicated discord channel for this project here: https://discord.gg/poimandres
