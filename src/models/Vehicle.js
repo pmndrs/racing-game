@@ -101,9 +101,10 @@ export function Vehicle(props) {
 function VehicleAudio() {
   const engineAudio = useRef()
   const honkAudio = useRef()
+  const brakeAudio = useRef()
 
   useFrame(() => {
-    const { honk } = useStore.getState().controls
+    const { honk, brake } = useStore.getState().controls
 
     if (honk) {
       engineAudio.current.setVolume(0.4)
@@ -112,12 +113,19 @@ function VehicleAudio() {
       engineAudio.current.setVolume(1)
       honkAudio.current.stop()
     }
+
+    if (brake) {
+      brakeAudio.current.play()
+    } else {
+      brakeAudio.current.stop()
+    }
   })
 
   return (
     <>
       <PositionalAudio ref={engineAudio} url="/engine.wav" loop distance={5} />
       <PositionalAudio ref={honkAudio} url="/honk.wav" loop distance={10} />
+      <PositionalAudio ref={brakeAudio} url="/tire-brake.wav" loop distance={10} />
     </>
   )
 }
