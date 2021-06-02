@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { useRef, useState, useLayoutEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { PerspectiveCamera } from '@react-three/drei'
+import { PerspectiveCamera, PositionalAudio } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
 import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
@@ -13,6 +13,7 @@ const v = new THREE.Vector3()
 
 export function Vehicle(props) {
   const camera = useRef()
+
   const [light, setLight] = useState()
   const set = useStore((state) => state.set)
   const config = useStore((state) => state.config)
@@ -85,6 +86,7 @@ export function Vehicle(props) {
         <Chassis ref={raycast.chassisBody} rotation={props.rotation} position={props.position} angularVelocity={props.angularVelocity}>
           <PerspectiveCamera ref={camera} makeDefault fov={75} rotation={[0, Math.PI, 0]} position={[0, 10, -20]} />
           {light && <primitive object={light.target} />}
+          <VehicleAudio />
         </Chassis>
         <Wheel ref={raycast.wheels[0]} radius={config.radius} leftSide />
         <Wheel ref={raycast.wheels[1]} radius={config.radius} />
@@ -92,6 +94,38 @@ export function Vehicle(props) {
         <Wheel ref={raycast.wheels[3]} radius={config.radius} />
         <Dust />
       </group>
+    </>
+  )
+}
+
+function VehicleAudio() {
+  const engineAudio = useRef()
+  const honkAudio = useRef()
+  const brakeAudio = useRef()
+
+  useFrame(() => {
+    const { honk, brake } = useStore.getState().controls
+
+    if (honk) {
+      engineAudio.current.setVolume(0.4)
+      honkAudio.current.play()
+    } else {
+      engineAudio.current.setVolume(1)
+      honkAudio.current.stop()
+    }
+
+    if (brake) {
+      brakeAudio.current.play()
+    } else {
+      brakeAudio.current.stop()
+    }
+  })
+
+  return (
+    <>
+      <PositionalAudio ref={engineAudio} url="/engine.wav" loop distance={5} />
+      <PositionalAudio ref={honkAudio} url="/honk.wav" loop distance={10} />
+      <PositionalAudio ref={brakeAudio} url="/tire-brake.wav" loop distance={10} />
     </>
   )
 }
