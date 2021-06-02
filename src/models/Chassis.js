@@ -13,7 +13,7 @@ useGLTF.preload('/models/chassis-draco.glb')
 
 const c = new THREE.Color()
 const Chassis = forwardRef(({ args = [1.7, 1, 4], mass = 500, children, ...props }, ref) => {
-  const glas = useRef()
+  const glass = useRef()
   const brake = useRef()
   const wheel = useRef()
   const { nodes, materials } = useGLTF('/models/chassis-draco.glb')
@@ -27,26 +27,30 @@ const Chassis = forwardRef(({ args = [1.7, 1, 4], mass = 500, children, ...props
     brake.current.material.color.lerp(c.set(isBreaking ? '#555' : 'white'), delta * 10)
     brake.current.material.emissive.lerp(c.set(isBreaking ? 'red' : 'red'), delta * 10)
     brake.current.material.opacity = THREE.MathUtils.lerp(brake.current.material.opacity, isBreaking ? 1 : 0.3, delta * 10)
-    glas.current.material.opacity = THREE.MathUtils.lerp(glas.current.material.opacity, isCockpit ? 0.1 : 0.6, delta)
-    glas.current.material.color.lerp(c.set(isCockpit ? "white" : "black"), delta)
+    glass.current.material.opacity = THREE.MathUtils.lerp(glass.current.material.opacity, isCockpit ? 0.1 : 0.6, delta)
+    glass.current.material.color.lerp(c.set(isCockpit ? "white" : "black"), delta)
     wheel.current.rotation.z = THREE.MathUtils.lerp(wheel.current.rotation.z, controls.left ? -Math.PI : controls.right ? Math.PI : 0, delta)
   })
 
   return (
     <group ref={ref} api={api} dispose={null}>
       <group>
-        <mesh castShadow receiveShadow geometry={nodes.Mesh_0_1.geometry} material={materials['Material.001']} material-color="#f0c050" />
-        <mesh castShadow geometry={nodes.Mesh_0_2.geometry} material={nodes.Mesh_0_2.material} material-color="#353535" />
-        <mesh castShadow ref={glas} geometry={nodes.Mesh_2.geometry} material={materials['Material.003']} material-transparent />
-        <mesh ref={brake} geometry={nodes.Mesh_3.geometry} material={materials['Material.004']} material-transparent />
-        <mesh geometry={nodes.Mesh_4.geometry} material={materials['Material.005']} />
-        <mesh geometry={nodes.Mesh_5.geometry} material={materials['Material.006']} />
-        <mesh geometry={nodes.Mesh_6.geometry} material={materials['Material.007']} />
-        <mesh geometry={nodes.Mesh_7.geometry} material={materials['Material.008']} />
-        <mesh geometry={nodes.Mesh_8.geometry} material={nodes.Mesh_8.material} />
+        <mesh castShadow receiveShadow geometry={nodes.Chassis_1.geometry} material={materials.BodyPaint} material-color="#f0c050" />
+        <mesh castShadow geometry={nodes.Chassis_2.geometry} material={nodes.Chassis_2.material} material-color="#353535" />
+        <mesh castShadow ref={glass} geometry={nodes.Glass.geometry} material={materials.Glass} material-transparent />
+        <mesh ref={brake} geometry={nodes.BrakeLights.geometry} material={materials.BrakeLight} material-transparent />
+        <mesh geometry={nodes.HeadLights.geometry} material={materials.HeadLight} />
+        <mesh geometry={nodes.Cabin_Grilles.geometry} material={materials.Black} />
+        <mesh geometry={nodes.Undercarriage.geometry} material={materials.Undercarriage} />
+        <mesh geometry={nodes.TurnSignals.geometry} material={materials.TurnSignal} />
+        <mesh geometry={nodes.Chrome.geometry} material={nodes.Chrome.material} />
         <group ref={wheel} position={[0.37, 0.25, 0.46]}>
-          <mesh geometry={nodes.Mesh_1001.geometry} material={nodes.Mesh_1001.material} />
-          <mesh geometry={nodes.Mesh_1001_1.geometry} material={nodes.Mesh_1001_1.material} />
+          <mesh geometry={nodes.Wheel_1.geometry} material={nodes.Wheel_1.material} />
+          <mesh geometry={nodes.Wheel_2.geometry} material={nodes.Wheel_2.material} />
+        </group>
+        <group position={[0, 0, 0]}>
+          <mesh geometry={nodes.License_1.geometry} material={materials.License} />
+          <mesh geometry={nodes.License_2.geometry} material={nodes.License_2.material} />
         </group>
       </group>
       {children}
