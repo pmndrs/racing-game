@@ -7,7 +7,6 @@ import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
 import { useStore } from '../utils/store'
 import { Dust } from '../effects/Dust'
-import { vehicleStart } from '../constants'
 
 const v = new THREE.Vector3()
 
@@ -18,7 +17,11 @@ export function Vehicle(props) {
   const set = useStore((state) => state.set)
   const config = useStore((state) => state.config)
   const raycast = useStore((state) => state.raycast)
+  const cockpit = useStore((state) => state.cockpit)
+  const vehicleStart = useStore((state) => state.constants.vehicleStart)
   const [vehicle, api] = useRaycastVehicle(() => raycast)
+
+  console.log(cockpit)
 
   useLayoutEffect(() => {
     // Look at is causing the weird spin in the beginning
@@ -49,10 +52,18 @@ export function Vehicle(props) {
       raycast.chassisBody.current.api.rotation.set(vehicleStart.rotation[0], vehicleStart.rotation[1], vehicleStart.rotation[2])
     }
 
-    // left-right, up-down, near-far
-    camera.current.position.lerp(v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (brake ? 1 : 0)), delta)
-    // left-right swivel
+    if (cockpit) {
+      camera.current.position.lerp(v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.7, 0.01), delta)
+    } else {
+      // left-right, up-down, near-far
+      camera.current.position.lerp(v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (brake ? 1 : 0)), delta)
+
+      
+    }
+
+          // left-right swivel
     camera.current.rotation.z = THREE.MathUtils.lerp(camera.current.rotation.z, Math.PI + (-steeringValue * speed) / 45, delta)
+
     // lean chassis
     raycast.chassisBody.current.children[0].rotation.z = THREE.MathUtils.lerp(
       raycast.chassisBody.current.children[0].rotation.z,
@@ -96,11 +107,12 @@ function VehicleAudio() {
   const honkAudio = useRef()
   const brakeAudio = useRef()
   useFrame(() => {
-    const { honk, brake } = useStore.getState().controls
-    engineAudio.current.setVolume((0.4 * useStore.getState().speed) / 50)
+    const state = useStore.getState()
+    const { honk, brake } = state.controls
+    engineAudio.current.setVolume((0.4 * state.speed) / 50)
     brakeAudio.current.setVolume(brake ? 1 : 0.2)
     honkAudio.current[honk ? 'play' : 'stop']()
-    brakeAudio.current[useStore.getState().sliding || brake ? 'play' : 'stop']()
+    brakeAudio.current[(state.sliding || brake) && state.speed > 5 ? 'play' : 'stop']()
   })
   return (
     <>

@@ -1,11 +1,11 @@
 import { createRef } from 'react'
 import create from 'zustand'
 
-function registerKeys(target, event) {
+function registerKeys(target, event, up = true) {
   const downHandler = ({ key }) => target.indexOf(key) !== -1 && event(true)
   const upHandler = ({ key }) => target.indexOf(key) !== -1 && event(false)
   window.addEventListener('keydown', downHandler)
-  window.addEventListener('keyup', upHandler)
+  if (up) window.addEventListener('keyup', upHandler)
 }
 
 const useStore = create((set, get) => {
@@ -16,6 +16,7 @@ const useStore = create((set, get) => {
   registerKeys(['ArrowRight', 'd'], (right) => set((state) => ({ ...state, controls: { ...state.controls, right } })))
   registerKeys([' '], (brake) => set((state) => ({ ...state, controls: { ...state.controls, brake } })))
   registerKeys(['h'], (honk) => set((state) => ({ ...state, controls: { ...state.controls, honk } })))
+  registerKeys(['c'], (cockpit) => set((state) => ({ cockpit: !state.cockpit })), false)
   registerKeys(['r'], (reset) => set((state) => ({ ...state, controls: { ...state.controls, reset } })))
 
   // Vehicle config
@@ -23,7 +24,7 @@ const useStore = create((set, get) => {
     radius: 0.7,
     width: 1.2,
     height: -0.04,
-    front: 1.3,
+    front: 1.5,
     back: -1.15,
     steer: 0.3,
     force: 1800,
@@ -77,10 +78,19 @@ const useStore = create((set, get) => {
     get,
     config,
     raycast,
+    cockpit: false,
     controls: { forward: false, backward: false, left: false, right: false, brake: false, honk: false, reset: false },
     velocity: [0, 0, 0],
     speed: 0,
     positions: [...Array(20).map(() => [0, 0, 0])],
+    constants: {
+      vehicleStart: {
+        rotation: [0, Math.PI / 2, 0],
+        position: [0, 1, 0],
+        angularVelocity: [0, 0.5, 0],
+        wheelRadius: 0.3,
+      },
+    },
   }
 })
 

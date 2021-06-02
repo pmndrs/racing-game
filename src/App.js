@@ -1,14 +1,15 @@
 import React, { Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Physics, usePlane, useBox } from '@react-three/cannon'
-import { Sky, Environment } from '@react-three/drei'
+import { Sky, Environment, OrbitControls } from '@react-three/drei'
 import { Track } from './models/Track'
 import { Vehicle } from './models/Vehicle'
 import { Speed } from './ui/Speed'
 import { Controls } from './ui/Controls'
-import { vehicleStart } from './constants'
+import { useStore } from './utils/store'
 
 export function App() {
+  const vehicleStart = useStore((state) => state.constants.vehicleStart)
   return (
     <>
       <Canvas dpr={[1, 1.5]} shadows camera={{ position: [0, 5, 15], fov: 50 }}>
