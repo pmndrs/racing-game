@@ -36,7 +36,7 @@ export function Track(props) {
         <mesh geometry={n.train_7.geometry} material={m.steelClone} {...config} />
         <mesh geometry={n.train_8.geometry} material={m.lightRedClone} {...config} />
         <mesh geometry={n.train_9.geometry} material={m.darkClone} {...config} />
-        <PositionalAudio url="/sounds/train.mp3" loop distance={25} />
+        <PositionalAudio url="/sounds/train.mp3" loop distance={15} />
       </group>
       <mesh geometry={n.strip.geometry} material={n.strip.material} {...config} />
       <mesh geometry={n.track.geometry} material={n.track.material} {...config} />
