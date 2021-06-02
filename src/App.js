@@ -8,6 +8,7 @@ import { Vehicle } from './models/Vehicle'
 import { Speed } from './ui/Speed'
 import { Controls } from './ui/Controls'
 import { Heightfield } from './utils/terrain'
+import { vehicleStart } from './constants'
 
 export function App() {
   return (
@@ -18,12 +19,13 @@ export function App() {
         <ambientLight intensity={0.1} />
         <Suspense fallback={null}>
           <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
-            <Vehicle rotation={[0, Math.PI / 2, 0]} position={[80, 20, 100]} angularVelocity={[0, 0.5, 0]} wheelRadius={0.3} />
+            <Vehicle {...vehicleStart} />
             <Heightfield
               elementSize={524 / 512}
-              position={[260, -7, -260]} // Tweaking these values may be necessary on updates to heightmap
+              position={[260, -7, -260]}
               rotation={[-Math.PI / 2, 0, Math.PI]}
-            />
+            />            
+            <Ramp position={[120, -1, -50]} />
           </Physics>
           <Track scale={26} />
           <Environment preset="night" />
@@ -32,5 +34,20 @@ export function App() {
       <Controls />
       <Speed />
     </>
+  )
+}
+
+function Plane(props) {
+  const [ref] = usePlane(() => ({ type: 'Static', material: 'ground', ...props }))
+  return null
+}
+
+function Ramp({ args = [10, 2.5, 3], rotation = [0, 0.45, Math.PI / 11], ...props }) {
+  const [ref] = useBox(() => ({ type: 'Static', args, rotation, ...props }))
+  return (
+    <mesh ref={ref}>
+      <boxGeometry args={args} />
+      <meshStandardMaterial color="indianred" />
+    </mesh>
   )
 }

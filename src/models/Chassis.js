@@ -25,8 +25,6 @@ const Chassis = forwardRef(({ args = [1.7, 1, 4], mass = 500, children, ...props
     brake.current.material.opacity = THREE.MathUtils.lerp(brake.current.material.opacity, isBreaking ? 1 : 0.3, delta * 10)
   })
 
-  console.log(materials['Material.004'])
-
   return (
     <group ref={ref} api={api} dispose={null}>
       <group scale={[0.4, 0.35, 2.2]}>
