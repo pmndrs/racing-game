@@ -1504,6 +1504,11 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
+"@pmndrs/branding@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@pmndrs/branding/-/branding-0.0.7.tgz#43792157836ac906d0a1ead32f624146133c328e"
+  integrity sha512-SJjZ3ob85kc6MVDJOBihrRmSLrZz9wPSU+h1JRt3aoAHgh8nuUV7rR4DGurFOHJ6XL+wIW1yriI9EnQ/eBe9Rg==
+
 "@react-three/cannon@1.2.2":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@react-three/cannon/-/cannon-1.2.2.tgz#383a728c6ced4b9a3259095903eccdb478ec0512"

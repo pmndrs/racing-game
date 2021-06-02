@@ -4,11 +4,13 @@
 import { useLayoutEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { MeshDistortMaterial, useGLTF, useAnimations, PositionalAudio } from '@react-three/drei'
+import { useStore } from '../utils/store'
 
 useGLTF.preload('/models/track-draco.glb')
 
 export function Track(props) {
   const group = useRef()
+  const ready = useStore((state) => state.ready)
   const { animations, nodes: n, materials: m } = useGLTF('/models/track-draco.glb')
   const { actions } = useAnimations(animations, group)
   const config = { receiveShadow: true, castShadow: true, 'material-roughness': 1 }
@@ -36,7 +38,7 @@ export function Track(props) {
         <mesh geometry={n.train_7.geometry} material={m.steelClone} {...config} />
         <mesh geometry={n.train_8.geometry} material={m.lightRedClone} {...config} />
         <mesh geometry={n.train_9.geometry} material={m.darkClone} {...config} />
-        <PositionalAudio url="/sounds/train.mp3" loop distance={5} />
+        {ready && <PositionalAudio url="/sounds/train.mp3" loop distance={5} />}
       </group>
       <mesh geometry={n.strip.geometry} material={n.strip.material} {...config} />
       <mesh geometry={n.track.geometry} material={n.track.material} {...config} />
