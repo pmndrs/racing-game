@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { useRef, useState, useLayoutEffect, useMemo } from 'react'
+import { useRef, useState, useLayoutEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { PerspectiveCamera } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
@@ -44,7 +44,11 @@ export function Vehicle(props) {
     if (reset) {
       raycast.chassisBody.current.api.position.set(vehicleStart.position[0], vehicleStart.position[1], vehicleStart.position[2])
       raycast.chassisBody.current.api.velocity.set(0, 0, 0)
-      raycast.chassisBody.current.api.angularVelocity.set(vehicleStart.angularVelocity[0], vehicleStart.angularVelocity[1], vehicleStart.angularVelocity[2])
+      raycast.chassisBody.current.api.angularVelocity.set(
+        vehicleStart.angularVelocity[0],
+        vehicleStart.angularVelocity[1],
+        vehicleStart.angularVelocity[2],
+      )
       raycast.chassisBody.current.api.rotation.set(vehicleStart.rotation[0], vehicleStart.rotation[1], vehicleStart.rotation[2])
     }
 
