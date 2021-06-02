@@ -2,10 +2,13 @@ import { useTexture } from '@react-three/drei'
 import { useMemo } from 'react'
 import { useHeightfield } from '@react-three/cannon'
 
-// returns matrix data to be passed to heightfield
-// set elementSize as `size` / matrix[0].length
-// rotate hf => .quaternion.setFromEuler(-Math.PI/2, 0, 0)
-// and .rotation.x = -Math.PI/2;
+/**
+ * Returns matrix data to be passed to heightfield.
+ * set elementSize as `size` / matrix[0].length (image width)
+ * and rotate heightfield to match (rotation.x = -Math.PI/2)
+ * @param {Image} image black & white, square heightmap texture
+ * @returns {[[Number]]} height data extracted from image
+ */
 function createHeightfieldMatrix(image) {
   let matrix = []
   const w = image.width
@@ -32,7 +35,7 @@ function createHeightfieldMatrix(image) {
 }
 
 export function Heightfield(props) {
-  const { elementSize, position, rotation, ...rest } = props
+  const { elementSize, position, rotation } = props
   const heightmap = useTexture('/heightmap_512.png')
   const heights = useMemo(() => createHeightfieldMatrix(heightmap.image), [heightmap])
 
