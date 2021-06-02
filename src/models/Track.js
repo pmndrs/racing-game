@@ -3,7 +3,7 @@
 
 import { useLayoutEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { MeshDistortMaterial, useGLTF, useAnimations } from '@react-three/drei'
+import { MeshDistortMaterial, useGLTF, useAnimations, PositionalAudio } from '@react-three/drei'
 
 useGLTF.preload('/track-draco.glb')
 
@@ -40,6 +40,7 @@ export function Track(props) {
         <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_7'].geometry} material={materials.steelClone} />
         <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_8'].geometry} material={materials.lightRedClone} />
         <mesh geometry={nodes['02_Bus_Middle_01_custom7(Clone)_0_9'].geometry} material={materials.darkClone} />
+        <PositionalAudio url="/train.wav" loop distance={25} />
       </group>
       <mesh geometry={nodes.Circle133_ColorPalette_0.geometry} material={nodes.Circle133_ColorPalette_0.material} {...config} />
       <mesh geometry={nodes.Circle133_ColorPalette_0001.geometry} material={nodes.Circle133_ColorPalette_0001.material} {...config} />
