@@ -26,6 +26,10 @@ const controlOptions = [
     action: 'Honk'
   },
   {
+    key: 'C',
+    action: 'Toggle Camera'
+  },
+  {
     key: 'R',
     action: 'Reset',
   },
