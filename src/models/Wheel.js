@@ -6,10 +6,7 @@ useGLTF.preload('/models/wheel-draco.glb')
 
 const Wheel = forwardRef(({ radius = 0.7, leftSide, ...props }, ref) => {
   const { nodes, materials } = useGLTF('/models/wheel-draco.glb')
-  useCylinder(
-    () => ({ mass: 50, type: 'Kinematic', material: 'wheel', collisionFilterGroup: 0, args: [radius, radius, 0.5, 16], ...props }),
-    ref,
-  )
+  useCylinder(() => ({ mass: 50, type: 'Kinematic', material: 'wheel', collisionFilterGroup: 0, args: [radius, radius, 0.5, 16], ...props }), ref)
   return (
     <group ref={ref} dispose={null}>
       <group scale={[leftSide ? -0.5 : 0.5, 0.4, 0.4]} position={[leftSide ? -0.35 : 0.35, 0, 0]}>

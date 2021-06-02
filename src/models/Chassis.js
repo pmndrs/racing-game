@@ -30,22 +30,10 @@ const Chassis = forwardRef(({ args = [1.7, 1, 4], mass = 500, children, ...props
       <group scale={[0.4, 0.35, 2.2]}>
         <group rotation={[-Math.PI / 2, 0, 0]}>
           <group rotation={[Math.PI / 2, 0, 0]}>
-            <mesh
-              castShadow
-              receiveShadow
-              geometry={nodes.Mesh_0_1.geometry}
-              material={materials['Material.001']}
-              material-color="#f0c050"
-            />
+            <mesh castShadow receiveShadow geometry={nodes.Mesh_0_1.geometry} material={materials['Material.001']} material-color="#f0c050" />
             <mesh castShadow geometry={nodes.Mesh_0_2.geometry} material={materials['Material.009']} material-color="#353535" />
             <mesh geometry={nodes.Mesh_1.geometry} material={materials['Material.002']} />
-            <mesh
-              castShadow
-              geometry={nodes.Mesh_2.geometry}
-              material={materials['Material.003']}
-              material-color="black"
-              material-opacity={0.75}
-            />
+            <mesh castShadow geometry={nodes.Mesh_2.geometry} material={materials['Material.003']} material-color="black" material-opacity={0.75} />
             <mesh ref={brake} geometry={nodes.Mesh_3.geometry} material={materials['Material.004']} material-transparent />
             <mesh geometry={nodes.Mesh_4.geometry} material={materials['Material.005']} />
             <mesh geometry={nodes.Mesh_5.geometry} material={materials['Material.006']} />
