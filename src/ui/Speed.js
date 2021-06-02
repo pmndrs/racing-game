@@ -9,9 +9,10 @@ export function Speed() {
   useEffect(() => {
     if (textRef.current !== null) {
       const interval = setInterval(() => {
-        const computedSpeed = useStore.getState().speed * 1.5
+        const { speed, config } = useStore.getState();
+        const computedSpeed = speed * 1.5
         textRef.current.innerText = computedSpeed.toFixed()
-        gaugeRef.current.setAttribute('offset', Math.max(1 - computedSpeed / 100, 0))
+        gaugeRef.current.setAttribute('offset', Math.max(1 - computedSpeed / config.maxSpeed, 0))
       }, 60)
       return () => clearInterval(interval)
     }
