@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { Physics } from '@react-three/cannon'
+import { Physics, useBox } from '@react-three/cannon'
 import { Sky, Environment } from '@react-three/drei'
 
 import { Track } from './models/Track'
@@ -19,27 +19,23 @@ export function App() {
         <ambientLight intensity={0.1} />
         <Suspense fallback={null}>
           <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
-            <Vehicle {...vehicleStart} />
+            
             <Heightfield
               elementSize={524 / 512}
               position={[260, -7, -260]}
               rotation={[-Math.PI / 2, 0, Math.PI]}
-            />            
+            />
+            <Vehicle {...vehicleStart} />
             <Ramp position={[120, -1, -50]} />
           </Physics>
           <Track scale={26} />
-          <Environment preset="night" />
+          <Environment preset="sunset" />
         </Suspense>
       </Canvas>
       <Controls />
       <Speed />
     </>
   )
-}
-
-function Plane(props) {
-  const [ref] = usePlane(() => ({ type: 'Static', material: 'ground', ...props }))
-  return null
 }
 
 function Ramp({ args = [10, 2.5, 3], rotation = [0, 0.45, Math.PI / 11], ...props }) {
