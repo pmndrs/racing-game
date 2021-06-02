@@ -87,6 +87,7 @@ const useStore = create((set, get) => {
     get,
     config,
     raycast,
+    ready: false,
     controls: { forward: false, backward: false, left: false, right: false, brake: false, honk: false, boost: false, cameraType: CAMERA_TYPES[0], reset: false },
     velocity: [0, 0, 0],
     speed: 0,
