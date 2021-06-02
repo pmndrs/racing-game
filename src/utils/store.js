@@ -25,7 +25,7 @@ const useStore = create((set, get) => {
     front: 1.3,
     back: -1.15,
     steer: 0.3,
-    force: 3500,
+    force: 1800,
     maxBrake: 65,
   }
 
