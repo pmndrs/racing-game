@@ -9,6 +9,7 @@ import { Heightmap } from './models/track/Heightmap'
 import { Overlay } from './ui/Overlay'
 import { Speed } from './ui/Speed'
 import { Help } from './ui/Help'
+import { MiniMap } from './ui/MiniMap'
 import { KeyboardControls } from './controls/KeyboardControls'
 
 export function App() {
@@ -44,6 +45,7 @@ export function App() {
         <Track position={[80, -0.1, -210]} scale={26} />
         <Environment preset="night" />
         {editor && <OrbitControls />}
+        <MiniMap />
       </Canvas>
       <Speed />
       <Help />
