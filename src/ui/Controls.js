@@ -2,28 +2,28 @@ import { useState } from 'react'
 
 const controlOptions = [
   {
-    key: '↑ | W',
-    action: 'Forward'
+    key: '↑ | w',
+    action: 'forward'
   },
   {
-    key: '← | A',
-    action: 'Left'
+    key: '← | a',
+    action: 'left'
   },
   {
-    key: '→ | D',
-    action: 'Right'
+    key: '→ | d',
+    action: 'right'
   },
   {
-    key: '↓ | S',
-    action: 'Backward'
+    key: '↓ | s',
+    action: 'backward'
   },
   {
     key: 'space',
-    action: 'Drift'
+    action: 'drift'
   },
   {
-    key: 'R',
-    action: 'Reset'
+    key: 'r',
+    action: 'reset'
   }
 ]
 
@@ -38,7 +38,7 @@ export function Controls() {
         <div className="popup-content">
           {controlOptions.map(({key, action}) => (
             <div className="popup-item" key={`control-item-${key}`}>
-              <div>{action}:</div>
+              <div>{action}</div>
               <div style={{ fontFamily: 'monospace' }}>{key}</div>
             </div>
           ))}
