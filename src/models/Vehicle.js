@@ -7,6 +7,7 @@ import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
 import { useStore } from '../utils/store'
 import { Dust } from '../effects/Dust'
+import { vehicleStart } from '../constants'
 
 const v = new THREE.Vector3()
 
@@ -41,10 +42,10 @@ export function Vehicle(props) {
     for (let s = 0; s < 2; s++) api.setSteeringValue(steeringValue, s)
     for (let b = 2; b < 4; b++) api.setBrake(brake ? (forward ? maxBrake / 1.5 : maxBrake) : 0, b)
     if (reset) {
-      raycast.chassisBody.current.api.position.set(0, 0.5, 0)
+      raycast.chassisBody.current.api.position.set(vehicleStart.position[0], vehicleStart.position[1], vehicleStart.position[2])
       raycast.chassisBody.current.api.velocity.set(0, 0, 0)
-      raycast.chassisBody.current.api.angularVelocity.set(0, 0.5, 0)
-      raycast.chassisBody.current.api.rotation.set(0, -Math.PI / 4, 0)
+      raycast.chassisBody.current.api.angularVelocity.set(vehicleStart.angularVelocity[0], vehicleStart.angularVelocity[1], vehicleStart.angularVelocity[2])
+      raycast.chassisBody.current.api.rotation.set(vehicleStart.rotation[0], vehicleStart.rotation[1], vehicleStart.rotation[2])
     }
 
     // left-right, up-down, near-far
