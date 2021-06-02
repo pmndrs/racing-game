@@ -22,12 +22,13 @@ const Chassis = forwardRef(({ args = [1.7, 1, 4], mass = 500, children, ...props
   useFrame((_, delta) => {
     const state = useStore.getState()
     const isBreaking = state.controls.brake
-    const isCockpit = state.cockpit
+    const isCockpit = state.controls.cameraType === "FIRST_PERSON"
     const controls = state.controls
     brake.current.material.color.lerp(c.set(isBreaking ? '#555' : 'white'), delta * 10)
     brake.current.material.emissive.lerp(c.set(isBreaking ? 'red' : 'red'), delta * 10)
     brake.current.material.opacity = THREE.MathUtils.lerp(brake.current.material.opacity, isBreaking ? 1 : 0.3, delta * 10)
     glas.current.material.opacity = THREE.MathUtils.lerp(glas.current.material.opacity, isCockpit ? 0.1 : 0.6, delta)
+    glas.current.material.color.lerp(c.set(isCockpit ? "white" : "black"), delta)
     wheel.current.rotation.z = THREE.MathUtils.lerp(wheel.current.rotation.z, controls.left ? -Math.PI : controls.right ? Math.PI : 0, delta)
   })
 
@@ -36,7 +37,7 @@ const Chassis = forwardRef(({ args = [1.7, 1, 4], mass = 500, children, ...props
       <group>
         <mesh castShadow receiveShadow geometry={nodes.Mesh_0_1.geometry} material={materials['Material.001']} material-color="#f0c050" />
         <mesh castShadow geometry={nodes.Mesh_0_2.geometry} material={nodes.Mesh_0_2.material} material-color="#353535" />
-        <mesh castShadow ref={glas} geometry={nodes.Mesh_2.geometry} material={materials['Material.003']} material-transparent material-color="black" />
+        <mesh castShadow ref={glas} geometry={nodes.Mesh_2.geometry} material={materials['Material.003']} material-transparent />
         <mesh ref={brake} geometry={nodes.Mesh_3.geometry} material={materials['Material.004']} material-transparent />
         <mesh geometry={nodes.Mesh_4.geometry} material={materials['Material.005']} />
         <mesh geometry={nodes.Mesh_5.geometry} material={materials['Material.006']} />
