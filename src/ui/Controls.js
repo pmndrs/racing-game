@@ -30,6 +30,10 @@ const controlOptions = [
     action: 'Turbo Boost'
   },
   {
+    key: 'C',
+    action: 'Toggle Camera'
+  },
+  {
     key: 'R',
     action: 'Reset',
   },
