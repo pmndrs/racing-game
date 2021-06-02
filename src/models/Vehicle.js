@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { useRef, useState, useLayoutEffect, useMemo } from 'react'
+import { useRef, useState, useLayoutEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { PerspectiveCamera } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
