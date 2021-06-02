@@ -1,17 +1,49 @@
+import { useState } from 'react'
+
+const controlOptions = [
+  {
+    key: '↑ | W',
+    action: 'Forward'
+  },
+  {
+    key: '← | A',
+    action: 'Left'
+  },
+  {
+    key: '→ | D',
+    action: 'Right'
+  },
+  {
+    key: '↓ | S',
+    action: 'Backward'
+  },
+  {
+    key: 'space',
+    action: 'Drift'
+  },
+  {
+    key: 'R',
+    action: 'Reset'
+  }
+]
+
 export function Controls() {
+  const [open, setOpen] = useState(true)
+
   return (
     <div className="controls">
-      <span>↑</span>, <span>w</span> forward
-      <br />
-      <span>←</span>, <span>a</span> left
-      <br />
-      <span>→</span>, <span>d</span> right
-      <br />
-      <span>↓</span>, <span>s</span> backward
-      <br />
-      <span>space</span> drift
-      <br />
-      <span>r</span> reset
+      {!open && <button onClick={() => setOpen(true)}>i</button>}
+      <div className={`popup ${open ? 'open' : ''}`}>
+        <button className="popup-close" onClick={() => setOpen(false)}>x</button>
+        <div className="popup-content">
+          {controlOptions.map(({key, action}) => (
+            <div className="popup-item" key={`control-item-${key}`}>
+              <div>{action}:</div>
+              <div style={{ fontFamily: 'monospace' }}>{key}</div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

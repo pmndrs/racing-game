@@ -19,6 +19,8 @@ body {
   font-family: 'Inter var', sans-serif;
 }
 
+/* --------------- SPEEDOMETER --------------- */
+
 .speed {
   position: absolute;
   bottom: 60px;
@@ -34,17 +36,61 @@ body {
   font-size: 1.5em;
 }
 
+/* --------------- CONTROLS --------------- */
+
 .controls {
   position: absolute;
   bottom: 60px;
   right: 60px;
 }
 
-.controls > span {
-  min-width: 24px;
-  display: inline-block;
-  padding: 2px 5px;
-  border: 1px solid white;
-  border-radius: 3px;
-  font-size: 0.8em;
+.controls > .popup {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+  transform: translateY(600px);
+}
+
+.controls > .popup.open {
+  opacity: 1;
+  transform: translateY(0);
+  
+}
+
+.popup-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.popup-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3em;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.popup-item {
+  display: flex;
+  justify-content: space-between;
+  width: 200px;
+  margin: 0em 0;
+}
+
+button {
+  width: 32px;
+  height: 32px;
+	color: inherit;
+	border: none;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+  background: white;
+  color: black;
 }
