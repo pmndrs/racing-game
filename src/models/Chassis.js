@@ -9,12 +9,12 @@ import { useGLTF } from '@react-three/drei'
 import { useBox } from '@react-three/cannon'
 import { useStore } from '../utils/store'
 
-useGLTF.preload('/chassis-draco.glb')
+useGLTF.preload('/models/chassis-draco.glb')
 
 const c = new THREE.Color()
 const Chassis = forwardRef(({ args = [1.7, 1, 4], mass = 500, children, ...props }, ref) => {
   //const brake = useStore((state) => state.controls.brake)
-  const { nodes, materials } = useGLTF('/chassis-draco.glb')
+  const { nodes, materials } = useGLTF('/models/chassis-draco.glb')
   const [, api] = useBox(() => ({ mass, args, allowSleep: false, onCollide: (e) => console.log('bonk', e.body.userData), ...props }), ref)
 
   const brake = useRef()

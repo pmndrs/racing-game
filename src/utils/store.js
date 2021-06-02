@@ -15,6 +15,7 @@ const useStore = create((set, get) => {
   registerKeys(['ArrowLeft', 'a'], (left) => set((state) => ({ ...state, controls: { ...state.controls, left } })))
   registerKeys(['ArrowRight', 'd'], (right) => set((state) => ({ ...state, controls: { ...state.controls, right } })))
   registerKeys([' '], (brake) => set((state) => ({ ...state, controls: { ...state.controls, brake } })))
+  registerKeys(['h'], (honk) => set((state) => ({ ...state, controls: { ...state.controls, honk } })))
   registerKeys(['r'], (reset) => set((state) => ({ ...state, controls: { ...state.controls, reset } })))
 
   // Vehicle config
@@ -25,7 +26,7 @@ const useStore = create((set, get) => {
     front: 1.3,
     back: -1.15,
     steer: 0.3,
-    force: 3500,
+    force: 1800,
     maxBrake: 65,
   }
 
@@ -76,7 +77,7 @@ const useStore = create((set, get) => {
     get,
     config,
     raycast,
-    controls: { forward: false, backward: false, left: false, right: false, brake: false, reset: false },
+    controls: { forward: false, backward: false, left: false, right: false, brake: false, honk: false, reset: false },
     velocity: [0, 0, 0],
     speed: 0,
     positions: [...Array(20).map(() => [0, 0, 0])],
