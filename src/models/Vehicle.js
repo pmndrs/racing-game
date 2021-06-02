@@ -34,10 +34,10 @@ export function Vehicle(props) {
 
   useFrame((state, delta) => {
     const speed = useStore.getState().speed
-    const { forward, backward, left, right, brake, reset } = useStore.getState().controls
+    const { forward, backward, left, right, brake, boost, reset } = useStore.getState().controls
     const { force, maxBrake, steer } = config
 
-    const engineValue = forward || backward ? force * (forward && !backward ? -1 : 1) : 0
+    const engineValue = forward || backward ? force * (forward && !backward ? (boost ? -1.5 : -1 ) : 1) : 0
     for (let e = 2; e < 4; e++) api.applyEngineForce(engineValue, e)
     const steeringValue = left || right ? steer * (left && !right ? 1 : -1) : 0
     for (let s = 0; s < 2; s++) api.setSteeringValue(steeringValue, s)

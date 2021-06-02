@@ -26,6 +26,10 @@ const controlOptions = [
     action: 'Honk'
   },
   {
+    key: 'Shift',
+    action: 'Turbo Boost'
+  },
+  {
     key: 'R',
     action: 'Reset',
   },
