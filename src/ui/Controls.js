@@ -37,7 +37,7 @@ export function Controls() {
         <button className="popup-close" onClick={() => setOpen(false)}>x</button>
         <div className="popup-content">
           {controlOptions.map(({key, action}) => (
-            <div className="popup-item">
+            <div className="popup-item" key={`control-item-${key}`}>
               <div>{action}:</div>
               <div>{key}</div>
             </div>
