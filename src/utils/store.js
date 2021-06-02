@@ -28,6 +28,7 @@ const useStore = create((set, get) => {
     steer: 1,
     force: 1800,
     maxBrake: 65,
+    maxSpeed: 128,
   }
 
   const wheelInfo = {
