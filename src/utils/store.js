@@ -34,9 +34,10 @@ const useStore = create((set, get) => {
     height: -0.04,
     front: 1.5,
     back: -1.15,
-    steer: 0.3,
+    steer: 1,
     force: 1800,
     maxBrake: 65,
+    maxSpeed: 128,
   }
 
   const wheelInfo = {

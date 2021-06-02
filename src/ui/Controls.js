@@ -23,7 +23,7 @@ const controlOptions = [
   },
   {
     key: 'H',
-    action: 'Honk'
+    action: 'Honk',
   },
   {
     key: 'Shift',
