@@ -18,7 +18,7 @@ export function Vehicle(props) {
   const set = useStore((state) => state.set)
   const config = useStore((state) => state.config)
   const raycast = useStore((state) => state.raycast)
-  const { cameraType } = useStore((state) => state.controls)
+  const cameraType = useStore((state) => state.controls.cameraType)
   const vehicleStart = useStore((state) => state.constants.vehicleStart)
   const [vehicle, api] = useRaycastVehicle(() => raycast)
 
@@ -35,8 +35,8 @@ export function Vehicle(props) {
   }, [])
 
   useFrame((state, delta) => {
-    const speed = useStore.getState().speed
-    const { forward, backward, left, right, brake, boost, reset } = useStore.getState().controls
+    const { speed, controls } = useStore.getState()
+    const { forward, backward, left, right, brake, boost, reset } = controls
     const { force, maxBrake, steer, maxSpeed } = config
 
     //const dynamicSteer = // the higher the speed the less the car can turn

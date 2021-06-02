@@ -1,47 +1,19 @@
 import { useState } from 'react'
 
 const controlOptions = [
-  {
-    key: '↑ | W',
-    action: 'Forward',
-  },
-  {
-    key: '← | A',
-    action: 'Left',
-  },
-  {
-    key: '→ | D',
-    action: 'Right',
-  },
-  {
-    key: '↓ | S',
-    action: 'Backward',
-  },
-  {
-    key: 'space',
-    action: 'Drift',
-  },
-  {
-    key: 'H',
-    action: 'Honk',
-  },
-  {
-    key: 'Shift',
-    action: 'Turbo Boost'
-  },
-  {
-    key: 'C',
-    action: 'Toggle Camera'
-  },
-  {
-    key: 'R',
-    action: 'Reset',
-  },
+  { key: '↑ | W', action: 'Forward' },
+  { key: '← | A', action: 'Left' },
+  { key: '→ | D', action: 'Right' },
+  { key: '↓ | S', action: 'Backward' },
+  { key: 'space', action: 'Drift' },
+  { key: 'H', action: 'Honk' },
+  { key: 'Shift', action: 'Turbo Boost' },
+  { key: 'C', action: 'Toggle Camera' },
+  { key: 'R', action: 'Reset' },
 ]
 
 export function Controls() {
-  const [open, setOpen] = useState(true)
-
+  const [open, setOpen] = useState(false)
   return (
     <div className="controls">
       {!open && <button onClick={() => setOpen(true)}>i</button>}

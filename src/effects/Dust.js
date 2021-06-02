@@ -8,7 +8,7 @@ const m = new THREE.Matrix4()
 const o = new THREE.Object3D()
 const q = new THREE.Quaternion()
 
-export function Dust({ opacity = 0.2, scale = 1 }) {
+export function Dust({ opacity = 0.2 }) {
   const { wheels } = useStore((state) => state.raycast)
   const trail = useRef()
 
@@ -26,9 +26,9 @@ export function Dust({ opacity = 0.2, scale = 1 }) {
   }
 
   useFrame((state, delta) => {
-    const { controls } = useStore.getState()
-    const { sliding, speed } = useStore.getState()
-    intensity = THREE.MathUtils.lerp(intensity, (((sliding || controls.brake) * speed) / 40) * scale, delta * 8)
+    const store = useStore.getState()
+    const { controls, sliding, speed } = useStore.getState()
+    intensity = THREE.MathUtils.lerp(intensity, (((sliding || controls.brake) * speed) / 40), delta * 8)
 
     if (state.clock.getElapsedTime() - time > 0.02) {
       time = state.clock.getElapsedTime()
