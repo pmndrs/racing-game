@@ -23,30 +23,37 @@ body {
 
 .speed {
   position: absolute;
-  top: 60px;
-  right: 60px;
-  font-size: 4em;
+  bottom: 60px;
+  left: 60px;
+  font-size: 2.5em;
   font-weight: 200;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -5px;
+  letter-spacing: -2px;
 }
 
-.speed > span {
+.speed span {
+
   font-weight: 600;
   font-size: 1.5em;
+  letter-spacing: -5px;
 }
 
 .speed-gauge {
   position: relative;
-  width: 289px;
 }
 
 .speed-foreground {
   position: absolute;
+  width: 200px;
 }
 
 .speed-background {
   position: absolute;
+  width: 200px;
+}
+
+.speed-text {
+  margin-top: -40px;
 }
 
 /* --------------- CONTROLS --------------- */
