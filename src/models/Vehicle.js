@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { useRef, useState, useLayoutEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { PerspectiveCamera } from '@react-three/drei'
+import { PerspectiveCamera, PositionalAudio } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
 import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
@@ -81,6 +81,7 @@ export function Vehicle(props) {
         <Chassis ref={raycast.chassisBody} rotation={props.rotation} position={props.position} angularVelocity={props.angularVelocity}>
           <PerspectiveCamera ref={camera} makeDefault fov={75} rotation={[0, Math.PI, 0]} position={[0, 10, -20]} />
           {light && <primitive object={light.target} />}
+          <PositionalAudio url="/engine.wav" loop distance={10} />
         </Chassis>
         <Wheel ref={raycast.wheels[0]} radius={config.radius} leftSide />
         <Wheel ref={raycast.wheels[1]} radius={config.radius} />
