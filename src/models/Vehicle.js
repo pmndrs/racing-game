@@ -38,26 +38,19 @@ export function Vehicle(props) {
     const { force, maxBrake, steer } = config
 
     const engineValue = forward || backward ? force * (forward && !backward ? -1 : 1) : 0
-    api.applyEngineForce(engineValue, 2)
+    for (let e = 2; e < 4; e++) api.applyEngineForce(engineValue, e)
     const steeringValue = left || right ? steer * (left && !right ? 1 : -1) : 0
     for (let s = 0; s < 2; s++) api.setSteeringValue(steeringValue, s)
     for (let b = 2; b < 4; b++) api.setBrake(brake ? (forward ? maxBrake / 1.5 : maxBrake) : 0, b)
     if (reset) {
       raycast.chassisBody.current.api.position.set(vehicleStart.position[0], vehicleStart.position[1], vehicleStart.position[2])
       raycast.chassisBody.current.api.velocity.set(0, 0, 0)
-      raycast.chassisBody.current.api.angularVelocity.set(
-        vehicleStart.angularVelocity[0],
-        vehicleStart.angularVelocity[1],
-        vehicleStart.angularVelocity[2],
-      )
+      raycast.chassisBody.current.api.angularVelocity.set(vehicleStart.angularVelocity[0], vehicleStart.angularVelocity[1], vehicleStart.angularVelocity[2])
       raycast.chassisBody.current.api.rotation.set(vehicleStart.rotation[0], vehicleStart.rotation[1], vehicleStart.rotation[2])
     }
 
     // left-right, up-down, near-far
-    camera.current.position.lerp(
-      v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (brake ? 1 : 0)),
-      delta,
-    )
+    camera.current.position.lerp(v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (brake ? 1 : 0)), delta)
     // left-right swivel
     camera.current.rotation.z = THREE.MathUtils.lerp(camera.current.rotation.z, Math.PI + (-steeringValue * speed) / 45, delta)
     // lean chassis
@@ -101,23 +94,19 @@ export function Vehicle(props) {
 function VehicleAudio() {
   const engineAudio = useRef()
   const honkAudio = useRef()
-
+  const brakeAudio = useRef()
   useFrame(() => {
-    const { honk } = useStore.getState().controls
-
-    if (honk) {
-      engineAudio.current.setVolume(0.4)
-      honkAudio.current.play()
-    } else {
-      engineAudio.current.setVolume(1)
-      honkAudio.current.stop()
-    }
+    const { honk, brake } = useStore.getState().controls
+    engineAudio.current.setVolume((0.4 * useStore.getState().speed) / 50)
+    brakeAudio.current.setVolume(brake ? 1 : 0.2)
+    honkAudio.current[honk ? 'play' : 'stop']()
+    brakeAudio.current[useStore.getState().sliding || brake ? 'play' : 'stop']()
   })
-
   return (
     <>
-      <PositionalAudio ref={engineAudio} url="/engine.wav" loop distance={5} />
-      <PositionalAudio ref={honkAudio} url="/honk.wav" loop distance={10} />
+      <PositionalAudio ref={engineAudio} url="/sounds/engine.mp3" loop distance={5} />
+      <PositionalAudio ref={honkAudio} url="/sounds/honk.mp3" loop distance={10} />
+      <PositionalAudio ref={brakeAudio} url="/sounds/tire-brake.mp3" loop distance={10} />
     </>
   )
 }
