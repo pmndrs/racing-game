@@ -12,14 +12,14 @@ const CAMERA_TYPES = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE']
 
 const useStore = create((set, get) => {
   // Register keys
-  registerKeys(['ArrowUp', 'w'], (forward) => set((state) => ({ ...state, controls: { ...state.controls, forward } })))
-  registerKeys(['ArrowDown', 's'], (backward) => set((state) => ({ ...state, controls: { ...state.controls, backward } })))
-  registerKeys(['ArrowLeft', 'a'], (left) => set((state) => ({ ...state, controls: { ...state.controls, left } })))
-  registerKeys(['ArrowRight', 'd'], (right) => set((state) => ({ ...state, controls: { ...state.controls, right } })))
+  registerKeys(['ArrowUp', 'w', 'W'], (forward) => set((state) => ({ ...state, controls: { ...state.controls, forward } })))
+  registerKeys(['ArrowDown', 's', 'S'], (backward) => set((state) => ({ ...state, controls: { ...state.controls, backward } })))
+  registerKeys(['ArrowLeft', 'a', 'A'], (left) => set((state) => ({ ...state, controls: { ...state.controls, left } })))
+  registerKeys(['ArrowRight', 'd', 'D'], (right) => set((state) => ({ ...state, controls: { ...state.controls, right } })))
   registerKeys([' '], (brake) => set((state) => ({ ...state, controls: { ...state.controls, brake } })))
-  registerKeys(['h'], (honk) => set((state) => ({ ...state, controls: { ...state.controls, honk } })))
-  registerKeys(['c'], (cockpit) => set((state) => ({ cockpit: !state.cockpit })), false)
-  registerKeys(['r'], (reset) => set((state) => ({ ...state, controls: { ...state.controls, reset } })))
+  registerKeys(['h', 'H'], (honk) => set((state) => ({ ...state, controls: { ...state.controls, honk } })))
+  registerKeys(['Shift'], (boost) => set((state) => ({ ...state, controls: { ...state.controls, boost } })))
+  registerKeys(['r', 'R'], (reset) => set((state) => ({ ...state, controls: { ...state.controls, reset } })))
   registerKeys(['c', 'C'], (toggleCamera) => set((state) => {
     const currentCameraIndex = CAMERA_TYPES.indexOf(state.controls.cameraType)
     const nextCameraIndex = (currentCameraIndex + 1) % CAMERA_TYPES.length
@@ -34,7 +34,7 @@ const useStore = create((set, get) => {
     height: -0.04,
     front: 1.5,
     back: -1.15,
-    steer: 1,
+    steer: 0.3,
     force: 1800,
     maxBrake: 65,
     maxSpeed: 128,
@@ -87,7 +87,7 @@ const useStore = create((set, get) => {
     get,
     config,
     raycast,
-    controls: { forward: false, backward: false, left: false, right: false, brake: false, honk: false, cameraType: CAMERA_TYPES[0], reset: false },
+    controls: { forward: false, backward: false, left: false, right: false, brake: false, honk: false, boost: false, cameraType: CAMERA_TYPES[0], reset: false },
     velocity: [0, 0, 0],
     speed: 0,
     positions: [...Array(20).map(() => [0, 0, 0])],

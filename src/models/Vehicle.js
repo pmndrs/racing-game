@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { useRef, useState, useLayoutEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { PerspectiveCamera, OrthographicCamera,PositionalAudio } from '@react-three/drei'
+import { PerspectiveCamera, OrthographicCamera, PositionalAudio } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
 import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
@@ -18,7 +18,7 @@ export function Vehicle(props) {
   const set = useStore((state) => state.set)
   const config = useStore((state) => state.config)
   const raycast = useStore((state) => state.raycast)
-  const {cameraType} = useStore((state) => state.controls)
+  const { cameraType } = useStore((state) => state.controls)
   const vehicleStart = useStore((state) => state.constants.vehicleStart)
   const [vehicle, api] = useRaycastVehicle(() => raycast)
 
@@ -36,12 +36,13 @@ export function Vehicle(props) {
 
   useFrame((state, delta) => {
     const speed = useStore.getState().speed
-    const { forward, backward, left, right, brake, reset } = useStore.getState().controls
+    const { forward, backward, left, right, brake, boost, reset } = useStore.getState().controls
     const { force, maxBrake, steer, maxSpeed } = config
 
-    const dynamicSteer = steer - speed / maxSpeed // the higher the speed the less the car can turn
+    //const dynamicSteer = // the higher the speed the less the car can turn
+    const dynamicSteer = steer
+    const engineValue = forward || backward ? force * (forward && !backward ? (boost ? -1.5 : -1) : 1) : 0
 
-    const engineValue = forward || backward ? force * (forward && !backward ? -1 : 1) : 0
     for (let e = 2; e < 4; e++) api.applyEngineForce(speed < maxSpeed ? engineValue : 0, e)
     const steeringValue = left || right ? dynamicSteer * (left && !right ? 1 : -1) : 0
     for (let s = 0; s < 2; s++) api.setSteeringValue(steeringValue, s)
@@ -55,14 +56,15 @@ export function Vehicle(props) {
 
     if (cameraType === 'FIRST_PERSON') {
       defaultCamera.current.position.lerp(v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.7, 0.01), delta)
-    } else if(cameraType === 'DEFAULT') {
+    } else if (cameraType === 'DEFAULT') {
       // left-right, up-down, near-far
-      defaultCamera.current.position.lerp(v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (brake ? 1 : 0)), delta)
-
-      
+      defaultCamera.current.position.lerp(
+        v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (brake ? 1 : 0)),
+        delta,
+      )
     }
 
-          // left-right swivel
+    // left-right swivel
     defaultCamera.current.rotation.z = THREE.MathUtils.lerp(defaultCamera.current.rotation.z, Math.PI + (-steeringValue * speed) / 45, delta)
 
     // lean chassis
@@ -89,8 +91,20 @@ export function Vehicle(props) {
       />
       <group ref={vehicle} position={[0, -0.4, 0]}>
         <Chassis ref={raycast.chassisBody} rotation={props.rotation} position={props.position} angularVelocity={props.angularVelocity}>
-          <PerspectiveCamera ref={defaultCamera} makeDefault={['DEFAULT', 'FIRST_PERSON'].includes(cameraType)} fov={75} rotation={[0, Math.PI, 0]} position={[0, 10, -20]} />
-          <OrthographicCamera ref={birdEyeCamera} makeDefault={cameraType === 'BIRD_EYE'} position={[0, 100, 0]} rotation={[-1 * Math.PI / 2, 0, Math.PI]} zoom={15} />
+          <PerspectiveCamera
+            ref={defaultCamera}
+            makeDefault={['DEFAULT', 'FIRST_PERSON'].includes(cameraType)}
+            fov={75}
+            rotation={[0, Math.PI, 0]}
+            position={[0, 10, -20]}
+          />
+          <OrthographicCamera
+            ref={birdEyeCamera}
+            makeDefault={cameraType === 'BIRD_EYE'}
+            position={[0, 100, 0]}
+            rotation={[(-1 * Math.PI) / 2, 0, Math.PI]}
+            zoom={15}
+          />
           {light && <primitive object={light.target} />}
           <VehicleAudio />
         </Chassis>
