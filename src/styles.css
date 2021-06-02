@@ -23,8 +23,8 @@ body {
 
 .speed {
   position: absolute;
-  bottom: 60px;
-  left: 60px;
+  top: 60px;
+  right: 60px;
   font-size: 4em;
   font-weight: 200;
   font-variant-numeric: tabular-nums;
@@ -34,6 +34,19 @@ body {
 .speed > span {
   font-weight: 600;
   font-size: 1.5em;
+}
+
+.speed-gauge {
+  position: relative;
+  width: 289px;
+}
+
+.speed-foreground {
+  position: absolute;
+}
+
+.speed-background {
+  position: absolute;
 }
 
 /* --------------- CONTROLS --------------- */
