@@ -8,7 +8,7 @@ const m = new THREE.Matrix4()
 const o = new THREE.Object3D()
 const q = new THREE.Quaternion()
 
-export function Dust({ opacity = 0.2 }) {
+export function Dust({ opacity = 0.1, length = 200, size = 1 }) {
   const { wheels } = useStore((state) => state.raycast)
   const trail = useRef()
 
@@ -16,32 +16,22 @@ export function Dust({ opacity = 0.2 }) {
   let time = 0
   let intensity = 0
 
-  function setItemAt(target, obj, i, intensity) {
-    o.position.set(obj.position.x, obj.position.y - 0.4, obj.position.z)
-    const scale = Math.random() * intensity
-    o.scale.set(scale, scale * 1.25, scale)
-    o.updateMatrix()
-    target.setMatrixAt(i, o.matrix)
-    trail.current.instanceMatrix.needsUpdate = true
-  }
-
   useFrame((state, delta) => {
-    const store = useStore.getState()
     const { controls, sliding, speed } = useStore.getState()
-    intensity = THREE.MathUtils.lerp(intensity, (((sliding || controls.brake) * speed) / 40), delta * 8)
+    intensity = THREE.MathUtils.lerp(intensity, ((sliding || controls.brake) * speed) / 40, delta * 8)
 
     if (state.clock.getElapsedTime() - time > 0.02) {
       time = state.clock.getElapsedTime()
       // Set new trail
-      setItemAt(trail.current, wheels[2].current, index++, intensity)
-      setItemAt(trail.current, wheels[3].current, index++, intensity)
-      if (index === 200) index = 0
+      setItemAt(trail, wheels[2].current, index++, intensity)
+      setItemAt(trail, wheels[3].current, index++, intensity)
+      if (index === length) index = 0
     } else {
       // Shrink old one
-      for (let i = 0; i < 200; i++) {
+      for (let i = 0; i < length; i++) {
         trail.current.getMatrixAt(i, m)
         m.decompose(o.position, q, v)
-        o.scale.set(Math.max(0, v.x - 0.005), Math.max(0, v.y - 0.005), Math.max(0, v.z - 0.005))
+        o.scale.setScalar(Math.max(0, v.x - 0.005))
         o.updateMatrix()
         trail.current.setMatrixAt(i, o.matrix)
         trail.current.instanceMatrix.needsUpdate = true
@@ -50,9 +40,18 @@ export function Dust({ opacity = 0.2 }) {
   })
 
   return (
-    <instancedMesh ref={trail} args={[null, null, 200]}>
-      <sphereGeometry args={[1, 10, 10]} />
+    <instancedMesh ref={trail} args={[null, null, length]}>
+      <sphereGeometry args={[size, 10, 10]} />
       <meshBasicMaterial color="white" transparent opacity={opacity} depthWrite={false} />
     </instancedMesh>
   )
+}
+
+function setItemAt(ref, obj, i, intensity) {
+  const n = THREE.MathUtils.randFloatSpread(0.25)
+  o.position.set(obj.position.x + n, obj.position.y - 0.4, obj.position.z + n)
+  o.scale.setScalar(Math.random() * intensity)
+  o.updateMatrix()
+  ref.current.setMatrixAt(i, o.matrix)
+  ref.current.instanceMatrix.needsUpdate = true
 }

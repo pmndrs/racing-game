@@ -20,12 +20,14 @@ const useStore = create((set, get) => {
   registerKeys(['h', 'H'], (honk) => set((state) => ({ ...state, controls: { ...state.controls, honk } })))
   registerKeys(['Shift'], (boost) => set((state) => ({ ...state, controls: { ...state.controls, boost } })))
   registerKeys(['r', 'R'], (reset) => set((state) => ({ ...state, controls: { ...state.controls, reset } })))
-  registerKeys(['c', 'C'], (toggleCamera) => set((state) => {
-    const currentCameraIndex = CAMERA_TYPES.indexOf(state.controls.cameraType)
-    const nextCameraIndex = (currentCameraIndex + 1) % CAMERA_TYPES.length
-    const cameraType = toggleCamera ? CAMERA_TYPES[nextCameraIndex]  : state.controls.cameraType
-    return ({ ...state, controls: { ...state.controls, cameraType } })
-  }))
+  registerKeys(['c', 'C'], (toggleCamera) =>
+    set((state) => {
+      const currentCameraIndex = CAMERA_TYPES.indexOf(state.controls.cameraType)
+      const nextCameraIndex = (currentCameraIndex + 1) % CAMERA_TYPES.length
+      const cameraType = toggleCamera ? CAMERA_TYPES[nextCameraIndex] : state.controls.cameraType
+      return { ...state, controls: { ...state.controls, cameraType } }
+    }),
+  )
 
   // Vehicle config
   const config = {
@@ -88,7 +90,17 @@ const useStore = create((set, get) => {
     config,
     raycast,
     ready: false,
-    controls: { forward: false, backward: false, left: false, right: false, brake: false, honk: false, boost: false, cameraType: CAMERA_TYPES[0], reset: false },
+    controls: {
+      forward: false,
+      backward: false,
+      left: false,
+      right: false,
+      brake: false,
+      honk: false,
+      boost: false,
+      cameraType: CAMERA_TYPES[0],
+      reset: false,
+    },
     velocity: [0, 0, 0],
     speed: 0,
     positions: [...Array(20).map(() => [0, 0, 0])],
