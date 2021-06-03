@@ -21,7 +21,7 @@ export function Vehicle(props) {
   const raycast = useStore((state) => state.raycast)
   const cameraType = useStore((state) => state.controls.cameraType)
   const vehicleStart = useStore((state) => state.constants.vehicleStart)
-  const ready = useStore(state => state.ready)
+  const ready = useStore((state) => state.ready)
   const [vehicle, api] = useRaycastVehicle(() => raycast)
 
   useLayoutEffect(() => {
@@ -133,7 +133,7 @@ function VehicleAudio() {
     if (honk) {
       if (!honkAudio.current.isPlaying) honkAudio.current.play()
     } else honkAudio.current.stop()
-    if ( (state.sliding || brake) && state.speed > 5) {
+    if ((state.sliding || brake) && state.speed > 5) {
       if (!brakeAudio.current.isPlaying) brakeAudio.current.play()
     } else brakeAudio.current.stop()
   })

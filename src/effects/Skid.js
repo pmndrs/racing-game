@@ -36,9 +36,9 @@ export function Skid({ opacity = 0.8 }) {
       // Set new skid
       setItemAt(skid.current, wheels[2].current, index++, intensity)
       setItemAt(skid.current, wheels[3].current, index++, intensity)
-      if(sliding) {
+      if (sliding) {
         setItemAt(skid.current, wheels[0].current, index++, intensity)
-      setItemAt(skid.current, wheels[1].current, index++, intensity)
+        setItemAt(skid.current, wheels[1].current, index++, intensity)
       }
       if (index === skidLength) index = 0
     }

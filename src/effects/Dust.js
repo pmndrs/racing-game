@@ -28,7 +28,7 @@ export function Dust({ opacity = 0.2 }) {
   useFrame((state, delta) => {
     const store = useStore.getState()
     const { controls, sliding, speed } = useStore.getState()
-    intensity = THREE.MathUtils.lerp(intensity, (((sliding || controls.brake) * speed) / 40), delta * 8)
+    intensity = THREE.MathUtils.lerp(intensity, ((sliding || controls.brake) * speed) / 40, delta * 8)
 
     if (state.clock.getElapsedTime() - time > 0.02) {
       time = state.clock.getElapsedTime()
