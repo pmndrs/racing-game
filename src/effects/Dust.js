@@ -8,7 +8,7 @@ const m = new THREE.Matrix4()
 const o = new THREE.Object3D()
 const q = new THREE.Quaternion()
 
-export function Dust({ opacity = 0.1 }) {
+export function Dust({ opacity = 0.1, length = 200, size = 1 }) {
   const { wheels } = useStore((state) => state.raycast)
   const trail = useRef()
 
@@ -25,10 +25,10 @@ export function Dust({ opacity = 0.1 }) {
       // Set new trail
       setItemAt(trail, wheels[2].current, index++, intensity)
       setItemAt(trail, wheels[3].current, index++, intensity)
-      if (index === 200) index = 0
+      if (index === length) index = 0
     } else {
       // Shrink old one
-      for (let i = 0; i < 200; i++) {
+      for (let i = 0; i < length; i++) {
         trail.current.getMatrixAt(i, m)
         m.decompose(o.position, q, v)
         o.scale.setScalar(Math.max(0, v.x - 0.005))
@@ -40,8 +40,8 @@ export function Dust({ opacity = 0.1 }) {
   })
 
   return (
-    <instancedMesh ref={trail} args={[null, null, 200]}>
-      <sphereGeometry args={[1, 10, 10]} />
+    <instancedMesh ref={trail} args={[null, null, length]}>
+      <sphereGeometry args={[size, 10, 10]} />
       <meshBasicMaterial color="white" transparent opacity={opacity} depthWrite={false} />
     </instancedMesh>
   )
