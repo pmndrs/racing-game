@@ -5,7 +5,7 @@ import { useStore } from '../utils/store'
 
 const o = new THREE.Object3D()
 
-export function Skid({ opacity = 0.25, length = 500, size = 0.4 }) {
+export function Skid({ opacity = 0.4, length = 500, size = 0.4 }) {
   let index = 0
   const skid = useRef()
   const { wheels } = useStore((state) => state.raycast)
