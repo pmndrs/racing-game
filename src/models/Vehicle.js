@@ -57,12 +57,16 @@ export function Vehicle(props) {
 
     if (cameraType === 'FIRST_PERSON') {
       defaultCamera.current.position.lerp(v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.7, 0.01), delta)
-    } else if (cameraType === 'DEFAULT') {
+    }
+    else if (cameraType === 'DEFAULT') {
       // left-right, up-down, near-far
       defaultCamera.current.position.lerp(
         v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (brake ? 1 : 0)),
         delta,
       )
+    }
+    else if (cameraType === 'BIRD_EYE') {
+      birdEyeCamera.current.position.set(raycast.chassisBody.current.position.x, birdEyeCamera.current.position.y, raycast.chassisBody.current.position.z)
     }
 
     // left-right swivel
@@ -90,6 +94,13 @@ export function Vehicle(props) {
         shadow-camera-top={150}
         shadow-camera-bottom={-150}
       />
+      <OrthographicCamera
+        ref={birdEyeCamera}
+        makeDefault={cameraType === 'BIRD_EYE'}
+        position={[0, 100, 0]}
+        rotation={[(-1 * Math.PI) / 2, 0, (-1 * Math.PI) / 2]}
+        zoom={15}
+      />
       <group ref={vehicle} position={[0, -0.4, 0]}>
         <Chassis ref={raycast.chassisBody} rotation={props.rotation} position={props.position} angularVelocity={props.angularVelocity}>
           <PerspectiveCamera
@@ -99,13 +110,7 @@ export function Vehicle(props) {
             rotation={[0, Math.PI, 0]}
             position={[0, 10, -20]}
           />
-          <OrthographicCamera
-            ref={birdEyeCamera}
-            makeDefault={cameraType === 'BIRD_EYE'}
-            position={[0, 100, 0]}
-            rotation={[(-1 * Math.PI) / 2, 0, Math.PI]}
-            zoom={15}
-          />
+          
           {light && <primitive object={light.target} />}
           {ready && <VehicleAudio />}
         </Chassis>
