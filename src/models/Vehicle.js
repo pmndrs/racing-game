@@ -7,6 +7,7 @@ import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
 import { useStore } from '../utils/store'
 import { Dust } from '../effects/Dust'
+import { Skid } from '../effects/Skid'
 
 const v = new THREE.Vector3()
 
@@ -114,6 +115,7 @@ export function Vehicle(props) {
         <Wheel ref={raycast.wheels[2]} radius={config.radius} leftSide />
         <Wheel ref={raycast.wheels[3]} radius={config.radius} />
         <Dust />
+        <Skid />
       </group>
     </>
   )
