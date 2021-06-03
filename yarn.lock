@@ -1504,10 +1504,10 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
-"@pmndrs/branding@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@pmndrs/branding/-/branding-0.0.7.tgz#43792157836ac906d0a1ead32f624146133c328e"
-  integrity sha512-SJjZ3ob85kc6MVDJOBihrRmSLrZz9wPSU+h1JRt3aoAHgh8nuUV7rR4DGurFOHJ6XL+wIW1yriI9EnQ/eBe9Rg==
+"@pmndrs/branding@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@pmndrs/branding/-/branding-0.0.8.tgz#1ebdafdfe03fa2a394fc038313f083a9a4d15186"
+  integrity sha512-AIWJJDiUhIWNJqhN+bz1FIlQRURqQDIaJ2FokEIHAJ/k0XIYI6VM5UgVBRupS4YkMXtvdBAYnfsDpFx8C7N4Xw==
 
 "@react-three/cannon@1.2.2":
   version "1.2.2"
