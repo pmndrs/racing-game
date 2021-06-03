@@ -1,9 +1,6 @@
+import { useMemo } from 'react'
 import { useTexture } from '@react-three/drei'
-// import { useMemo } from 'react'
 import { useHeightfield } from '@react-three/cannon'
-
-import * as THREE from 'three'
-import { useRef, useEffect, Suspense, useMemo } from 'react'
 
 /**
  * Returns matrix data to be passed to heightfield.
@@ -37,37 +34,6 @@ function createHeightfieldMatrix(image) {
   return matrix
 }
 
-function HeightmapGeometry({ heights, elementSize, ...rest }) {
-  const ref = useRef()
-
-  useEffect(() => {
-    const dx = elementSize
-    const dy = elementSize
-
-    // Create the vertex data from the heights
-    const vertices = heights.flatMap((row, i) => row.flatMap((z, j) => [i * dx, j * dy, z]))
-
-    // Create the faces
-    const indices = []
-    for (let i = 0; i < heights.length - 1; i++) {
-      for (let j = 0; j < heights[i].length - 1; j++) {
-        const stride = heights[i].length
-        const index = i * stride + j
-        indices.push(index + 1, index + stride, index + stride + 1)
-        indices.push(index + stride, index + 1, index)
-      }
-    }
-
-    ref.current.setIndex(indices)
-    ref.current.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3))
-    ref.current.computeVertexNormals()
-    ref.current.computeBoundingBox()
-    ref.current.computeBoundingSphere()
-  }, [heights])
-
-  return <bufferGeometry {...rest} ref={ref} />
-}
-
 export function Heightfield(props) {
   const { elementSize, position, rotation, scale, ...rest } = props
   const heightmap = useTexture('/textures/heightmap_512.png')
@@ -84,11 +50,5 @@ export function Heightfield(props) {
     rotation
   }))
 
-  // return null
-  return (
-    <mesh ref={ref} castShadow receiveShadow {...rest}>
-      <meshNormalMaterial flatShading/>
-      <HeightmapGeometry heights={heights} elementSize={elementSize} />
-    </mesh>
-  )
+  return null
 }
