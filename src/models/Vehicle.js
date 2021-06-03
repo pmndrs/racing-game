@@ -7,6 +7,7 @@ import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
 import { useStore } from '../utils/store'
 import { Dust } from '../effects/Dust'
+import { Skid } from '../effects/Skid'
 
 const v = new THREE.Vector3()
 
@@ -20,7 +21,7 @@ export function Vehicle(props) {
   const raycast = useStore((state) => state.raycast)
   const cameraType = useStore((state) => state.controls.cameraType)
   const vehicleStart = useStore((state) => state.constants.vehicleStart)
-  const ready = useStore(state => state.ready)
+  const ready = useStore((state) => state.ready)
   const [vehicle, api] = useRaycastVehicle(() => raycast)
 
   useLayoutEffect(() => {
@@ -114,6 +115,7 @@ export function Vehicle(props) {
         <Wheel ref={raycast.wheels[2]} radius={config.radius} leftSide />
         <Wheel ref={raycast.wheels[3]} radius={config.radius} />
         <Dust />
+        <Skid />
       </group>
     </>
   )
@@ -131,7 +133,7 @@ function VehicleAudio() {
     if (honk) {
       if (!honkAudio.current.isPlaying) honkAudio.current.play()
     } else honkAudio.current.stop()
-    if ( (state.sliding || brake) && state.speed > 5) {
+    if ((state.sliding || brake) && state.speed > 5) {
       if (!brakeAudio.current.isPlaying) brakeAudio.current.play()
     } else brakeAudio.current.stop()
   })
