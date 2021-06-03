@@ -18,17 +18,17 @@ export function Skid({ opacity = 0.8 }) {
     o.rotation.set(-Math.PI / 2, 0, Math.random())
     o.scale.setScalar(1)
     o.updateMatrix()
-    skid.current.setMatrixAt(i, o.matrix)
-    skid.current.instanceMatrix.needsUpdate = true
+    ref.current.setMatrixAt(i, o.matrix)
+    ref.current.instanceMatrix.needsUpdate = true
   }
 
-  useFrame((state, delta) => {
+  useFrame(() => {
     const { controls, sliding } = useStore.getState()
 
     if (controls.brake && sliding) {
       // Set new skid
-      setItemAt(skid.current, wheels[2].current, index++)
-      setItemAt(skid.current, wheels[3].current, index++)
+      setItemAt(skid, wheels[2].current, index++)
+      setItemAt(skid, wheels[3].current, index++)
       if (index === skidLength) index = 0
     }
   })
