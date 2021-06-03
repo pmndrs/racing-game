@@ -11,7 +11,7 @@ const q = new THREE.Quaternion()
 const skidLength = 500
 
 export function Skid({ opacity = 0.8 }) {
-  const { chassisBody, wheels } = useStore((state) => state.raycast)
+  const { wheels } = useStore((state) => state.raycast)
   const skid = useRef()
 
   let index = 0
@@ -19,44 +19,34 @@ export function Skid({ opacity = 0.8 }) {
   let intensity = 0
 
   function setItemAt(target, obj, i, intensity) {
-    const tempObj = new THREE.Object3D()
-    tempObj.position.set(obj.position.x, obj.position.y - 0.4, obj.position.z)
-    tempObj.rotation.set(0, 0, 0) // need to match the rotation of the wheels
-    const scale = Math.random() * intensity
-    tempObj.scale.set(scale, scale, scale)
-    tempObj.updateMatrix()
-    target.setMatrixAt(i, tempObj.matrix)
+    o.position.set(obj.position.x, obj.position.y - 0, obj.position.z)
+    o.rotation.set(-Math.PI / 2, 0, Math.random())
+    o.scale.setScalar(1)
+    o.updateMatrix()
+    target.setMatrixAt(i, o.matrix)
     skid.current.instanceMatrix.needsUpdate = true
   }
 
   useFrame((state, delta) => {
-    const store = useStore.getState()
     const { controls, sliding, speed } = useStore.getState()
+    intensity = THREE.MathUtils.lerp(intensity, (controls.brake * speed) / 40, delta * 8)
 
-    intensity = THREE.MathUtils.lerp(intensity, (((sliding || controls.brake) * speed) / 40), delta * 8)
-
-    if (state.clock.getElapsedTime() - time > 0.02) {
+    if (controls.brake || sliding) {
       time = state.clock.getElapsedTime()
-      // Set new skids
+      // Set new skid
       setItemAt(skid.current, wheels[2].current, index++, intensity)
       setItemAt(skid.current, wheels[3].current, index++, intensity)
-      if (index === 200) index = 0
-    } else {
-      // Shrink old one
-      for (let i = 0; i < skidLength; i++) {
-        skid.current.getMatrixAt(i, m)
-        m.decompose(o.position, q, v)
-        o.scale.set(Math.max(0, v.x - 0.001), Math.max(0, v.y - 0.001), Math.max(0, v.z - 0.001))
-        o.updateMatrix()
-        skid.current.setMatrixAt(i, o.matrix)
-        skid.current.instanceMatrix.needsUpdate = true
+      if(sliding) {
+        setItemAt(skid.current, wheels[0].current, index++, intensity)
+      setItemAt(skid.current, wheels[1].current, index++, intensity)
       }
+      if (index === skidLength) index = 0
     }
   })
 
   return (
     <instancedMesh ref={skid} args={[null, null, skidLength]}>
-      <boxGeometry args={[3, 0.1, 1]} />
+      <planeGeometry args={[0.3, 0.3]} />
       <meshBasicMaterial color="black" transparent opacity={opacity} depthWrite={false} />
     </instancedMesh>
   )
