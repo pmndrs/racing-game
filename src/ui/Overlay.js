@@ -15,7 +15,7 @@ export function Overlay({ children }) {
   useEffect(() => {
     if (clicked && ready) set({ ready: true })
   }, [ready, clicked])
-  
+
   return (
     <>
       <Suspense fallback={<Ready setReady={setReady} />}>{children}</Suspense>
