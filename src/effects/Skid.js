@@ -6,6 +6,7 @@ import { useStore } from '../utils/store'
 const o = new THREE.Object3D()
 
 const skidLength = 200
+const skidSize = 0.4
 
 export function Skid({ opacity = 0.8 }) {
   let index = 0
@@ -34,7 +35,7 @@ export function Skid({ opacity = 0.8 }) {
 
   return (
     <instancedMesh ref={skid} args={[null, null, skidLength]}>
-      <planeGeometry args={[0.3, 0.3]} />
+      <planeGeometry args={[skidSize, skidSize]} />
       <meshBasicMaterial color="black" transparent opacity={opacity} depthWrite={false} />
     </instancedMesh>
   )
