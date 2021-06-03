@@ -1,7 +1,7 @@
 {
-  "name": "raycast-vehicle",
+  "name": "@pmndrs/racing-game",
   "version": "1.0.0",
-  "description": "Using use-cannon / cannon-es to implement a raycast vehicle.",
+  "description": "🏎️ Open source racing game developed by anyone willing",
   "keywords": [
     "physics",
     "cannon-es",
