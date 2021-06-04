@@ -1,10 +1,10 @@
 // https://sketchfab.com/3d-models/desert-race-game-prototype-map-v2-2ccd3dcbd197415d9f1b97c30b1248c5
 // by: Batuhan13
 
-import { useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { MeshDistortMaterial, useGLTF, useAnimations, PositionalAudio } from '@react-three/drei'
-import { useStore } from '../utils/store'
+import { useStore } from '../../store'
 
 useGLTF.preload('/models/track-draco.glb')
 
@@ -26,6 +26,12 @@ export function Track(props) {
     actions.train.play()
   }, [actions])
 
+  const trainAudio = useRef()
+  useEffect(() => {
+    const train = trainAudio.current
+    return () => void train && train.stop()
+  }, [])
+
   return (
     <group ref={group} {...props} dispose={null}>
       <group name="train" position={[-5.16, 0.13, 2.45]}>
@@ -38,7 +44,7 @@ export function Track(props) {
         <mesh geometry={n.train_7.geometry} material={m.steelClone} {...config} />
         <mesh geometry={n.train_8.geometry} material={m.lightRedClone} {...config} />
         <mesh geometry={n.train_9.geometry} material={m.darkClone} {...config} />
-        {ready && <PositionalAudio url="/sounds/train.mp3" loop distance={5} />}
+        {ready && <PositionalAudio ref={trainAudio} url="/sounds/train.mp3" loop distance={5} />}
       </group>
       <mesh geometry={n.strip.geometry} material={n.strip.material} {...config} />
       <mesh geometry={n.track.geometry} material={n.track.material} {...config} />

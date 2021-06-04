@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { useStore } from '../utils/store'
+import { useStore } from '../store'
 
 const v = new THREE.Vector3()
 const m = new THREE.Matrix4()

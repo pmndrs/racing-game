@@ -1,15 +1,6 @@
 import { createRef } from 'react'
 import create from 'zustand'
 
-function registerKeys(target, event, up = true) {
-  const downHandler = ({ key }) => target.indexOf(key) !== -1 && event(true)
-  const upHandler = ({ key }) => target.indexOf(key) !== -1 && event(false)
-  window.addEventListener('keydown', downHandler)
-  if (up) window.addEventListener('keyup', upHandler)
-}
-
-const CAMERA_TYPES = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE']
-
 const useStore = create((set, get) => {
   // Register keys
   registerKeys(['ArrowUp', 'w', 'W'], (forward) => set((state) => ({ ...state, controls: { ...state.controls, forward } })))
@@ -32,6 +23,7 @@ const useStore = create((set, get) => {
     }),
   )
 
+  const cameraTypes = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE']
   // Vehicle config
   const config = {
     radius: 0.7,
@@ -92,6 +84,7 @@ const useStore = create((set, get) => {
     get,
     config,
     raycast,
+    cameraTypes,
     ready: false,
     playing: false,
     controls: {
@@ -102,7 +95,7 @@ const useStore = create((set, get) => {
       brake: false,
       honk: false,
       boost: false,
-      cameraType: CAMERA_TYPES[0],
+      cameraType: cameraTypes[0],
       reset: false,
     },
     velocity: [0, 0, 0],

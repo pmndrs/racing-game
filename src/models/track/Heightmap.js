@@ -35,17 +35,12 @@ function createHeightfieldMatrix(image) {
 }
 
 export function Heightfield(props) {
-  const { elementSize, position, rotation, scale, ...rest } = props
+  const { elementSize, position, rotation } = props
   const heightmap = useTexture('/textures/heightmap_512.png')
   const heights = useMemo(() => createHeightfieldMatrix(heightmap.image), [heightmap])
 
-  const [ref] = useHeightfield(() => ({
-    args: [
-      heights,
-      {
-        elementSize,
-      },
-    ],
+  useHeightfield(() => ({
+    args: [heights, { elementSize }],
     position,
     rotation,
   }))
