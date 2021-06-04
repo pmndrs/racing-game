@@ -22,6 +22,9 @@ const useStore = create((set, get) => {
   registerKeys(['r', 'R'], (reset) => set((state) => ({ ...state, controls: { ...state.controls, reset } })))
   registerKeys(['c', 'C'], (toggleCamera) =>
     set((state) => {
+      if (!get().playing) {
+        return // disable camera change in editor
+      }
       const currentCameraIndex = CAMERA_TYPES.indexOf(state.controls.cameraType)
       const nextCameraIndex = (currentCameraIndex + 1) % CAMERA_TYPES.length
       const cameraType = toggleCamera ? CAMERA_TYPES[nextCameraIndex] : state.controls.cameraType
@@ -90,6 +93,7 @@ const useStore = create((set, get) => {
     config,
     raycast,
     ready: false,
+    playing: false,
     controls: {
       forward: false,
       backward: false,

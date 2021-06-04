@@ -1,7 +1,7 @@
 import React from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Physics, useBox, usePlane } from '@react-three/cannon'
-import { Sky, Environment } from '@react-three/drei'
+import { Sky, Environment, OrbitControls } from '@react-three/drei'
 import { Track } from './models/Track'
 import { Vehicle } from './models/Vehicle'
 import { Overlay } from './ui/Overlay'
@@ -42,6 +42,7 @@ function VehicleEditor() {
         <Vehicle {...vehicleStart} />
       </Physics>
       <Environment preset="night" />
+      <OrbitControls />
     </>
   )
 }
