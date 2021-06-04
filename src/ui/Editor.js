@@ -1,32 +1,32 @@
 import { useControls } from 'leva'
-import { useStore } from '../utils/store'
+import { useStore } from '../store'
 
 export function Editor() {
-  const config = useStore((state) => state.config)
+  const vehicleConfig = useStore((state) => state.constants.vehicleConfig)
   const get = useStore((state) => state.get)
   const set = useStore((state) => state.set)
 
   const [vehicleEditor, setVehicleEditor] = useControls(() => ({
     radius: {
-      value: config.radius,
+      value: vehicleConfig.radius,
       min: 0.1,
       max: 2,
       step: 0.1,
       onChange: (value) => {
         set({
-          config: { ...config, radius: value },
+          constants: { ...get().constants, vehicleConfig: { ...get().constants.vehicleConfig, radius: value } },
           raycast: { ...get().raycast, wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, radius: value })) },
         })
       },
     },
     width: {
-      value: config.width,
+      value: vehicleConfig.width,
       min: 0.1,
       max: 10,
       step: 0.1,
       onChange: (value) => {
         set({
-          config: { ...config, width: value },
+          constants: { ...get().constants, vehicleConfig: { ...get().constants.vehicleConfig, width: value } },
           raycast: {
             ...get().raycast,
             wheelInfos: get().raycast.wheelInfos.map((info) => ({
@@ -42,13 +42,13 @@ export function Editor() {
       },
     },
     height: {
-      value: config.height,
+      value: vehicleConfig.height,
       min: -5,
       max: 5,
       step: 0.01,
       onChange: (value) => {
         set({
-          config: { ...config, height: value },
+          constants: { ...get().constants, vehicleConfig: { ...get().constants.vehicleConfig, height: value } },
           raycast: {
             ...get().raycast,
             wheelInfos: get().raycast.wheelInfos.map((info) => ({
@@ -60,13 +60,13 @@ export function Editor() {
       },
     },
     front: {
-      value: config.front,
+      value: vehicleConfig.front,
       min: -10,
       max: 10,
       step: 0.05,
       onChange: (value) => {
         set({
-          config: { ...config, front: value },
+          constants: { ...get().constants, vehicleConfig: { ...get().constants.vehicleConfig, front: value } },
           raycast: {
             ...get().raycast,
             wheelInfos: get().raycast.wheelInfos.map((info, index) => ({
@@ -82,13 +82,13 @@ export function Editor() {
       },
     },
     back: {
-      value: config.back,
+      value: vehicleConfig.back,
       min: -10,
       max: 10,
       step: 0.05,
       onChange: (value) => {
         set({
-          config: { ...config, back: value },
+          constants: { ...get().constants, vehicleConfig: { ...get().constants.vehicleConfig, back: value } },
           raycast: {
             ...get().raycast,
             wheelInfos: get().raycast.wheelInfos.map((info, index) => ({
@@ -104,39 +104,39 @@ export function Editor() {
       },
     },
     steer: {
-      value: config.steer,
+      value: vehicleConfig.steer,
       min: 0.1,
       max: 1,
       step: 0.01,
       onChange: (value) => {
-        set({ config: { ...config, steer: value } })
+        set({ constants: { ...get().constants, vehicleConfig: { ...get().constants.vehicleConfig, steer: value } } })
       },
     },
     force: {
-      value: config.force,
+      value: vehicleConfig.force,
       min: 0,
       max: 3000,
       step: 1,
       onChange: (value) => {
-        set({ config: { ...config, force: value } })
+        set({ constants: { ...get().constants, vehicleConfig: { ...get().constants.vehicleConfig, force: value } } })
       },
     },
     maxBrake: {
-      value: config.maxBrake,
+      value: vehicleConfig.maxBrake,
       min: 0.1,
       max: 100,
       step: 0.1,
       onChange: (value) => {
-        set({ config: { ...config, maxBrake: value } })
+        set({ constants: { ...get().constants, vehicleConfig: { ...get().constants.vehicleConfig, maxBrake: value } } })
       },
     },
     maxSpeed: {
-      value: config.maxSpeed,
+      value: vehicleConfig.maxSpeed,
       min: 1,
       max: 150,
       step: 1,
       onChange: (value) => {
-        set({ config: { ...config, maxSpeed: value } })
+        set({ constants: { ...get().constants, vehicleConfig: { ...get().constants.vehicleConfig, maxSpeed: value } } })
       },
     },
     suspensionStiffness: {
@@ -257,7 +257,7 @@ export function Editor() {
     },
     reset: {
       value: false,
-      onChange: (value) => {
+      onChange: () => {
         setVehicleEditor({
           radius: 0.7,
           width: 1.2,

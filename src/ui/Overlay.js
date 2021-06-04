@@ -23,7 +23,9 @@ export function Overlay({ children }) {
       <div className={`fullscreen bg ${ready ? 'ready' : 'notready'} ${clicked && 'clicked'}`}>
         <div className="stack">
           <Keys style={{ paddingBottom: 20 }} />
-          <a href="#" onClick={() => ready && setClicked(true)}>{!ready ? 'loading' : 'Click to continue'}</a>
+          <a href="#" onClick={() => ready && setClicked(true)}>
+            {!ready ? 'loading' : 'Click to continue'}
+          </a>
         </div>
         <Footer
           date="2. June"

@@ -2,27 +2,6 @@ import { createRef } from 'react'
 import create from 'zustand'
 
 const useStore = create((set, get) => {
-  // Register keys
-  registerKeys(['ArrowUp', 'w', 'W'], (forward) => set((state) => ({ ...state, controls: { ...state.controls, forward } })))
-  registerKeys(['ArrowDown', 's', 'S'], (backward) => set((state) => ({ ...state, controls: { ...state.controls, backward } })))
-  registerKeys(['ArrowLeft', 'a', 'A'], (left) => set((state) => ({ ...state, controls: { ...state.controls, left } })))
-  registerKeys(['ArrowRight', 'd', 'D'], (right) => set((state) => ({ ...state, controls: { ...state.controls, right } })))
-  registerKeys([' '], (brake) => set((state) => ({ ...state, controls: { ...state.controls, brake } })))
-  registerKeys(['h', 'H'], (honk) => set((state) => ({ ...state, controls: { ...state.controls, honk } })))
-  registerKeys(['Shift'], (boost) => set((state) => ({ ...state, controls: { ...state.controls, boost } })))
-  registerKeys(['r', 'R'], (reset) => set((state) => ({ ...state, controls: { ...state.controls, reset } })))
-  registerKeys(['c', 'C'], (toggleCamera) =>
-    set((state) => {
-      if (!get().playing) {
-        return // disable camera change in editor
-      }
-      const currentCameraIndex = CAMERA_TYPES.indexOf(state.controls.cameraType)
-      const nextCameraIndex = (currentCameraIndex + 1) % CAMERA_TYPES.length
-      const cameraType = toggleCamera ? CAMERA_TYPES[nextCameraIndex] : state.controls.cameraType
-      return { ...state, controls: { ...state.controls, cameraType } }
-    }),
-  )
-
   const cameraTypes = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE']
 
   const vehicleConfig = {

@@ -3,7 +3,7 @@ import { Canvas } from '@react-three/fiber'
 import { Physics } from '@react-three/cannon'
 import { Sky, Environment, OrbitControls } from '@react-three/drei'
 import { Editor } from './ui/Editor'
-import { useStore } from './utils/store'
+import { useStore } from './store'
 import { Ground, Ramp, Track, Vehicle } from './models'
 import { Overlay } from './ui/Overlay'
 import { Speed } from './ui/Speed'
@@ -18,7 +18,7 @@ export function App() {
   return (
     <Overlay>
       <Canvas dpr={[1, 1.5]} shadows camera={{ position: [0, 5, 15], fov: 50 }}>
-        { playing ? <Game /> : <VehicleEditor /> }
+        {playing ? <Game /> : <VehicleEditor />}
       </Canvas>
       {playing ? (
         <>
@@ -39,7 +39,7 @@ function VehicleEditor() {
     <>
       <ambientLight intensity={0.1} />
       <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
-        <Plane rotation={[-Math.PI / 2, 0, 0]} userData={{ id: 'floor' }} />
+        <Ground rotation={[-Math.PI / 2, 0, 0]} userData={{ id: 'floor' }} />
         <Vehicle {...vehicleStart} />
       </Physics>
       <Environment preset="night" />
@@ -50,6 +50,7 @@ function VehicleEditor() {
 
 function Game() {
   const vehicleStart = useStore((state) => state.constants.vehicleStart)
+  const [light, setLight] = useState()
   return (
     <>
       <fog attach="fog" args={['white', 0, 500]} />
