@@ -1,9 +1,8 @@
 import React from 'react'
 import { Canvas } from '@react-three/fiber'
-import { Physics, useBox, usePlane } from '@react-three/cannon'
+import { Physics } from '@react-three/cannon'
 import { Sky, Environment } from '@react-three/drei'
-import { Track } from './models/Track'
-import { Vehicle } from './models/Vehicle'
+import { Ground, Ramp, Track, Vehicle } from './models'
 import { Overlay } from './ui/Overlay'
 import { Speed } from './ui/Speed'
 import { Controls } from './ui/Controls'
@@ -21,7 +20,7 @@ export function App() {
         <Sky sunPosition={[100, 10, 100]} scale={1000} />
         <ambientLight intensity={0.1} />
         <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
-          <Plane rotation={[-Math.PI / 2, 0, 0]} userData={{ id: 'floor' }} />
+          <Ground rotation={[-Math.PI / 2, 0, 0]} userData={{ id: 'floor' }} />
           {/*<Heightfield
               elementSize={1.01} // uniform xy scale
               position={[337, -18.03, -451]}
@@ -37,19 +36,4 @@ export function App() {
       <Speed />
     </Overlay>
   )
-}
-
-function Ramp({ args = [10, 2.5, 3], rotation = [0, 0.45, Math.PI / 11], ...props }) {
-  const [ref] = useBox(() => ({ type: 'Static', args, rotation, ...props }))
-  return (
-    <mesh ref={ref}>
-      <boxGeometry args={args} />
-      <meshStandardMaterial color="indianred" />
-    </mesh>
-  )
-}
-
-function Plane(props) {
-  usePlane(() => ({ type: 'Static', material: 'ground', ...props }))
-  return null
 }

@@ -28,10 +28,10 @@ export function Skid({ opacity = 0.4, length = 500, size = 0.4 }) {
 }
 
 function setItemAt(ref, obj, i) {
-    o.position.set(obj.position.x, obj.position.y - 0, obj.position.z)
-    o.rotation.set(-Math.PI / 2, 0, Math.random())
-    o.scale.setScalar(1)
-    o.updateMatrix()
-    ref.current.setMatrixAt(i, o.matrix)
-    ref.current.instanceMatrix.needsUpdate = true
-  }
+  o.position.set(obj.position.x, obj.position.y - 0, obj.position.z)
+  o.rotation.set(-Math.PI / 2, 0, Math.random())
+  o.scale.setScalar(1)
+  o.updateMatrix()
+  ref.current.setMatrixAt(i, o.matrix)
+  ref.current.instanceMatrix.needsUpdate = true
+}

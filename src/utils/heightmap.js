@@ -43,11 +43,11 @@ export function Heightfield(props) {
     args: [
       heights,
       {
-        elementSize
-      }
+        elementSize,
+      },
     ],
     position,
-    rotation
+    rotation,
   }))
 
   return null
