@@ -59,9 +59,33 @@ export function Editor() {
         set({ config: { ...config, steer: value } })
       },
     },
-    force: 1800,
-    maxBrake: 65,
-    maxSpeed: 128,
+    force: {
+      value: config.force,
+      min: 0,
+      max: 3000,
+      step: 1,
+      onChange: (value) => {
+        set({ config: { ...config, force: value } })
+      },
+    },
+    maxBrake: {
+      value: config.maxBrake,
+      min: 0.1,
+      max: 100,
+      step: 0.1,
+      onChange: (value) => {
+        set({ config: { ...config, maxBrake: value } })
+      },
+    },
+    maxSpeed: {
+      value: config.maxSpeed,
+      min: 1,
+      max: 150,
+      step: 1,
+      onChange: (value) => {
+        set({ config: { ...config, maxSpeed: value } })
+      },
+    },
   })
 
   return true
