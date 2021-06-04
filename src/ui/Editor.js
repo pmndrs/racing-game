@@ -268,6 +268,13 @@ export function Editor() {
           force: 1800,
           maxBrake: 65,
           maxSpeed: 128,
+          suspensionStiffness: 30,
+          suspensionRestLength: 0.3,
+          useCustomSlidingRotationalSpeed: true,
+          customSlidingRotationalSpeed: -0.01,
+          suspensionForce: 100,
+          frictionSlip: 1.5,
+          sideAcceleration: 3,
           reset: false,
         })
       },
