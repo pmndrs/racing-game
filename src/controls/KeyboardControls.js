@@ -1,17 +1,32 @@
 import { useEffect } from 'react'
 import { useStore } from '../store'
 
+const pressed = []
+
 function useKeys(target, event, up = true) {
   useEffect(() => {
-    const downHandler = ({ key }) => target.indexOf(key) !== -1 && event(true)
-    const upHandler = ({ key }) => target.indexOf(key) !== -1 && event(false)
-    window.addEventListener('keydown', downHandler)
-    if (up) window.addEventListener('keyup', upHandler)
+    const downHandler = (e) => {
+      if (target.indexOf(e.key) !== -1) {
+        const isRepeating = !!pressed[e.keyCode]
+        pressed[e.keyCode] = true
+        if (up || !isRepeating) event(true)
+      }
+    }
+
+    const upHandler = (e) => {
+      if (target.indexOf(e.key) !== -1) {
+        pressed[e.keyCode] = false
+        if (up) event(false)
+      }
+    }
+
+    window.addEventListener('keydown', downHandler, { passive: true })
+    window.addEventListener('keyup', upHandler, { passive: true })
     return () => {
       window.removeEventListener('keydown', downHandler)
-      if (up) window.removeEventListener('keyup', upHandler)
+      window.removeEventListener('keyup', upHandler)
     }
-  }, [target, event, up])
+  }, [target, event, up, pressed])
 }
 
 export function KeyboardControls() {
@@ -25,14 +40,18 @@ export function KeyboardControls() {
   useKeys(['h', 'H'], (honk) => set((state) => ({ ...state, controls: { ...state.controls, honk } })))
   useKeys(['Shift'], (boost) => set((state) => ({ ...state, controls: { ...state.controls, boost } })))
   useKeys(['r', 'R'], (reset) => set((state) => ({ ...state, controls: { ...state.controls, reset } })))
-  useKeys(['c', 'C'], (toggleCamera) =>
-    set((state) => {
-      const currentCameraIndex = cameraTypes.indexOf(state.controls.cameraType)
-      const nextCameraIndex = (currentCameraIndex + 1) % cameraTypes.length
-      const cameraType = toggleCamera ? cameraTypes[nextCameraIndex] : state.controls.cameraType
-      return { ...state, controls: { ...state.controls, cameraType } }
-    }),
+  useKeys(['e', 'E'], () => set((state) => ({ ...state, editor: !state.editor })), false)
+  useKeys(['i', 'I'], () => set((state) => ({ ...state, help: !state.help })), false)
+  useKeys(
+    ['c', 'C'],
+    () =>
+      set((state) => {
+        const currentCameraIndex = cameraTypes.indexOf(state.controls.cameraType)
+        const nextCameraIndex = (currentCameraIndex + 1) % cameraTypes.length
+        const cameraType = cameraTypes[nextCameraIndex]
+        return { ...state, controls: { ...state.controls, cameraType } }
+      }),
+    false,
   )
-  useKeys(['e', 'E'], (editor) => set((state) => ({ ...state, editor })))
   return null
 }

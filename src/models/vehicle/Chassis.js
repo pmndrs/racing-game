@@ -12,10 +12,12 @@ import { useStore } from '../../store'
 useGLTF.preload('/models/chassis-draco.glb')
 
 const c = new THREE.Color()
-const Chassis = forwardRef(({ args = [1.7, 1, 4], mass = 500, children, ...props }, ref) => {
+const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...props }, ref) => {
   const glass = useRef()
   const brake = useRef()
   const wheel = useRef()
+
+  const debug = useStore((state) => state.debug)
   const { nodes, materials } = useGLTF('/models/chassis-draco.glb')
   const [, api] = useBox(() => ({ mass, args, allowSleep: false, onCollide: (e) => console.log('bonk', e.body.userData), ...props }), ref)
 
@@ -34,7 +36,14 @@ const Chassis = forwardRef(({ args = [1.7, 1, 4], mass = 500, children, ...props
 
   return (
     <group ref={ref} api={api} dispose={null}>
-      <group>
+      {debug && (
+        <mesh>
+          <boxGeometry args={args} />
+          <meshBasicMaterial transparent opacity={0.25} color="green" />
+        </mesh>
+      )}
+
+      <group position={[0, -0.2, -0.2]}>
         <mesh castShadow receiveShadow geometry={nodes.Chassis_1.geometry} material={materials.BodyPaint} material-color="#f0c050" />
         <mesh castShadow geometry={nodes.Chassis_2.geometry} material={nodes.Chassis_2.material} material-color="#353535" />
         <mesh castShadow ref={glass} geometry={nodes.Glass.geometry} material={materials.Glass} material-transparent />

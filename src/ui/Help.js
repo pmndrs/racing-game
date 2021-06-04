@@ -1,25 +1,28 @@
-import { useState } from 'react'
+import { useStore } from '../store'
 
 const controlOptions = [
   { keys: ['↑', 'W'], action: 'Forward' },
   { keys: ['←', 'A'], action: 'Left' },
   { keys: ['→', 'D'], action: 'Right' },
   { keys: ['↓', 'S'], action: 'Backward' },
-  { keys: ['space'], action: 'Drift' },
+  { keys: ['Space'], action: 'Drift' },
   { keys: ['H'], action: 'Honk' },
   { keys: ['Shift'], action: 'Turbo Boost' },
   { keys: ['C'], action: 'Toggle Camera' },
   { keys: ['R'], action: 'Reset' },
+  { keys: ['E'], action: 'Editor' },
+  { keys: ['I'], action: 'Help' },
 ]
 
 export function Help() {
-  const [open, setOpen] = useState(false)
+  const set = useStore((state) => state.set)
+  const open = useStore((state) => state.help)
   return (
     <div className="controls">
-      {!open && <button onClick={() => setOpen(true)}>i</button>}
+      {!open && <button onClick={() => set({ help: true })}>i</button>}
       <div className={`popup ${open ? 'open' : ''}`}>
-        <button className="popup-close" onClick={() => setOpen(false)}>
-          x
+        <button className="popup-close" onClick={() => set({ help: false })}>
+          i
         </button>
         <div className="popup-content">
           <Keys />
@@ -35,10 +38,10 @@ export function Keys(props) {
       {controlOptions.map(({ keys, action }) => (
         <div className="popup-item" key={action}>
           <div>{action}</div>
-          <div>
+          <div className="popup-item-keys">
             {keys.map((key) => (
               <span className="popup-item-key" key={key}>
-                {key}
+                <span>{key}</span>
               </span>
             ))}
           </div>

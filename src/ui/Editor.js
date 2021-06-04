@@ -1,17 +1,17 @@
 import { useControls } from 'leva'
-import { useStore } from '../store'
+import { useStore, vehicleConfig } from '../store'
 
 export function Editor() {
-  const vehicleConfig = useStore((state) => state.constants.vehicleConfig)
+  const config = useStore((state) => state.constants.vehicleConfig)
   const get = useStore((state) => state.get)
   const set = useStore((state) => state.set)
 
   const [, setVehicleEditor] = useControls(() => ({
     radius: {
-      value: vehicleConfig.radius,
+      value: config.radius,
       min: 0.1,
       max: 2,
-      step: 0.1,
+      step: 0.01,
       onChange: (value) => {
         set({
           constants: { ...get().constants, vehicleConfig: { ...get().constants.vehicleConfig, radius: value } },
@@ -20,10 +20,10 @@ export function Editor() {
       },
     },
     width: {
-      value: vehicleConfig.width,
+      value: config.width,
       min: 0.1,
       max: 10,
-      step: 0.1,
+      step: 0.01,
       onChange: (value) => {
         set({
           constants: { ...get().constants, vehicleConfig: { ...get().constants.vehicleConfig, width: value } },
@@ -42,7 +42,7 @@ export function Editor() {
       },
     },
     height: {
-      value: vehicleConfig.height,
+      value: config.height,
       min: -5,
       max: 5,
       step: 0.01,
@@ -60,7 +60,7 @@ export function Editor() {
       },
     },
     front: {
-      value: vehicleConfig.front,
+      value: config.front,
       min: -10,
       max: 10,
       step: 0.05,
@@ -82,7 +82,7 @@ export function Editor() {
       },
     },
     back: {
-      value: vehicleConfig.back,
+      value: config.back,
       min: -10,
       max: 10,
       step: 0.05,
@@ -104,7 +104,7 @@ export function Editor() {
       },
     },
     steer: {
-      value: vehicleConfig.steer,
+      value: config.steer,
       min: 0.1,
       max: 1,
       step: 0.01,
@@ -113,7 +113,7 @@ export function Editor() {
       },
     },
     force: {
-      value: vehicleConfig.force,
+      value: config.force,
       min: 0,
       max: 3000,
       step: 1,
@@ -122,16 +122,16 @@ export function Editor() {
       },
     },
     maxBrake: {
-      value: vehicleConfig.maxBrake,
+      value: config.maxBrake,
       min: 0.1,
       max: 100,
-      step: 0.1,
+      step: 0.01,
       onChange: (value) => {
         set({ constants: { ...get().constants, vehicleConfig: { ...get().constants.vehicleConfig, maxBrake: value } } })
       },
     },
     maxSpeed: {
-      value: vehicleConfig.maxSpeed,
+      value: config.maxSpeed,
       min: 1,
       max: 150,
       step: 1,
@@ -208,7 +208,7 @@ export function Editor() {
       value: 100,
       min: 0,
       max: 500,
-      step: 0.1,
+      step: 0.01,
       onChange: (value) => {
         set({
           raycast: {
@@ -276,14 +276,11 @@ export function Editor() {
           frictionSlip: 1.5,
           sideAcceleration: 3,
           reset: false,
+          ...vehicleConfig,
         })
       },
     },
+    debug: { value: false, onChange: (debug) => set({ debug }) },
   }))
-
-  return (
-    <button className="play-btn" onClick={() => set({ editor: false })}>
-      Play
-    </button>
-  )
+  return null
 }

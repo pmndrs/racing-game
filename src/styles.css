@@ -32,7 +32,6 @@ body {
 }
 
 .speed span {
-
   font-weight: 600;
   font-size: 1.5em;
   letter-spacing: -5px;
@@ -79,7 +78,6 @@ body {
 .controls > .popup.open {
   opacity: 1;
   transform: translateY(0);
-  
 }
 
 .popup-close {
@@ -103,23 +101,37 @@ body {
   margin: 0em 0;
 }
 
+.popup-item-keys {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .popup-item-key {
   display: inline-block;
-  font-family: monospace;
-  border: 1px solid #606060;
+  font-size: 0.7em;
+  min-width: 24px;
+  border: 1px solid transparent;
+  border-bottom: 3px solid #a0a0a0;
   border-radius: 3px;
   padding: 2px 5px;
-  margin-left: 2px;
+  margin: 2px;
+
+  background: white;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 button {
   width: 32px;
   height: 32px;
-	color: inherit;
-	border: none;
-	font: inherit;
-	cursor: pointer;
-	outline: inherit;
+  color: inherit;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
   background: white;
   color: black;
 }
@@ -142,7 +154,7 @@ button {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items:flex-start;
+  align-items: flex-start;
   color: #606060;
 }
 
@@ -221,16 +233,4 @@ button {
 .pmndrs-menu a:hover {
   text-decoration: underline;
   color: inherit;
-}
-
-.play-btn {
-  position: absolute;
-  bottom: 10%;
-  left: 0;
-  right: 0;
-  margin: auto;
-  font-size: 4em;
-  width: auto;
-  height: auto;
-  padding: 0.25em;
 }

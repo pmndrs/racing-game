@@ -23,7 +23,7 @@ export function Vehicle({ children }) {
   const ready = useStore((state) => state.ready)
   const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
 
-  const { radius, force, maxBrake, steer, maxSpeed } = vehicleConfig
+  const { force, maxBrake, steer, maxSpeed } = vehicleConfig
 
   useLayoutEffect(() => {
     defaultCamera.current.lookAt(raycast.chassisBody.current.position)
@@ -55,7 +55,7 @@ export function Vehicle({ children }) {
 
     if (!editor) {
       if (cameraType === 'FIRST_PERSON') {
-        defaultCamera.current.position.lerp(v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.7, 0.01), delta)
+        defaultCamera.current.position.lerp(v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.5, 0.01), delta)
       } else if (cameraType === 'DEFAULT') {
         // left-right, up-down, near-far
         defaultCamera.current.position.lerp(
@@ -76,7 +76,7 @@ export function Vehicle({ children }) {
   })
 
   return (
-    <group ref={vehicle} position={[0, -0.4, 0]}>
+    <group ref={vehicle}>
       <Chassis ref={raycast.chassisBody} {...vehicleStart}>
         <PerspectiveCamera
           ref={defaultCamera}
@@ -95,10 +95,10 @@ export function Vehicle({ children }) {
         {ready && <VehicleAudio />}
         {children}
       </Chassis>
-      <Wheel ref={raycast.wheels[0]} radius={radius} leftSide />
-      <Wheel ref={raycast.wheels[1]} radius={radius} />
-      <Wheel ref={raycast.wheels[2]} radius={radius} leftSide />
-      <Wheel ref={raycast.wheels[3]} radius={radius} />
+      <Wheel ref={raycast.wheels[0]} leftSide />
+      <Wheel ref={raycast.wheels[1]} />
+      <Wheel ref={raycast.wheels[2]} leftSide />
+      <Wheel ref={raycast.wheels[3]} />
       <Dust />
       <Skid />
     </group>

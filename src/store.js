@@ -1,64 +1,67 @@
 import { createRef } from 'react'
 import create from 'zustand'
 
+const cameraTypes = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE']
+
+const vehicleConfig = {
+  radius: 0.35,
+  width: 1.7,
+  height: -0.2,
+  front: 1.35,
+  back: -1.3,
+  steer: 0.3,
+  force: 1800,
+  maxBrake: 65,
+  maxSpeed: 128,
+}
+
+const wheelInfo = {
+  radius: vehicleConfig.radius,
+  directionLocal: [0, -1, 0],
+  suspensionStiffness: 30,
+  suspensionRestLength: 0.35,
+  axleLocal: [-1, 0, 0],
+  chassisConnectionPointLocal: [1, 0, 1],
+  useCustomSlidingRotationalSpeed: true,
+  customSlidingRotationalSpeed: -0.01,
+  rollInfluence: 0,
+  suspensionForce: 100,
+  frictionSlip: 1.5,
+  sideAcceleration: 3,
+}
+
+const wheelInfo1 = {
+  ...wheelInfo,
+  isFrontWheel: true,
+  chassisConnectionPointLocal: [-vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.front],
+}
+
+const wheelInfo2 = {
+  ...wheelInfo,
+  isFrontWheel: true,
+  chassisConnectionPointLocal: [vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.front],
+}
+
+const wheelInfo3 = {
+  ...wheelInfo,
+  isFrontWheel: false,
+  chassisConnectionPointLocal: [-vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.back],
+}
+
+const wheelInfo4 = {
+  ...wheelInfo,
+  isFrontWheel: false,
+  chassisConnectionPointLocal: [vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.back],
+}
+
 const useStore = create((set, get) => {
-  const cameraTypes = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE']
-
-  const vehicleConfig = {
-    radius: 0.7,
-    width: 1.2,
-    height: -0.04,
-    front: 1.5,
-    back: -1.15,
-    steer: 0.3,
-    force: 1800,
-    maxBrake: 65,
-    maxSpeed: 128,
-  }
-
-  const wheelInfo = {
-    radius: vehicleConfig.radius,
-    directionLocal: [0, -1, 0],
-    suspensionStiffness: 30,
-    suspensionRestLength: 0.3,
-    axleLocal: [-1, 0, 0],
-    chassisConnectionPointLocal: [1, 0, 1],
-    useCustomSlidingRotationalSpeed: true,
-    customSlidingRotationalSpeed: -0.01,
-    suspensionForce: 100,
-    frictionSlip: 1.5,
-    sideAcceleration: 3,
-  }
-
-  const wheelInfo1 = {
-    ...wheelInfo,
-    isFrontWheel: true,
-    chassisConnectionPointLocal: [-vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.front],
-  }
-
-  const wheelInfo2 = {
-    ...wheelInfo,
-    isFrontWheel: true,
-    chassisConnectionPointLocal: [vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.front],
-  }
-
-  const wheelInfo3 = {
-    ...wheelInfo,
-    isFrontWheel: false,
-    chassisConnectionPointLocal: [-vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.back],
-  }
-
-  const wheelInfo4 = {
-    ...wheelInfo,
-    isFrontWheel: false,
-    chassisConnectionPointLocal: [vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.back],
-  }
-
   return {
     set,
     get,
     ready: false,
     editor: false,
+    help: false,
+    debug: false,
     raycast: {
       chassisBody: createRef(),
       wheels: [createRef(), createRef(), createRef(), createRef()],
@@ -85,11 +88,11 @@ const useStore = create((set, get) => {
       vehicleConfig,
       vehicleStart: {
         rotation: [0, Math.PI / 2, 0],
-        position: [0, 1, 0],
+        position: [0, 4, 0],
         angularVelocity: [0, 0.5, 0],
       },
     },
   }
 })
 
-export { useStore }
+export { useStore, cameraTypes, vehicleConfig, wheelInfo, wheelInfo1, wheelInfo2, wheelInfo3, wheelInfo4 }
