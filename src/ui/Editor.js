@@ -4,7 +4,8 @@ import { useStore } from '../utils/store'
 export function Editor() {
   const config = useStore((state) => state.config)
   const set = useStore((state) => state.set)
-  const vehicleConfig = useControls({
+
+  const [vehicleEditor, setVehicleEditor] = useControls(() => ({
     radius: {
       value: config.radius,
       min: 0.1,
@@ -86,7 +87,24 @@ export function Editor() {
         set({ config: { ...config, maxSpeed: value } })
       },
     },
-  })
+    reset: {
+      value: false,
+      onChange: (value) => {
+        setVehicleEditor({
+          radius: 0.7,
+          width: 1.2,
+          height: -0.04,
+          front: 1.5,
+          back: -1.15,
+          steer: 0.3,
+          force: 1800,
+          maxBrake: 65,
+          maxSpeed: 128,
+          reset: false,
+        })
+      },
+    },
+  }))
 
   return true
 }
