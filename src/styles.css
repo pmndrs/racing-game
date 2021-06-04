@@ -135,6 +135,7 @@ button {
   justify-content: center;
   align-items: center;
   transition: all 1s;
+  z-index: 9999;
 }
 
 .stack {
@@ -220,4 +221,16 @@ button {
 .pmndrs-menu a:hover {
   text-decoration: underline;
   color: inherit;
+}
+
+.play-btn {
+  position: absolute;
+  bottom: 10%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  font-size: 4em;
+  width: auto;
+  height: auto;
+  padding: 0.25em;
 }

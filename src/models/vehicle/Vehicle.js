@@ -16,11 +16,12 @@ export function Vehicle({ children }) {
   const birdEyeCamera = useRef()
 
   const set = useStore((state) => state.set)
+  const playing = useStore((state) => state.playing)
   const raycast = useStore((state) => state.raycast)
   const cameraType = useStore((state) => state.controls.cameraType)
   const { vehicleStart, vehicleConfig } = useStore((state) => state.constants)
   const ready = useStore((state) => state.ready)
-  const [vehicle, api] = useRaycastVehicle(() => raycast)
+  const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
 
   const { radius, force, maxBrake, steer, maxSpeed } = vehicleConfig
 
@@ -52,18 +53,19 @@ export function Vehicle({ children }) {
       raycast.chassisBody.current.api.rotation.set(...vehicleStart.rotation)
     }
 
-    // left-right, up-down, near-far
-    if (cameraType === 'FIRST_PERSON') {
-      defaultCamera.current.position.lerp(v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.7, 0.01), delta)
-    } else if (cameraType === 'DEFAULT') {
-      defaultCamera.current.position.lerp(
-        v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (brake ? 1 : 0)),
-        delta,
-      )
+    if (playing) {
+      if (cameraType === 'FIRST_PERSON') {
+        defaultCamera.current.position.lerp(v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.7, 0.01), delta)
+      } else if (cameraType === 'DEFAULT') {
+        // left-right, up-down, near-far
+        defaultCamera.current.position.lerp(
+          v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (brake ? 1 : 0)),
+          delta,
+        )
+      }
+      // left-right swivel
+      defaultCamera.current.rotation.z = THREE.MathUtils.lerp(defaultCamera.current.rotation.z, Math.PI + (-steeringValue * speed) / 45, delta)
     }
-
-    // left-right swivel
-    defaultCamera.current.rotation.z = THREE.MathUtils.lerp(defaultCamera.current.rotation.z, Math.PI + (-steeringValue * speed) / 45, delta)
 
     // lean chassis
     raycast.chassisBody.current.children[0].rotation.z = THREE.MathUtils.lerp(

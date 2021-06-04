@@ -37,7 +37,9 @@ export function Keys(props) {
           <div>{action}</div>
           <div>
             {keys.map((key) => (
-              <span className="popup-item-key" key={key}>{key}</span>
+              <span className="popup-item-key" key={key}>
+                {key}
+              </span>
             ))}
           </div>
         </div>
