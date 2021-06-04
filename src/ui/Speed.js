@@ -7,10 +7,10 @@ export function Speed() {
   useEffect(() => {
     const interval = setInterval(() => {
       if (textRef.current !== null) {
-        const { speed, config } = useStore.getState()
+        const { speed, constants } = useStore.getState()
         const computedSpeed = speed * 1.5
         textRef.current.innerText = computedSpeed.toFixed()
-        gaugeRef.current.setAttribute('offset', Math.max(1 - computedSpeed / config.maxSpeed, 0))
+        gaugeRef.current.setAttribute('offset', Math.max(1 - computedSpeed / constants.vehicleConfig.maxSpeed, 0))
       }
     }, 60)
     return () => clearInterval(interval)

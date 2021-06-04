@@ -16,12 +16,13 @@ export function Vehicle({ children }) {
   const birdEyeCamera = useRef()
 
   const set = useStore((state) => state.set)
-  const config = useStore((state) => state.config)
   const raycast = useStore((state) => state.raycast)
   const cameraType = useStore((state) => state.controls.cameraType)
-  const vehicleStart = useStore((state) => state.constants.vehicleStart)
+  const { vehicleStart, vehicleConfig } = useStore((state) => state.constants)
   const ready = useStore((state) => state.ready)
   const [vehicle, api] = useRaycastVehicle(() => raycast)
+
+  const { radius, force, maxBrake, steer, maxSpeed } = vehicleConfig
 
   useLayoutEffect(() => {
     defaultCamera.current.lookAt(raycast.chassisBody.current.position)
@@ -35,7 +36,6 @@ export function Vehicle({ children }) {
   useFrame((state, delta) => {
     const { speed, controls } = useStore.getState()
     const { forward, backward, left, right, brake, boost, reset } = controls
-    const { force, maxBrake, steer, maxSpeed } = config
 
     //const dynamicSteer = // the higher the speed the less the car can turn
     const dynamicSteer = steer
@@ -93,10 +93,10 @@ export function Vehicle({ children }) {
         {ready && <VehicleAudio />}
         {children}
       </Chassis>
-      <Wheel ref={raycast.wheels[0]} radius={config.radius} leftSide />
-      <Wheel ref={raycast.wheels[1]} radius={config.radius} />
-      <Wheel ref={raycast.wheels[2]} radius={config.radius} leftSide />
-      <Wheel ref={raycast.wheels[3]} radius={config.radius} />
+      <Wheel ref={raycast.wheels[0]} radius={radius} leftSide />
+      <Wheel ref={raycast.wheels[1]} radius={radius} />
+      <Wheel ref={raycast.wheels[2]} radius={radius} leftSide />
+      <Wheel ref={raycast.wheels[3]} radius={radius} />
       <Dust />
       <Skid />
     </group>
