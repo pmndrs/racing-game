@@ -7,6 +7,7 @@ import { Vehicle } from './models/Vehicle'
 import { Overlay } from './ui/Overlay'
 import { Speed } from './ui/Speed'
 import { Controls } from './ui/Controls'
+import { Editor } from './ui/Editor'
 import { useStore } from './utils/store'
 
 // Heightfield needs some more work ...
@@ -20,6 +21,8 @@ export function App() {
       </Canvas>
       <Controls />
       <Speed />
+    <Editor />
+
     </Overlay>
   )
 }
