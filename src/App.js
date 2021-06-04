@@ -50,6 +50,6 @@ function Ramp({ args = [10, 2.5, 3], rotation = [0, 0.45, Math.PI / 11], ...prop
 }
 
 function Plane(props) {
-  const [ref] = usePlane(() => ({ type: 'Static', material: 'ground', ...props }))
+  usePlane(() => ({ type: 'Static', material: 'ground', ...props }))
   return null
 }
