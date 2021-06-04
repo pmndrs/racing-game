@@ -3,6 +3,7 @@ import { useStore } from '../utils/store'
 
 export function Editor() {
   const config = useStore((state) => state.config)
+  const get = useStore((state) => state.get)
   const set = useStore((state) => state.set)
 
   const [vehicleEditor, setVehicleEditor] = useControls(() => ({
@@ -12,7 +13,10 @@ export function Editor() {
       max: 2,
       step: 0.1,
       onChange: (value) => {
-        set({ config: { ...config, radius: value } })
+        set({
+          config: { ...config, radius: value },
+          raycast: { ...get().raycast, wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, radius: value })) },
+        })
       },
     },
     width: {
@@ -21,7 +25,20 @@ export function Editor() {
       max: 10,
       step: 0.1,
       onChange: (value) => {
-        set({ config: { ...config, width: value } })
+        set({
+          config: { ...config, width: value },
+          raycast: {
+            ...get().raycast,
+            wheelInfos: get().raycast.wheelInfos.map((info) => ({
+              ...info,
+              chassisConnectionPointLocal: [
+                info.chassisConnectionPointLocal[0] < 0 ? -value / 2 : value / 2,
+                info.chassisConnectionPointLocal[1],
+                info.chassisConnectionPointLocal[2],
+              ],
+            })),
+          },
+        })
       },
     },
     height: {
@@ -30,7 +47,16 @@ export function Editor() {
       max: 5,
       step: 0.01,
       onChange: (value) => {
-        set({ config: { ...config, height: value } })
+        set({
+          config: { ...config, height: value },
+          raycast: {
+            ...get().raycast,
+            wheelInfos: get().raycast.wheelInfos.map((info) => ({
+              ...info,
+              chassisConnectionPointLocal: [info.chassisConnectionPointLocal[0], value, info.chassisConnectionPointLocal[2]],
+            })),
+          },
+        })
       },
     },
     front: {
@@ -39,7 +65,20 @@ export function Editor() {
       max: 10,
       step: 0.05,
       onChange: (value) => {
-        set({ config: { ...config, front: value } })
+        set({
+          config: { ...config, front: value },
+          raycast: {
+            ...get().raycast,
+            wheelInfos: get().raycast.wheelInfos.map((info, index) => ({
+              ...info,
+              chassisConnectionPointLocal: [
+                info.chassisConnectionPointLocal[0],
+                info.chassisConnectionPointLocal[1],
+                index < 2 ? value : info.chassisConnectionPointLocal[2],
+              ],
+            })),
+          },
+        })
       },
     },
     back: {
@@ -48,7 +87,20 @@ export function Editor() {
       max: 10,
       step: 0.05,
       onChange: (value) => {
-        set({ config: { ...config, back: value } })
+        set({
+          config: { ...config, back: value },
+          raycast: {
+            ...get().raycast,
+            wheelInfos: get().raycast.wheelInfos.map((info, index) => ({
+              ...info,
+              chassisConnectionPointLocal: [
+                info.chassisConnectionPointLocal[0],
+                info.chassisConnectionPointLocal[1],
+                index < 2 ? info.chassisConnectionPointLocal[2] : value,
+              ],
+            })),
+          },
+        })
       },
     },
     steer: {
@@ -106,5 +158,9 @@ export function Editor() {
     },
   }))
 
-  return true
+  return (
+    <button className="play-btn" onClick={() => set({ playing: true })}>
+      Play
+    </button>
+  )
 }

@@ -196,3 +196,15 @@ button {
   text-decoration: underline;
   color: inherit;
 }
+
+.play-btn {
+  position: absolute;
+  bottom: 10%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  font-size: 4em;
+  width: auto;
+  height: auto;
+  padding: 0.25em;
+}

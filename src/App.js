@@ -14,14 +14,20 @@ import { useStore } from './utils/store'
 //import { Heightfield } from './utils/heightmap'
 
 export function App() {
+  const playing = useStore((state) => state.playing)
   return (
     <Overlay>
       <Canvas dpr={[1, 1.5]} shadows camera={{ position: [0, 5, 15], fov: 50 }}>
-        <VehicleEditor />
+        {playing ? <Game /> : <VehicleEditor />}
       </Canvas>
-      <Controls />
-      <Speed />
-      <Editor />
+      {playing ? (
+        <>
+          <Controls />
+          <Speed />
+        </>
+      ) : (
+        <Editor />
+      )}
     </Overlay>
   )
 }
