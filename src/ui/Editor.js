@@ -11,8 +11,8 @@ export function Editor() {
       max: 5,
       step: 0.1,
       onChange: (value) => {
-        set({config: {...config, radius: value}})
-      }
+        set({ config: { ...config, radius: value } })
+      },
     },
     width: {
       value: config.width,
@@ -20,8 +20,8 @@ export function Editor() {
       max: 10,
       step: 0.1,
       onChange: (value) => {
-        set({config: {...config, width: value}})
-      }
+        set({ config: { ...config, width: value } })
+      },
     },
     height: {
       value: config.height,
@@ -29,8 +29,8 @@ export function Editor() {
       max: 5,
       step: 0.01,
       onChange: (value) => {
-        set({config: {...config, height: value}})
-      }
+        set({ config: { ...config, height: value } })
+      },
     },
     front: {
       value: config.front,
@@ -38,8 +38,8 @@ export function Editor() {
       max: 10,
       step: 0.05,
       onChange: (value) => {
-        set({config: {...config, front: value}})
-      }
+        set({ config: { ...config, front: value } })
+      },
     },
     back: {
       value: config.back,
@@ -47,8 +47,8 @@ export function Editor() {
       max: 10,
       step: 0.05,
       onChange: (value) => {
-        set({config: {...config, back: value}})
-      }
+        set({ config: { ...config, back: value } })
+      },
     },
     steer: {
       value: config.steer,
@@ -56,8 +56,8 @@ export function Editor() {
       max: 1,
       step: 0.01,
       onChange: (value) => {
-        set({config: {...config, steer: value}})
-      }
+        set({ config: { ...config, steer: value } })
+      },
     },
     force: 1800,
     maxBrake: 65,

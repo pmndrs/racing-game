@@ -21,8 +21,7 @@ export function App() {
       </Canvas>
       <Controls />
       <Speed />
-    <Editor />
-
+      <Editor />
     </Overlay>
   )
 }
@@ -30,14 +29,14 @@ export function App() {
 function VehicleEditor() {
   const vehicleStart = useStore((state) => state.constants.vehicleStart)
   return (
-  <>
-    <ambientLight intensity={0.1} />
-    <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
-      <Plane rotation={[-Math.PI / 2, 0, 0]} userData={{ id: 'floor' }} />
-      <Vehicle {...vehicleStart} />
-    </Physics>
-    <Environment preset="night" />
-  </>
+    <>
+      <ambientLight intensity={0.1} />
+      <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
+        <Plane rotation={[-Math.PI / 2, 0, 0]} userData={{ id: 'floor' }} />
+        <Vehicle {...vehicleStart} />
+      </Physics>
+      <Environment preset="night" />
+    </>
   )
 }
 
