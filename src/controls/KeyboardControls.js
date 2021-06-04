@@ -16,7 +16,7 @@ function useKeys(target, event, up = true) {
 
 export function KeyboardControls() {
   const set = useStore((state) => state.set)
-  const cameraTypes = useStore((state) => state.cameraTypes)
+  const cameraTypes = useStore((state) => state.constants.cameraTypes)
   useKeys(['ArrowUp', 'w', 'W'], (forward) => set((state) => ({ ...state, controls: { ...state.controls, forward } })))
   useKeys(['ArrowDown', 's', 'S'], (backward) => set((state) => ({ ...state, controls: { ...state.controls, backward } })))
   useKeys(['ArrowLeft', 'a', 'A'], (left) => set((state) => ({ ...state, controls: { ...state.controls, left } })))

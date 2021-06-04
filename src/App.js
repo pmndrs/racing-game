@@ -1,22 +1,14 @@
-import React from 'react'
+import { useState } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { Physics, useBox, usePlane } from '@react-three/cannon'
+import { Physics } from '@react-three/cannon'
 import { Sky, Environment, OrbitControls } from '@react-three/drei'
-import { Track } from './models/Track'
-import { Vehicle } from './models/Vehicle'
-import { Overlay } from './ui/Overlay'
-import { Speed } from './ui/Speed'
-import { Controls } from './ui/Controls'
 import { Editor } from './ui/Editor'
 import { useStore } from './utils/store'
-import { Physics } from '@react-three/cannon'
-import { Sky, Environment } from '@react-three/drei'
 import { Ground, Ramp, Track, Vehicle } from './models'
 import { Overlay } from './ui/Overlay'
 import { Speed } from './ui/Speed'
 import { Help } from './ui/Help'
 import { KeyboardControls } from './controls/KeyboardControls'
-import { useStore } from './store'
 
 // Heightfield needs some more work ...
 //import { Heightmap } from './utils/Heightmap'
@@ -26,13 +18,13 @@ export function App() {
   return (
     <Overlay>
       <Canvas dpr={[1, 1.5]} shadows camera={{ position: [0, 5, 15], fov: 50 }}>
-        {playing ? <Game /> : <VehicleEditor />}
+        { playing ? <Game /> : <VehicleEditor /> }
       </Canvas>
       {playing ? (
         <>
           <KeyboardControls />
-      <Help />
-      <Speed />
+          <Help />
+          <Speed />
         </>
       ) : (
         <Editor />

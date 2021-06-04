@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { useRef, useState, useLayoutEffect, useEffect } from 'react'
+import { useRef, useLayoutEffect, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { PerspectiveCamera, OrthographicCamera, PositionalAudio } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
@@ -11,19 +11,19 @@ import { Skid } from '../../effects/Skid'
 
 const v = new THREE.Vector3()
 
-export function Vehicle(props) {
+export function Vehicle({ children }) {
   const defaultCamera = useRef()
   const birdEyeCamera = useRef()
 
-  const [light, setLight] = useState()
   const set = useStore((state) => state.set)
   const playing = useStore((state) => state.playing)
-  const config = useStore((state) => state.config)
   const raycast = useStore((state) => state.raycast)
   const cameraType = useStore((state) => state.controls.cameraType)
-  const vehicleStart = useStore((state) => state.constants.vehicleStart)
+  const { vehicleStart, vehicleConfig } = useStore((state) => state.constants)
   const ready = useStore((state) => state.ready)
   const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
+
+  const { radius, force, maxBrake, steer, maxSpeed } = vehicleConfig
 
   useLayoutEffect(() => {
     defaultCamera.current.lookAt(raycast.chassisBody.current.position)
@@ -37,7 +37,6 @@ export function Vehicle(props) {
   useFrame((state, delta) => {
     const { speed, controls } = useStore.getState()
     const { forward, backward, left, right, brake, boost, reset } = controls
-    const { force, maxBrake, steer, maxSpeed } = config
 
     //const dynamicSteer = // the higher the speed the less the car can turn
     const dynamicSteer = steer
@@ -48,10 +47,10 @@ export function Vehicle(props) {
     for (let s = 0; s < 2; s++) api.setSteeringValue(steeringValue, s)
     for (let b = 2; b < 4; b++) api.setBrake(brake ? (forward ? maxBrake / 1.5 : maxBrake) : 0, b)
     if (reset) {
-      raycast.chassisBody.current.api.position.set(vehicleStart.position[0], vehicleStart.position[1], vehicleStart.position[2])
+      raycast.chassisBody.current.api.position.set(...vehicleStart.position)
       raycast.chassisBody.current.api.velocity.set(0, 0, 0)
-      raycast.chassisBody.current.api.angularVelocity.set(vehicleStart.angularVelocity[0], vehicleStart.angularVelocity[1], vehicleStart.angularVelocity[2])
-      raycast.chassisBody.current.api.rotation.set(vehicleStart.rotation[0], vehicleStart.rotation[1], vehicleStart.rotation[2])
+      raycast.chassisBody.current.api.angularVelocity.set(...vehicleStart.angularVelocity)
+      raycast.chassisBody.current.api.rotation.set(...vehicleStart.rotation)
     }
 
     if (playing) {
@@ -78,19 +77,7 @@ export function Vehicle(props) {
 
   return (
     <group ref={vehicle} position={[0, -0.4, 0]}>
-      <directionalLight
-        ref={setLight}
-        position={[100, 100, 50]}
-        intensity={1}
-        castShadow
-        shadow-bias={-0.001}
-        shadow-mapSize={[4096, 4096]}
-        shadow-camera-left={-150}
-        shadow-camera-right={150}
-        shadow-camera-top={150}
-        shadow-camera-bottom={-150}
-      />
-      <Chassis ref={raycast.chassisBody} rotation={props.rotation} position={props.position} angularVelocity={props.angularVelocity}>
+      <Chassis ref={raycast.chassisBody} {...vehicleStart}>
         <PerspectiveCamera
           ref={defaultCamera}
           makeDefault={['DEFAULT', 'FIRST_PERSON'].includes(cameraType)}
@@ -105,13 +92,13 @@ export function Vehicle(props) {
           rotation={[(-1 * Math.PI) / 2, 0, Math.PI]}
           zoom={15}
         />
-        {light && <primitive object={light.target} />}
         {ready && <VehicleAudio />}
+        {children}
       </Chassis>
-      <Wheel ref={raycast.wheels[0]} radius={config.radius} leftSide />
-      <Wheel ref={raycast.wheels[1]} radius={config.radius} />
-      <Wheel ref={raycast.wheels[2]} radius={config.radius} leftSide />
-      <Wheel ref={raycast.wheels[3]} radius={config.radius} />
+      <Wheel ref={raycast.wheels[0]} radius={radius} leftSide />
+      <Wheel ref={raycast.wheels[1]} radius={radius} />
+      <Wheel ref={raycast.wheels[2]} radius={radius} leftSide />
+      <Wheel ref={raycast.wheels[3]} radius={radius} />
       <Dust />
       <Skid />
     </group>
