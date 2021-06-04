@@ -23,7 +23,7 @@ export function Vehicle(props) {
   const cameraType = useStore((state) => state.controls.cameraType)
   const vehicleStart = useStore((state) => state.constants.vehicleStart)
   const ready = useStore((state) => state.ready)
-  const [vehicle, api] = useRaycastVehicle(() => raycast)
+  const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
 
   useLayoutEffect(() => {
     defaultCamera.current.lookAt(raycast.chassisBody.current.position)
