@@ -13,29 +13,51 @@ import { useStore } from './utils/store'
 //import { Heightfield } from './utils/heightmap'
 
 export function App() {
-  const vehicleStart = useStore((state) => state.constants.vehicleStart)
   return (
     <Overlay>
       <Canvas dpr={[1, 1.5]} shadows camera={{ position: [0, 5, 15], fov: 50 }}>
-        <fog attach="fog" args={['white', 0, 500]} />
-        <Sky sunPosition={[100, 10, 100]} scale={1000} />
-        <ambientLight intensity={0.1} />
-        <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
-          <Plane rotation={[-Math.PI / 2, 0, 0]} userData={{ id: 'floor' }} />
-          {/*<Heightfield
-              elementSize={1.01} // uniform xy scale
-              position={[337, -18.03, -451]}
-              rotation={[-Math.PI / 2, 0, -Math.PI]}
-            />*/}
-          <Vehicle {...vehicleStart} />
-          <Ramp position={[120, -1, -50]} />
-        </Physics>
-        <Track position={[80, 0, -210]} scale={26} />
-        <Environment preset="night" />
+        <VehicleEditor />
       </Canvas>
       <Controls />
       <Speed />
     </Overlay>
+  )
+}
+
+function VehicleEditor() {
+  const vehicleStart = useStore((state) => state.constants.vehicleStart)
+  return (
+  <>
+    <ambientLight intensity={0.1} />
+    <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
+      <Plane rotation={[-Math.PI / 2, 0, 0]} userData={{ id: 'floor' }} />
+      <Vehicle {...vehicleStart} />
+    </Physics>
+    <Environment preset="night" />
+  </>
+  )
+}
+
+function Game() {
+  const vehicleStart = useStore((state) => state.constants.vehicleStart)
+  return (
+    <>
+      <fog attach="fog" args={['white', 0, 500]} />
+      <Sky sunPosition={[100, 10, 100]} scale={1000} />
+      <ambientLight intensity={0.1} />
+      <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
+        <Plane rotation={[-Math.PI / 2, 0, 0]} userData={{ id: 'floor' }} />
+        {/*<Heightfield
+              elementSize={1.01} // uniform xy scale
+              position={[337, -18.03, -451]}
+              rotation={[-Math.PI / 2, 0, -Math.PI]}
+            />*/}
+        <Vehicle {...vehicleStart} />
+        <Ramp position={[120, -1, -50]} />
+      </Physics>
+      <Track position={[80, 0, -210]} scale={26} />
+      <Environment preset="night" />
+    </>
   )
 }
 
