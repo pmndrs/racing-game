@@ -75,7 +75,7 @@ function Game() {
             position={[337, -18.03, -451]}
             rotation={[-Math.PI / 2, 0, -Math.PI]}
           />*/}
-        <Vehicle>
+        <Vehicle {...vehicleStart}>
           {/* Mount the main-lights target as a child to the vehicle, so that light follows it */}
           {light && <primitive object={light.target} />}
         </Vehicle>

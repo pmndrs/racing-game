@@ -6,7 +6,7 @@ export function Editor() {
   const get = useStore((state) => state.get)
   const set = useStore((state) => state.set)
 
-  const [vehicleEditor, setVehicleEditor] = useControls(() => ({
+  const [, setVehicleEditor] = useControls(() => ({
     radius: {
       value: vehicleConfig.radius,
       min: 0.1,
