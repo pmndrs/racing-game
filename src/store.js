@@ -2,7 +2,6 @@ import { createRef } from 'react'
 import create from 'zustand'
 
 const useStore = create((set, get) => {
-  const cameraTypes = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE']
   // Vehicle config
   const config = {
     radius: 0.7,
@@ -63,7 +62,6 @@ const useStore = create((set, get) => {
     get,
     config,
     raycast,
-    cameraTypes,
     ready: false,
     controls: {
       forward: false,
@@ -73,18 +71,18 @@ const useStore = create((set, get) => {
       brake: false,
       honk: false,
       boost: false,
-      cameraType: cameraTypes[0],
+      cameraType: 'DEFAULT',
       reset: false,
     },
     velocity: [0, 0, 0],
     speed: 0,
     positions: [...Array(20).map(() => [0, 0, 0])],
     constants: {
+      cameraTypes: ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE'],
       vehicleStart: {
         rotation: [0, Math.PI / 2, 0],
         position: [0, 1, 0],
         angularVelocity: [0, 0.5, 0],
-        wheelRadius: 0.3,
       },
     },
   }
