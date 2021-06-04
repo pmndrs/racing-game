@@ -1,13 +1,13 @@
 import * as THREE from 'three'
-import { useRef, useState, useLayoutEffect } from 'react'
+import { useRef, useState, useLayoutEffect, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { PerspectiveCamera, OrthographicCamera, PositionalAudio } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
 import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
-import { useStore } from '../utils/store'
-import { Dust } from '../effects/Dust'
-import { Skid } from '../effects/Skid'
+import { useStore } from '../../store'
+import { Dust } from '../../effects/Dust'
+import { Skid } from '../../effects/Skid'
 
 const v = new THREE.Vector3()
 
@@ -30,10 +30,7 @@ export function Vehicle(props) {
     // Subscriptions
     const vSub = raycast.chassisBody.current.api.velocity.subscribe((velocity) => set({ velocity, speed: v.set(...velocity).length() }))
     const sSub = api.sliding.subscribe((sliding) => set({ sliding }))
-    return () => {
-      vSub()
-      sSub()
-    }
+    return () => void [vSub, sSub].forEach((sub) => sub())
   }, [])
 
   useFrame((state, delta) => {
@@ -56,10 +53,10 @@ export function Vehicle(props) {
       raycast.chassisBody.current.api.rotation.set(vehicleStart.rotation[0], vehicleStart.rotation[1], vehicleStart.rotation[2])
     }
 
+    // left-right, up-down, near-far
     if (cameraType === 'FIRST_PERSON') {
       defaultCamera.current.position.lerp(v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.7, 0.01), delta)
     } else if (cameraType === 'DEFAULT') {
-      // left-right, up-down, near-far
       defaultCamera.current.position.lerp(
         v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (brake ? 1 : 0)),
         delta,
@@ -78,7 +75,7 @@ export function Vehicle(props) {
   })
 
   return (
-    <>
+    <group ref={vehicle} position={[0, -0.4, 0]}>
       <directionalLight
         ref={setLight}
         position={[100, 100, 50]}
@@ -91,33 +88,31 @@ export function Vehicle(props) {
         shadow-camera-top={150}
         shadow-camera-bottom={-150}
       />
-      <group ref={vehicle} position={[0, -0.4, 0]}>
-        <Chassis ref={raycast.chassisBody} rotation={props.rotation} position={props.position} angularVelocity={props.angularVelocity}>
-          <PerspectiveCamera
-            ref={defaultCamera}
-            makeDefault={['DEFAULT', 'FIRST_PERSON'].includes(cameraType)}
-            fov={75}
-            rotation={[0, Math.PI, 0]}
-            position={[0, 10, -20]}
-          />
-          <OrthographicCamera
-            ref={birdEyeCamera}
-            makeDefault={cameraType === 'BIRD_EYE'}
-            position={[0, 100, 0]}
-            rotation={[(-1 * Math.PI) / 2, 0, Math.PI]}
-            zoom={15}
-          />
-          {light && <primitive object={light.target} />}
-          {ready && <VehicleAudio />}
-        </Chassis>
-        <Wheel ref={raycast.wheels[0]} radius={config.radius} leftSide />
-        <Wheel ref={raycast.wheels[1]} radius={config.radius} />
-        <Wheel ref={raycast.wheels[2]} radius={config.radius} leftSide />
-        <Wheel ref={raycast.wheels[3]} radius={config.radius} />
-        <Dust />
-        <Skid />
-      </group>
-    </>
+      <Chassis ref={raycast.chassisBody} rotation={props.rotation} position={props.position} angularVelocity={props.angularVelocity}>
+        <PerspectiveCamera
+          ref={defaultCamera}
+          makeDefault={['DEFAULT', 'FIRST_PERSON'].includes(cameraType)}
+          fov={75}
+          rotation={[0, Math.PI, 0]}
+          position={[0, 10, -20]}
+        />
+        <OrthographicCamera
+          ref={birdEyeCamera}
+          makeDefault={cameraType === 'BIRD_EYE'}
+          position={[0, 100, 0]}
+          rotation={[(-1 * Math.PI) / 2, 0, Math.PI]}
+          zoom={15}
+        />
+        {light && <primitive object={light.target} />}
+        {ready && <VehicleAudio />}
+      </Chassis>
+      <Wheel ref={raycast.wheels[0]} radius={config.radius} leftSide />
+      <Wheel ref={raycast.wheels[1]} radius={config.radius} />
+      <Wheel ref={raycast.wheels[2]} radius={config.radius} leftSide />
+      <Wheel ref={raycast.wheels[3]} radius={config.radius} />
+      <Dust />
+      <Skid />
+    </group>
   )
 }
 
@@ -137,6 +132,14 @@ function VehicleAudio() {
       if (!brakeAudio.current.isPlaying) brakeAudio.current.play()
     } else brakeAudio.current.stop()
   })
+
+  useEffect(() => {
+    const engine = engineAudio.current
+    const honk = honkAudio.current
+    const brake = brakeAudio.current
+    return () => void [engine, honk, brake].forEach((sound) => sound.stop)
+  }, [])
+
   return (
     <>
       <PositionalAudio ref={engineAudio} url="/sounds/engine.mp3" loop distance={5} />

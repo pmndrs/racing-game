@@ -1,6 +1,7 @@
 import { Suspense, useEffect, useState } from 'react'
 import { Footer } from '@pmndrs/branding'
-import { useStore } from '../utils/store'
+import { Keys } from './Help'
+import { useStore } from '../store'
 
 function Ready({ setReady }) {
   useEffect(() => () => void setReady(true), [])
@@ -20,7 +21,10 @@ export function Overlay({ children }) {
     <>
       <Suspense fallback={<Ready setReady={setReady} />}>{children}</Suspense>
       <div className={`fullscreen bg ${ready ? 'ready' : 'notready'} ${clicked && 'clicked'}`}>
-        <div onClick={() => ready && setClicked(true)}>{!ready ? 'loading' : 'click to continue'}</div>
+        <div className="stack">
+          <Keys style={{ paddingBottom: 20 }} />
+          <a href="#" onClick={() => ready && setClicked(true)}>{!ready ? 'loading' : 'Click to continue'}</a>
+        </div>
         <Footer
           date="2. June"
           year="2021"

@@ -5,11 +5,12 @@ import { Sky, Environment } from '@react-three/drei'
 import { Ground, Ramp, Track, Vehicle } from './models'
 import { Overlay } from './ui/Overlay'
 import { Speed } from './ui/Speed'
-import { Controls } from './ui/Controls'
-import { useStore } from './utils/store'
+import { Help } from './ui/Help'
+import { Controls } from './utils/Controls'
+import { useStore } from './store'
 
 // Heightfield needs some more work ...
-//import { Heightfield } from './utils/heightmap'
+//import { Heightmap } from './utils/Heightmap'
 
 export function App() {
   const vehicleStart = useStore((state) => state.constants.vehicleStart)
@@ -21,7 +22,7 @@ export function App() {
         <ambientLight intensity={0.1} />
         <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
           <Ground rotation={[-Math.PI / 2, 0, 0]} userData={{ id: 'floor' }} />
-          {/*<Heightfield
+          {/*<Heightmap
               elementSize={1.01} // uniform xy scale
               position={[337, -18.03, -451]}
               rotation={[-Math.PI / 2, 0, -Math.PI]}
@@ -33,6 +34,7 @@ export function App() {
         <Environment preset="night" />
       </Canvas>
       <Controls />
+      <Help />
       <Speed />
     </Overlay>
   )

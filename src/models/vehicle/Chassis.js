@@ -7,7 +7,7 @@ import { forwardRef, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import { useBox } from '@react-three/cannon'
-import { useStore } from '../utils/store'
+import { useStore } from '../../store'
 
 useGLTF.preload('/models/chassis-draco.glb')
 

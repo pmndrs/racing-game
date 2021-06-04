@@ -1,34 +1,8 @@
 import { createRef } from 'react'
 import create from 'zustand'
 
-function registerKeys(target, event, up = true) {
-  const downHandler = ({ key }) => target.indexOf(key) !== -1 && event(true)
-  const upHandler = ({ key }) => target.indexOf(key) !== -1 && event(false)
-  window.addEventListener('keydown', downHandler)
-  if (up) window.addEventListener('keyup', upHandler)
-}
-
-const CAMERA_TYPES = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE']
-
 const useStore = create((set, get) => {
-  // Register keys
-  registerKeys(['ArrowUp', 'w', 'W'], (forward) => set((state) => ({ ...state, controls: { ...state.controls, forward } })))
-  registerKeys(['ArrowDown', 's', 'S'], (backward) => set((state) => ({ ...state, controls: { ...state.controls, backward } })))
-  registerKeys(['ArrowLeft', 'a', 'A'], (left) => set((state) => ({ ...state, controls: { ...state.controls, left } })))
-  registerKeys(['ArrowRight', 'd', 'D'], (right) => set((state) => ({ ...state, controls: { ...state.controls, right } })))
-  registerKeys([' '], (brake) => set((state) => ({ ...state, controls: { ...state.controls, brake } })))
-  registerKeys(['h', 'H'], (honk) => set((state) => ({ ...state, controls: { ...state.controls, honk } })))
-  registerKeys(['Shift'], (boost) => set((state) => ({ ...state, controls: { ...state.controls, boost } })))
-  registerKeys(['r', 'R'], (reset) => set((state) => ({ ...state, controls: { ...state.controls, reset } })))
-  registerKeys(['c', 'C'], (toggleCamera) =>
-    set((state) => {
-      const currentCameraIndex = CAMERA_TYPES.indexOf(state.controls.cameraType)
-      const nextCameraIndex = (currentCameraIndex + 1) % CAMERA_TYPES.length
-      const cameraType = toggleCamera ? CAMERA_TYPES[nextCameraIndex] : state.controls.cameraType
-      return { ...state, controls: { ...state.controls, cameraType } }
-    }),
-  )
-
+  const cameraTypes = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE']
   // Vehicle config
   const config = {
     radius: 0.7,
@@ -89,6 +63,7 @@ const useStore = create((set, get) => {
     get,
     config,
     raycast,
+    cameraTypes,
     ready: false,
     controls: {
       forward: false,
@@ -98,7 +73,7 @@ const useStore = create((set, get) => {
       brake: false,
       honk: false,
       boost: false,
-      cameraType: CAMERA_TYPES[0],
+      cameraType: cameraTypes[0],
       reset: false,
     },
     velocity: [0, 0, 0],
