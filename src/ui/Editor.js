@@ -8,7 +8,7 @@ export function Editor() {
     radius: {
       value: config.radius,
       min: 0.1,
-      max: 5,
+      max: 2,
       step: 0.1,
       onChange: (value) => {
         set({ config: { ...config, radius: value } })
