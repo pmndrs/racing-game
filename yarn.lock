@@ -1729,10 +1729,10 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
 
-"@react-three/cannon@1.2.3":
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/@react-three/cannon/-/cannon-1.2.3.tgz#b9360c3526a6ae60d8777b236ad8deedb2808f4e"
-  integrity sha512-lvRWjKURdtfcwruKA4hEBTeWk65JWxhgdCWKAd9wXCVSnYy98lZsjQdniobHtjXUF3LYgHH2NZvzvMood8bd7g==
+"@react-three/cannon@1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@react-three/cannon/-/cannon-1.2.4.tgz#2ffe40413f1e7d4cb46a8241840669461ec4cfba"
+  integrity sha512-KzAy1zA0ThjwU0nNejtRokfRw9T4AIgeqZwXqbuB3FBYkJ2hxLae5KxAcqqv5Cr64y03XSUDuqTDnqkwPaimdQ==
 
 "@react-three/drei@5.3.0":
   version "5.3.0"
