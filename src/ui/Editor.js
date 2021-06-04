@@ -139,6 +139,122 @@ export function Editor() {
         set({ config: { ...config, maxSpeed: value } })
       },
     },
+    suspensionStiffness: {
+      value: 30,
+      min: 0,
+      max: 500,
+      step: 1,
+      onChange: (value) => {
+        set({
+          raycast: {
+            ...get().raycast,
+            wheelInfos: get().raycast.wheelInfos.map((info) => ({
+              ...info,
+              suspensionStiffness: value,
+            })),
+          },
+        })
+      },
+    },
+    suspensionRestLength: {
+      value: 0.3,
+      min: -10,
+      max: 10,
+      step: 0.01,
+      onChange: (value) => {
+        set({
+          raycast: {
+            ...get().raycast,
+            wheelInfos: get().raycast.wheelInfos.map((info) => ({
+              ...info,
+              suspensionRestLength: value,
+            })),
+          },
+        })
+      },
+    },
+    useCustomSlidingRotationalSpeed: {
+      value: true,
+      onChange: (value) => {
+        set({
+          raycast: {
+            ...get().raycast,
+            wheelInfos: get().raycast.wheelInfos.map((info) => ({
+              ...info,
+              useCustomSlidingRotationalSpeed: value,
+            })),
+          },
+        })
+      },
+    },
+    customSlidingRotationalSpeed: {
+      value: -0.01,
+      min: -10,
+      max: 10,
+      step: 0.01,
+      onChange: (value) => {
+        set({
+          raycast: {
+            ...get().raycast,
+            wheelInfos: get().raycast.wheelInfos.map((info) => ({
+              ...info,
+              customSlidingRotationalSpeed: value,
+            })),
+          },
+        })
+      },
+    },
+    suspensionForce: {
+      value: 100,
+      min: -10,
+      max: 10,
+      step: 0.01,
+      onChange: (value) => {
+        set({
+          raycast: {
+            ...get().raycast,
+            wheelInfos: get().raycast.wheelInfos.map((info) => ({
+              ...info,
+              suspensionForce: value,
+            })),
+          },
+        })
+      },
+    },
+    frictionSlip: {
+      value: 1.5,
+      min: -10,
+      max: 10,
+      step: 0.01,
+      onChange: (value) => {
+        set({
+          raycast: {
+            ...get().raycast,
+            wheelInfos: get().raycast.wheelInfos.map((info) => ({
+              ...info,
+              frictionSlip: value,
+            })),
+          },
+        })
+      },
+    },
+    sideAcceleration: {
+      value: 3,
+      min: -10,
+      max: 10,
+      step: 0.01,
+      onChange: (value) => {
+        set({
+          raycast: {
+            ...get().raycast,
+            wheelInfos: get().raycast.wheelInfos.map((info) => ({
+              ...info,
+              sideAcceleration: value,
+            })),
+          },
+        })
+      },
+    },
     reset: {
       value: false,
       onChange: (value) => {
