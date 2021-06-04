@@ -282,7 +282,7 @@ export function Editor() {
   }))
 
   return (
-    <button className="play-btn" onClick={() => set({ playing: true })}>
+    <button className="play-btn" onClick={() => set({ editor: false })}>
       Play
     </button>
   )

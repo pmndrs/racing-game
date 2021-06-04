@@ -16,7 +16,7 @@ export function Vehicle({ children }) {
   const birdEyeCamera = useRef()
 
   const set = useStore((state) => state.set)
-  const playing = useStore((state) => state.playing)
+  const editor = useStore((state) => state.editor)
   const raycast = useStore((state) => state.raycast)
   const cameraType = useStore((state) => state.controls.cameraType)
   const { vehicleStart, vehicleConfig } = useStore((state) => state.constants)
@@ -53,7 +53,7 @@ export function Vehicle({ children }) {
       raycast.chassisBody.current.api.rotation.set(...vehicleStart.rotation)
     }
 
-    if (playing) {
+    if (!editor) {
       if (cameraType === 'FIRST_PERSON') {
         defaultCamera.current.position.lerp(v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.7, 0.01), delta)
       } else if (cameraType === 'DEFAULT') {

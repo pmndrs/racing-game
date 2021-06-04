@@ -33,5 +33,6 @@ export function KeyboardControls() {
       return { ...state, controls: { ...state.controls, cameraType } }
     }),
   )
+  useKeys(['e', 'E'], (editor) => set((state) => ({ ...state, editor })))
   return null
 }
