@@ -6,7 +6,7 @@ import { Ground, Ramp, Track, Vehicle } from './models'
 import { Overlay } from './ui/Overlay'
 import { Speed } from './ui/Speed'
 import { Help } from './ui/Help'
-import { Controls } from './utils/Controls'
+import { KeyboardControls } from './controls/KeyboardControls'
 import { useStore } from './store'
 
 // Heightfield needs some more work ...
@@ -33,7 +33,7 @@ export function App() {
         <Track position={[80, 0, -210]} scale={26} />
         <Environment preset="night" />
       </Canvas>
-      <Controls />
+      <KeyboardControls />
       <Help />
       <Speed />
     </Overlay>
