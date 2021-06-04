@@ -14,20 +14,20 @@ import { KeyboardControls } from './controls/KeyboardControls'
 //import { Heightmap } from './utils/Heightmap'
 
 export function App() {
-  const playing = useStore((state) => state.playing)
+  const editor = useStore((state) => state.editor)
   return (
     <Overlay>
       <Canvas dpr={[1, 1.5]} shadows camera={{ position: [0, 5, 15], fov: 50 }}>
-        {playing ? <Game /> : <VehicleEditor />}
+        {editor ? <VehicleEditor /> : <Game />}
       </Canvas>
-      {playing ? (
+      {editor ? (
+        <Editor />
+      ) : (
         <>
           <KeyboardControls />
           <Help />
           <Speed />
         </>
-      ) : (
-        <Editor />
       )}
     </Overlay>
   )
