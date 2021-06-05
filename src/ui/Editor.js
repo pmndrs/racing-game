@@ -278,6 +278,7 @@ export function Editor() {
       },
     },
     debug: { value: false, onChange: (debug) => set({ debug }) },
+    statsMeter: { value: false, onChange: (statsMeter) => set({ statsMeter }) },
   }))
   return null
 }
