@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Physics } from '@react-three/cannon'
-import { Sky, Environment, OrbitControls } from '@react-three/drei'
+import { Sky, Environment, OrbitControls, Stats } from '@react-three/drei'
 import { Editor } from './ui/Editor'
 import { useStore } from './store'
 import { Ramp, Track, Vehicle } from './models'
@@ -14,6 +14,7 @@ import { KeyboardControls } from './controls/KeyboardControls'
 export function App() {
   const [light, setLight] = useState()
   const editor = useStore((state) => state.editor)
+  const statsMeter = useStore((state) => state.statsMeter)
   return (
     <Overlay>
       <Canvas dpr={[1, 1.5]} shadows camera={{ position: [0, 5, 15], fov: 50 }}>
@@ -48,6 +49,7 @@ export function App() {
       <Help />
       <KeyboardControls />
       {editor && <Editor />}
+      {statsMeter && <Stats />}
     </Overlay>
   )
 }
