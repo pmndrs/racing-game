@@ -79,9 +79,7 @@ function MiniMap({ size = 300 }) {
       gl.autoClear = false
       gl.clearDepth()
       direction.subVectors(chassisBody.current.position, levelCenter)
-      const ratioX = size / levelDimensions.x
-      const ratioY = levelDimensions.y / size
-      player.current.position.set(screenPosition.x + direction.x * ratioX, screenPosition.y - direction.z * ratioY, 0)
+      player.current.position.set(screenPosition.x + (direction.x / levelDimensions.x) * size, screenPosition.y - (direction.z / levelDimensions.z) * size, 0)
       gl.render(virtualScene, miniMapCamera.current)
     }
   })
