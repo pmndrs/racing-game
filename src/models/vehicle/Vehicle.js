@@ -79,7 +79,7 @@ export function Vehicle({ children }) {
     <group ref={vehicle}>
       <Chassis ref={raycast.chassisBody} {...vehicleStart}>
         <PerspectiveCamera
-          key={editor}
+          key={'pc' + editor}
           ref={defaultCamera}
           makeDefault={['DEFAULT', 'FIRST_PERSON'].includes(cameraType)}
           fov={75}
@@ -87,7 +87,7 @@ export function Vehicle({ children }) {
           position={[0, 10, -20]}
         />
         <OrthographicCamera
-          key={editor}
+          key={'oc' + editor}
           ref={birdEyeCamera}
           makeDefault={cameraType === 'BIRD_EYE'}
           position={[0, 100, 0]}
@@ -130,6 +130,8 @@ function VehicleAudio() {
     const brake = brakeAudio.current
     return () => void [engine, honk, brake].forEach((sound) => sound.stop)
   }, [])
+
+  console.log("hum")
 
   return (
     <>

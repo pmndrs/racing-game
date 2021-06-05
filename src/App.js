@@ -35,14 +35,14 @@ export function App() {
         />
         <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
           <Heightmap
-            elementSize={1.01 / 2} // uniform xy scale
-            position={[339, -20.1, -470]}
+            elementSize={1 / 2} // uniform xy scale
+            position={[335.8, -20.1, -465.5]}
             rotation={[-Math.PI / 2, 0, -Math.PI]}
           />
           {debug && (
             <HeightmapDebug
-              elementSize={1.01 / 2} // uniform xy scale
-              position={[339, -20.1, -470]}
+              elementSize={1 / 2} // uniform xy scale
+              position={[335.8, -20.1, -465.5]}
               rotation={[-Math.PI / 2, 0, -Math.PI]}
             />
           )}
