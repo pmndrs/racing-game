@@ -113,7 +113,7 @@ function VehicleAudio() {
   useFrame(() => {
     const state = useStore.getState()
     const { honk, brake } = state.controls
-    engineAudio.current.setVolume(1) 
+    engineAudio.current.setVolume(1)
     accelerateAudio.current.setVolume((0.4 * state.speed) / 10)
     brakeAudio.current.setVolume(brake ? 1 : 0.5)
     if (honk) {
