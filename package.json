@@ -31,6 +31,9 @@
     "prettier": "2.3.0",
     "react-scripts": "4.0.3"
   },
+  "resolutions": {
+    "acorn": "8.3.0"
+  },
   "scripts": {
     "start": "craco start",
     "build": "craco build",
