@@ -1,11 +1,11 @@
 import { Suspense, useEffect, useState } from 'react'
 import { Footer } from '@pmndrs/branding'
-import { useProgress, Html } from '@react-three/drei'
+import { useProgress } from '@react-three/drei'
 import { Keys } from './Help'
 import { useStore } from '../store'
 
-function Ready({ setReady }) {
-  const { progress } = useProgress();
+function Ready() {
+  const { progress } = useProgress()
   return (
     <>
       <div
