@@ -10,17 +10,17 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "@pmndrs/branding": "0.0.8",
+    "@pmndrs/branding": "^0.0.8",
     "@react-three/cannon": "1.2.4",
     "@react-three/drei": "5.3.0",
     "@react-three/fiber": "6.2.2",
     "@react-three/postprocessing": "2.0.3",
     "@types/three": "0.128.0",
-    "leva": "0.9.10",
+    "leva": "^0.9.10",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "three": "0.129.0",
-    "zustand": "3.5.1"
+    "zustand": "^3.5.1"
   },
   "devDependencies": {
     "@craco/craco": "6.1.2",
@@ -36,8 +36,7 @@
     "build": "craco build",
     "test": "craco test --env=jsdom",
     "eject": "craco eject",
-    "code-style": "eslint --fix --cache src/**.jsx tasks/**.js",
-    "lint": "eslint src/**.jsx tasks/**.js",
+    "lint": "eslint src",
     "prettier": "prettier --list-different '**/*.{js,jsx,md}'",
     "prettier-fix": "prettier --write '**/*.{js,jsx,md}'"
   },

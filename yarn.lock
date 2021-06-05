@@ -1514,7 +1514,7 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
-"@pmndrs/branding@0.0.8":
+"@pmndrs/branding@^0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@pmndrs/branding/-/branding-0.0.8.tgz#1ebdafdfe03fa2a394fc038313f083a9a4d15186"
   integrity sha512-AIWJJDiUhIWNJqhN+bz1FIlQRURqQDIaJ2FokEIHAJ/k0XIYI6VM5UgVBRupS4YkMXtvdBAYnfsDpFx8C7N4Xw==
@@ -7154,7 +7154,7 @@ last-call-webpack-plugin@^3.0.0:
     lodash "^4.17.5"
     webpack-sources "^1.1.0"
 
-leva@0.9.10:
+leva@^0.9.10:
   version "0.9.10"
   resolved "https://registry.yarnpkg.com/leva/-/leva-0.9.10.tgz#1af7d38d370e4e9434c41fb7c21e3097bef50cd9"
   integrity sha512-7MYdmL/NoXNKwvMoYwcqrnJgIn5YFqKWCI+hqnf3KQI08WWQ2b3sjauzlQiMGaZilu+L+H5Z0ZGRHHZDStTswA==
@@ -11933,11 +11933,6 @@ zstddec@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/zstddec/-/zstddec-0.0.2.tgz#57e2f28dd1ff56b750e07d158a43f0611ad9eeb4"
   integrity sha512-DCo0oxvcvOTGP/f5FA6tz2Z6wF+FIcEApSTu0zV5sQgn9hoT5lZ9YRAKUraxt9oP7l4e8TnNdi8IZTCX6WCkwA==
-
-zustand@3.5.1:
-  version "3.5.1"
-  resolved "https://registry.yarnpkg.com/zustand/-/zustand-3.5.1.tgz#28970280e830924b185ce064061231957398c1d0"
-  integrity sha512-7J56Ve814z4zap71iaKFD+t65LFI//jEq/Vf55BTSVqJZCm+w9rov8OMBg+YSwIPQk54bfoIWHTrOWuAbpEDMw==
 
 zustand@^3.5.1:
   version "3.5.2"
