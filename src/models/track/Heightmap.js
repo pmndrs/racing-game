@@ -68,7 +68,6 @@ function createHeightfieldMatrix(image) {
     }
     matrix.push(row)
   }
-  console.log(matrix)
   return matrix
 }
 

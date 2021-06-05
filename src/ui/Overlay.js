@@ -1,11 +1,17 @@
 import { Suspense, useEffect, useState } from 'react'
 import { Footer } from '@pmndrs/branding'
+import { useProgress } from '@react-three/drei'
 import { Keys } from './Help'
 import { useStore } from '../store'
 
 function Ready({ setReady }) {
   useEffect(() => () => void setReady(true), [])
   return null
+}
+
+function Loader() {
+  const { progress } = useProgress()
+  return <div>loading {progress.toFixed()} %</div>
 }
 
 export function Overlay({ children }) {
@@ -24,7 +30,7 @@ export function Overlay({ children }) {
         <div className="stack">
           <Keys style={{ paddingBottom: 20 }} />
           <a href="#" onClick={() => ready && setClicked(true)}>
-            {!ready ? 'loading' : 'Click to continue'}
+            {!ready ? <Loader /> : 'Click to continue'}
           </a>
         </div>
         <Footer
