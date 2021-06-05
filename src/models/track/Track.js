@@ -11,12 +11,12 @@ import { levelLayer } from '../../enums'
 useGLTF.preload('/models/track-draco.glb')
 
 export function Track(props) {
+  const group = useRef()
   const { ready, level } = useStore(({ ready, level }) => ({ ready, level }))
   const { animations, nodes: n, materials: m } = useGLTF('/models/track-draco.glb')
-  const { actions } = useAnimations(animations, level)
+  const { actions } = useAnimations(animations, group)
   const config = { receiveShadow: true, castShadow: true, 'material-roughness': 1 }
 
-  const ground = useRef()
   const birds = useRef()
   const clouds = useRef()
   useFrame((state, delta) => {
@@ -29,11 +29,11 @@ export function Track(props) {
   }, [actions])
 
   useLayoutEffect(() => {
-    ground.current.traverse((child) => void child.layers.enable(levelLayer))
+    level.current.traverse((child) => void child.layers.enable(levelLayer))
   }, [])
 
   return (
-    <group ref={level} {...props} dispose={null}>
+    <group ref={group} {...props} dispose={null}>
       <group name="train" position={[-5.16, 0.13, 2.45]}>
         <mesh geometry={n.train_1.geometry} material={m.custom7Clone} {...config} />
         <mesh geometry={n.train_2.geometry} material={m.blueSteelClone} {...config} />
@@ -48,7 +48,7 @@ export function Track(props) {
       </group>
       <mesh geometry={n.track_2.geometry} material={m['Material.001']} {...config} />
       <mesh geometry={n.tube.geometry} material={m['default']} {...config} />
-      <group ref={ground}>
+      <group ref={level}>
         <mesh geometry={n.strip.geometry} material={n.strip.material} {...config} />
         <mesh geometry={n.track_1.geometry} material={n.track_1.material} {...config} />
         <mesh geometry={n.mountains.geometry} material={n.mountains.material} {...config} />

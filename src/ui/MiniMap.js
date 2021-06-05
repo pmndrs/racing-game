@@ -5,41 +5,40 @@ import { Box3, Matrix4, Scene, Vector3 } from 'three'
 import { levelLayer } from '../enums'
 import { useStore } from '../store'
 
-function useLevelDimensions() {
-  const [levelBox] = useState(new Box3())
-  const [levelCenter] = useState(new Vector3())
-  const [levelDimensions] = useState(new Vector3())
+function useLevelGeometricProperties() {
+  const [levelProperties, setLevelProperties] = useState({})
   const level = useStore((state) => state.level)
 
   useEffect(() => {
-    const box = new Box3().setFromObject(level.current)
-    levelBox.copy(box)
-    levelBox.getCenter(levelCenter)
-    levelBox.getSize(levelDimensions)
+    // Weirdly the properties returned from the level are wrong without a slight delay
+    setTimeout(() => {
+      const levelBox = new Box3().setFromObject(level.current)
+      const levelCenter = levelBox.getCenter(new Vector3())
+      const levelDimensions = levelBox.getSize(new Vector3())
+      setLevelProperties({ levelBox, levelCenter, levelDimensions })
+    })
   }, [])
 
-  return {
-    levelBox,
-    levelCenter,
-    levelDimensions,
-  }
+  return levelProperties
 }
 
 function MiniMapTexture({ buffer }) {
   const camera = useRef()
   const { gl, scene } = useThree(({ gl, scene }) => ({ gl, scene }))
-  const { levelBox, levelCenter } = useLevelDimensions()
+  const { levelBox, levelCenter } = useLevelGeometricProperties()
 
   useEffect(() => {
-    gl.setRenderTarget(buffer)
-    camera.current.bottom = levelBox.min.z - levelCenter.z
-    camera.current.top = levelBox.max.z - levelCenter.z
-    camera.current.left = levelBox.min.x - levelCenter.x
-    camera.current.right = levelBox.max.x - levelCenter.x
-    camera.current.position.set(levelCenter.x, levelCenter.y + levelBox.max.y, levelCenter.z)
-    camera.current.updateProjectionMatrix()
-    gl.render(scene, camera.current)
-    gl.setRenderTarget(null)
+    if (levelBox && levelCenter) {
+      gl.setRenderTarget(buffer)
+      camera.current.bottom = levelBox.min.z - levelCenter.z
+      camera.current.top = levelBox.max.z - levelCenter.z
+      camera.current.left = levelBox.min.x - levelCenter.x
+      camera.current.right = levelBox.max.x - levelCenter.x
+      camera.current.position.set(levelCenter.x, levelCenter.y + levelBox.max.y, levelCenter.z)
+      camera.current.updateProjectionMatrix()
+      gl.render(scene, camera.current)
+      gl.setRenderTarget(null)
+    }
   }, [levelBox, levelCenter])
 
   useLayoutEffect(() => {
@@ -61,7 +60,7 @@ function MiniMap({ size = 300 }) {
   const [screenPosition, setScreenPosition] = useState(new Vector3(screenSize.width / 2 - size / 2, screenSize.height / 2 - size / 2, 0))
   const player = useRef()
   const matrix = new Matrix4()
-  const { levelCenter, levelDimensions } = useLevelDimensions()
+  const { levelCenter, levelDimensions } = useLevelGeometricProperties()
   const { chassisBody, map } = useStore(({ raycast: { chassisBody }, controls: { map } }) => ({ chassisBody, map }))
   const direction = new Vector3()
 
@@ -72,7 +71,7 @@ function MiniMap({ size = 300 }) {
   useFrame(() => {
     gl.autoClear = true
     gl.render(scene, camera)
-    if (miniMapCamera.current) {
+    if (miniMapCamera.current && levelCenter && levelDimensions) {
       matrix.copy(camera.matrix).invert()
       miniMap.current.quaternion.setFromRotationMatrix(matrix)
       player.current.quaternion.setFromRotationMatrix(matrix)
