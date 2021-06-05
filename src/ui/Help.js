@@ -12,6 +12,7 @@ const controlOptions = [
   { keys: ['R'], action: 'Reset' },
   { keys: ['E'], action: 'Editor' },
   { keys: ['I'], action: 'Help' },
+  { keys: ['M'], action: 'Map' },
 ]
 
 export function Help() {

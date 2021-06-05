@@ -60,7 +60,7 @@ function MiniMap({ size = 300 }) {
   const player = useRef()
   const matrix = new Matrix4()
   const { levelCenter, levelDimensions } = useLevelDimensions()
-  const chassisBody = useStore((state) => state.raycast.chassisBody)
+  const { chassisBody, map } = useStore(({ raycast: { chassisBody }, controls: { map } }) => ({ chassisBody, map }))
   const direction = new Vector3()
 
   useEffect(() => {
@@ -68,32 +68,36 @@ function MiniMap({ size = 300 }) {
   }, [screenSize])
 
   useFrame(() => {
-    matrix.copy(camera.matrix).invert()
-    miniMap.current.quaternion.setFromRotationMatrix(matrix)
-    player.current.quaternion.setFromRotationMatrix(matrix)
     gl.autoClear = true
     gl.render(scene, camera)
-    gl.autoClear = false
-    gl.clearDepth()
-    direction.subVectors(chassisBody.current.position, levelCenter)
-    const ratioX = size / levelDimensions.x
-    const ratioY = levelDimensions.y / size
-    player.current.position.set(screenPosition.x + direction.x * ratioX, screenPosition.y - direction.z * ratioY, 0)
-    gl.render(virtualScene, miniMapCamera.current)
-  }, 1)
+    if (miniMapCamera.current) {
+      matrix.copy(camera.matrix).invert()
+      miniMap.current.quaternion.setFromRotationMatrix(matrix)
+      player.current.quaternion.setFromRotationMatrix(matrix)
+      gl.autoClear = false
+      gl.clearDepth()
+      direction.subVectors(chassisBody.current.position, levelCenter)
+      const ratioX = size / levelDimensions.x
+      const ratioY = levelDimensions.y / size
+      player.current.position.set(screenPosition.x + direction.x * ratioX, screenPosition.y - direction.z * ratioY, 0)
+      gl.render(virtualScene, miniMapCamera.current)
+    }
+  })
 
   return (
     <>
-      {createPortal(
-        <>
-          <OrthographicCamera ref={miniMapCamera} makeDefault={false} position={[0, 0, 100]} />
-          <sprite ref={miniMap} position={screenPosition} scale={[size, size, 1]}>
-            <spriteMaterial map={buffer.texture} />
-          </sprite>
-          <sprite ref={player} position={screenPosition} scale={[size / 30, size / 30, 1]} />
-        </>,
-        virtualScene,
-      )}
+      {map
+        ? createPortal(
+            <>
+              <OrthographicCamera ref={miniMapCamera} makeDefault={false} position={[0, 0, 100]} />
+              <sprite ref={miniMap} position={screenPosition} scale={[size, size, 1]}>
+                <spriteMaterial map={buffer.texture} />
+              </sprite>
+              <sprite ref={player} position={screenPosition} scale={[size / 30, size / 30, 1]} />
+            </>,
+            virtualScene,
+          )
+        : null}
       <MiniMapTexture buffer={buffer} />
     </>
   )
