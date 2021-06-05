@@ -14,7 +14,6 @@ import { KeyboardControls } from './controls/KeyboardControls'
 export function App() {
   const [light, setLight] = useState()
   const editor = useStore((state) => state.editor)
-  const debug = useStore((state) => state.debug)
   return (
     <Overlay>
       <Canvas dpr={[1, 1.5]} shadows camera={{ position: [0, 5, 15], fov: 50 }}>

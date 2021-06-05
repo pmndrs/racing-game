@@ -21,10 +21,19 @@ const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...pro
   const ready = useStore((state) => state.ready)
   const debug = useStore((state) => state.debug)
   const { nodes, materials } = useGLTF('/models/chassis-draco.glb')
-  const [, api] = useBox(() => ({ mass, args, allowSleep: false, onCollide: (e) => {
-    console.log("bonk", e)
-    if (!crashAudio.current.isPlaying) crashAudio.current.play()
-  }, ...props }), ref)
+  const [, api] = useBox(
+    () => ({
+      mass,
+      args,
+      allowSleep: false,
+      onCollide: () => {
+        crashAudio.current.setVolume((0.4 * useStore.getState().speed) / 10)
+        if (!crashAudio.current.isPlaying) crashAudio.current.play()
+      },
+      ...props,
+    }),
+    ref,
+  )
 
   useFrame((_, delta) => {
     const state = useStore.getState()
@@ -67,7 +76,7 @@ const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...pro
         </group>
       </group>
       {children}
-      {ready && <PositionalAudio ref={crashAudio} url="/sounds/crash.mp3" loop={false} distance={5} />}
+      {ready && <PositionalAudio ref={crashAudio} url="/sounds/crash.mp3" loop={false} autoplay={false} distance={5} />}
     </group>
   )
 })

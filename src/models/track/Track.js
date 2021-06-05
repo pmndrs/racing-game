@@ -2,7 +2,7 @@
 // by: Batuhan13
 
 import * as THREE from 'three'
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { MeshDistortMaterial, useGLTF, useAnimations, PositionalAudio } from '@react-three/drei'
 import { useStore } from '../../store'
@@ -27,12 +27,6 @@ export function Track(props) {
     actions.train.play()
   }, [actions])
 
-  const trainAudio = useRef()
-  useEffect(() => {
-    const train = trainAudio.current
-    return () => void train && train.stop()
-  }, [])
-
   return (
     <group ref={group} {...props} dispose={null}>
       <group name="train" position={[-5.16, 0.13, 2.45]}>
@@ -45,7 +39,7 @@ export function Track(props) {
         <mesh geometry={n.train_7.geometry} material={m.steelClone} {...config} />
         <mesh geometry={n.train_8.geometry} material={m.lightRedClone} {...config} />
         <mesh geometry={n.train_9.geometry} material={m.darkClone} {...config} />
-        {ready && <PositionalAudio ref={trainAudio} url="/sounds/train.mp3" loop distance={5} />}
+        {ready && <PositionalAudio url="/sounds/train.mp3" loop autoplay distance={10} />}
       </group>
       <mesh geometry={n.tube.geometry} material={m['default']} {...config} />
       <mesh geometry={n.strip.geometry} material={n.strip.material} {...config} />
@@ -55,6 +49,7 @@ export function Track(props) {
       <mesh geometry={n.terrain.geometry} material={n.terrain.material} {...config} />
       <mesh geometry={n.water.geometry}>
         <MeshDistortMaterial speed={4} map={m.ColorPaletteWater.map} roughness={0} side={THREE.DoubleSide} />
+        {ready && <PositionalAudio url="/sounds/water.mp3" loop autoplay distance={20} />}
       </mesh>
       <group ref={birds}>
         <mesh geometry={n.bird001.geometry} material={n.bird001.material} {...config} />
