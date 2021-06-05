@@ -32,7 +32,7 @@ export function Vehicle({ children }) {
     const vSub = raycast.chassisBody.current.api.velocity.subscribe((velocity) => set({ velocity, speed: v.set(...velocity).length() }))
     const sSub = api.sliding.subscribe((sliding) => set({ sliding }))
     return () => void [vSub, sSub].forEach((sub) => sub())
-  }, [])
+  }, [editor])
 
   useFrame((state, delta) => {
     const { speed, controls } = useStore.getState()
@@ -79,6 +79,7 @@ export function Vehicle({ children }) {
     <group ref={vehicle}>
       <Chassis ref={raycast.chassisBody} {...vehicleStart}>
         <PerspectiveCamera
+          key={editor}
           ref={defaultCamera}
           makeDefault={['DEFAULT', 'FIRST_PERSON'].includes(cameraType)}
           fov={75}
@@ -86,6 +87,7 @@ export function Vehicle({ children }) {
           position={[0, 10, -20]}
         />
         <OrthographicCamera
+          key={editor}
           ref={birdEyeCamera}
           makeDefault={cameraType === 'BIRD_EYE'}
           position={[0, 100, 0]}

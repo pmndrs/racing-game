@@ -1,6 +1,7 @@
 // https://sketchfab.com/3d-models/desert-race-game-prototype-map-v2-2ccd3dcbd197415d9f1b97c30b1248c5
 // by: Batuhan13
 
+import * as THREE from 'three'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { MeshDistortMaterial, useGLTF, useAnimations, PositionalAudio } from '@react-three/drei'
@@ -46,12 +47,14 @@ export function Track(props) {
         <mesh geometry={n.train_9.geometry} material={m.darkClone} {...config} />
         {ready && <PositionalAudio ref={trainAudio} url="/sounds/train.mp3" loop distance={5} />}
       </group>
+      <mesh geometry={n.tube.geometry} material={m['default']} {...config} />
       <mesh geometry={n.strip.geometry} material={n.strip.material} {...config} />
-      <mesh geometry={n.track.geometry} material={n.track.material} {...config} />
+      <mesh geometry={n.track_1.geometry} material={n.track_1.material} {...config} />
+      <mesh geometry={n.track_2.geometry} material={m['Material.001']} {...config} />
       <mesh geometry={n.mountains.geometry} material={n.mountains.material} {...config} />
       <mesh geometry={n.terrain.geometry} material={n.terrain.material} {...config} />
       <mesh geometry={n.water.geometry}>
-        <MeshDistortMaterial speed={4} map={m.ColorPaletteWater.map} roughness={0} />
+        <MeshDistortMaterial speed={4} map={m.ColorPaletteWater.map} roughness={0} side={THREE.DoubleSide} />
       </mesh>
       <group ref={birds}>
         <mesh geometry={n.bird001.geometry} material={n.bird001.material} {...config} />
