@@ -84,7 +84,7 @@ function createHeightfieldMatrix(image) {
 
 export function Heightmap(props) {
   const { elementSize, position, rotation } = props
-  const debug = useStore(state => state.debug)
+  const debug = useStore((state) => state.debug)
   const heightmap = useTexture('/textures/heightmap_1024.png')
   const heights = useAsset(async () => createHeightfieldMatrix(heightmap.image), heightmap)
   useHeightfield(() => ({ args: [heights, { elementSize }], position, rotation }))
