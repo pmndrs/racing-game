@@ -4,8 +4,15 @@ import { useProgress } from '@react-three/drei'
 import { Keys } from './Help'
 import { useStore } from '../store'
 
-function Ready() {
+function Ready({ setReady }) {
   const { progress } = useProgress()
+
+  useEffect(() => {
+    if (progress === 100) {
+      setReady(true);
+    }
+  }, [progress])
+
   return (
     <>
       <div
@@ -24,21 +31,22 @@ function Ready() {
 }
 
 export function Overlay({ children }) {
+  const [ready, setReady] = useState(false)
   const [clicked, setClicked] = useState(false)
   const set = useStore((state) => state.set)
 
   useEffect(() => {
-    if (clicked) set({ ready: true })
-  }, [clicked])
+    if (clicked && ready) set({ ready: true })
+  }, [ready, clicked])
 
   return (
     <>
-      <Suspense fallback={<Ready />}>{children}</Suspense>
-      <div className={`fullscreen bg ready ${clicked && 'clicked'}`}>
+      <Suspense fallback={<Ready setReady={setReady} />}>{children}</Suspense>
+      <div className={`fullscreen bg ${ready ? 'ready' : 'notready'} ${clicked && 'clicked'}`}>
         <div className="stack">
           <Keys style={{ paddingBottom: 20 }} />
-          <a href="#" onClick={() => setClicked(true)}>
-            Click to continue
+          <a href="#" onClick={() => ready && setClicked(true)}>
+            {!ready ? 'loading' : 'Click to continue'}
           </a>
         </div>
         <Footer
