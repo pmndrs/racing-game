@@ -5,7 +5,7 @@ import { Sky, Environment, OrbitControls } from '@react-three/drei'
 import { Editor } from './ui/Editor'
 import { useStore } from './store'
 import { Ramp, Track, Vehicle } from './models'
-import { Heightmap, HeightmapDebug } from './models/track/Heightmap'
+import { Heightmap } from './models/track/Heightmap'
 import { Overlay } from './ui/Overlay'
 import { Speed } from './ui/Speed'
 import { Help } from './ui/Help'
@@ -34,18 +34,7 @@ export function App() {
           shadow-camera-bottom={-150}
         />
         <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
-          <Heightmap
-            elementSize={1 / 2} // uniform xy scale
-            position={[335.8, -20.1, -465.5]}
-            rotation={[-Math.PI / 2, 0, -Math.PI]}
-          />
-          {debug && (
-            <HeightmapDebug
-              elementSize={1 / 2} // uniform xy scale
-              position={[335.8, -20.1, -465.5]}
-              rotation={[-Math.PI / 2, 0, -Math.PI]}
-            />
-          )}
+          <Heightmap elementSize={1 / 2} position={[335.8, -20.1, -465.5]} rotation={[-Math.PI / 2, 0, -Math.PI]} />
           <Vehicle>
             {/* Mount the main-lights target as a child to the vehicle, so that light follows it */}
             {light && <primitive object={light.target} />}

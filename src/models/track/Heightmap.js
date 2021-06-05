@@ -4,6 +4,7 @@ import { extend } from '@react-three/fiber'
 import { useTexture } from '@react-three/drei'
 import { useHeightfield } from '@react-three/cannon'
 import { useAsset } from 'use-asset'
+import { useStore } from '../../store'
 
 function HeightmapGeometry({ heights, elementSize, ...rest }) {
   const ref = useRef()
@@ -73,13 +74,14 @@ function createHeightfieldMatrix(image) {
 
 export function Heightmap(props) {
   const { elementSize, position, rotation } = props
+  const debug = useStore(state => state.debug)
   const heightmap = useTexture('/textures/heightmap_1024.png')
   const heights = useAsset(async () => createHeightfieldMatrix(heightmap.image), heightmap)
   useHeightfield(() => ({ args: [heights, { elementSize }], position, rotation }))
-  return null
+  return debug ? <HeightmapDebug {...props} /> : null
 }
 
-export function HeightmapDebug({ elementSize, ...props }) {
+function HeightmapDebug({ elementSize, ...props }) {
   const heightmap = useTexture('/textures/heightmap_1024.png')
   const heights = useAsset(async () => createHeightfieldMatrix(heightmap.image), heightmap)
   return (
