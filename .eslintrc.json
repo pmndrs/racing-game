@@ -19,7 +19,7 @@
         "react"
     ],
     "rules": {
-        "no-unused-vars": "warn",
+        "no-unused-vars": ["warn", { "ignoreRestSiblings": true }],
         "react/display-name": 0,
         "react/prop-types": 0,
         "react/react-in-jsx-scope": 0,
