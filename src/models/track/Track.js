@@ -6,12 +6,13 @@ import { useLayoutEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { MeshDistortMaterial, useGLTF, useAnimations, PositionalAudio } from '@react-three/drei'
 import { useStore } from '../../store'
+import { levelLayer } from '../../enums'
 
 useGLTF.preload('/models/track-draco.glb')
 
 export function Track(props) {
   const group = useRef()
-  const ready = useStore((state) => state.ready)
+  const { ready, level } = useStore(({ ready, level }) => ({ ready, level }))
   const { animations, nodes: n, materials: m } = useGLTF('/models/track-draco.glb')
   const { actions } = useAnimations(animations, group)
   const config = { receiveShadow: true, castShadow: true, 'material-roughness': 1 }
@@ -27,6 +28,10 @@ export function Track(props) {
     actions.train.play()
   }, [actions])
 
+  useLayoutEffect(() => {
+    level.current.traverse((child) => void child.layers.enable(levelLayer))
+  }, [])
+
   return (
     <group ref={group} {...props} dispose={null}>
       <group name="train" position={[-5.16, 0.13, 2.45]}>
@@ -41,16 +46,18 @@ export function Track(props) {
         <mesh geometry={n.train_9.geometry} material={m.darkClone} {...config} />
         {ready && <PositionalAudio url="/sounds/train.mp3" loop autoplay distance={10} />}
       </group>
-      <mesh geometry={n.tube.geometry} material={m['default']} {...config} />
-      <mesh geometry={n.strip.geometry} material={n.strip.material} {...config} />
-      <mesh geometry={n.track_1.geometry} material={n.track_1.material} {...config} />
       <mesh geometry={n.track_2.geometry} material={m['Material.001']} {...config} />
-      <mesh geometry={n.mountains.geometry} material={n.mountains.material} {...config} />
-      <mesh geometry={n.terrain.geometry} material={n.terrain.material} {...config} />
-      <mesh geometry={n.water.geometry}>
-        <MeshDistortMaterial speed={4} map={m.ColorPaletteWater.map} roughness={0} side={THREE.DoubleSide} />
-        {ready && <PositionalAudio url="/sounds/water.mp3" loop autoplay distance={20} />}
-      </mesh>
+      <mesh geometry={n.tube.geometry} material={m['default']} {...config} />
+      <group ref={level}>
+        <mesh geometry={n.strip.geometry} material={n.strip.material} {...config} />
+        <mesh geometry={n.track_1.geometry} material={n.track_1.material} {...config} />
+        <mesh geometry={n.mountains.geometry} material={n.mountains.material} {...config} />
+        <mesh geometry={n.terrain.geometry} material={n.terrain.material} {...config} />
+        <mesh geometry={n.water.geometry}>
+          <MeshDistortMaterial speed={4} map={m.ColorPaletteWater.map} roughness={0} side={THREE.DoubleSide} />
+          {ready && <PositionalAudio url="/sounds/water.mp3" loop autoplay distance={20} />}
+        </mesh>
+      </group>
       <group ref={birds}>
         <mesh geometry={n.bird001.geometry} material={n.bird001.material} {...config} />
         <mesh geometry={n.bird002.geometry} material={n.bird002.material} {...config} />

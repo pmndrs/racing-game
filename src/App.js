@@ -1,28 +1,36 @@
 import { useState } from 'react'
+import { Layers } from 'three'
 import { Canvas } from '@react-three/fiber'
 import { Physics } from '@react-three/cannon'
 import { Sky, Environment, OrbitControls, Stats } from '@react-three/drei'
 import { Editor } from './ui/Editor'
 import { useStore } from './store'
+import { levelLayer } from './enums'
 import { Ramp, Track, Vehicle } from './models'
 import { Heightmap } from './models/track/Heightmap'
 import { Overlay } from './ui/Overlay'
 import { Speed } from './ui/Speed'
 import { Help } from './ui/Help'
+import { MiniMap } from './ui/MiniMap'
 import { KeyboardControls } from './controls/KeyboardControls'
+
+const layers = new Layers()
+layers.enable(levelLayer)
 
 export function App() {
   const [light, setLight] = useState()
   const editor = useStore((state) => state.editor)
   const statsMeter = useStore((state) => state.statsMeter)
+
   return (
     <Overlay>
       <Canvas dpr={[1, 1.5]} shadows camera={{ position: [0, 5, 15], fov: 50 }}>
         <fog attach="fog" args={['white', 0, 500]} />
         <Sky sunPosition={[100, 10, 100]} scale={1000} />
-        <ambientLight intensity={0.1} />
+        <ambientLight layers={layers} intensity={0.1} />
         <directionalLight
           ref={setLight}
+          layers={layers}
           position={[100, 100, 50]}
           intensity={1}
           castShadow
@@ -44,6 +52,7 @@ export function App() {
         <Track position={[80, -0.1, -210]} scale={26} />
         <Environment preset="night" />
         {editor && <OrbitControls />}
+        <MiniMap />
       </Canvas>
       <Speed />
       <Help />
