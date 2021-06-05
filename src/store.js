@@ -1,6 +1,7 @@
 import { createRef } from 'react'
 import create from 'zustand'
 import { camera } from './enums.js'
+import * as THREE from 'three'
 
 const vehicleConfig = {
   radius: 0.35,
@@ -63,9 +64,11 @@ const useStore = create((set, get) => {
     help: false,
     debug: false,
     raycast: {
+      instance: new THREE.Raycaster(),
       chassisBody: createRef(),
       wheels: [createRef(), createRef(), createRef(), createRef()],
       wheelInfos: [wheelInfo1, wheelInfo2, wheelInfo3, wheelInfo4],
+      boosters: [],
       indexForwardAxis: 2,
       indexRightAxis: 0,
       indexUpAxis: 1,

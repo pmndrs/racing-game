@@ -10,6 +10,7 @@ import { Dust } from '../../effects/Dust'
 import { Skid } from '../../effects/Skid'
 
 const v = new THREE.Vector3()
+const rayDownDirection = new THREE.Vector3(0, -1, 0).normalize()
 
 export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [0, 4, 0], rotation = [0, Math.PI / 2, 0] }) {
   const defaultCamera = useRef()
@@ -71,6 +72,18 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [0
       (-steeringValue * speed) / 200,
       delta * 4,
     )
+
+    // check booster interaction
+    const rayOrigin = raycast.chassisBody.current.position
+
+    raycast.instance.set(rayOrigin, rayDownDirection)
+
+    const objectsToTest = raycast.boosters
+    const intersects = raycast.instance.intersectObjects(objectsToTest)
+    const isBoosted = intersects.length > 0
+    if (isBoosted !== boost) {
+      set((state) => ({ ...state, controls: { ...state.controls, boost: isBoosted } }))
+    }
   })
 
   return (
