@@ -89,7 +89,7 @@ function MiniMap({ size = 300 }) {
         ? createPortal(
             <>
               <ambientLight intensity={1} />
-              <OrthographicCamera ref={miniMapCamera} makeDefault={false} position={[0, 0, 100]} />
+              <OrthographicCamera ref={miniMapCamera} makeDefault={false} position={[0, 0, 0.1]} />
               <sprite ref={miniMap} position={screenPosition} scale={[size, size, 1]}>
                 <spriteMaterial map={buffer.texture} alphaMap={mask} />
               </sprite>
