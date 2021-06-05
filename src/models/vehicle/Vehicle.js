@@ -109,12 +109,14 @@ export function Vehicle({ children }) {
 
 function VehicleAudio() {
   const engineAudio = useRef()
+  const accelerateAudio = useRef()
   const honkAudio = useRef()
   const brakeAudio = useRef()
   useFrame(() => {
     const state = useStore.getState()
     const { honk, brake } = state.controls
-    engineAudio.current.setVolume((0.4 * state.speed) / 50)
+    engineAudio.current.setVolume(1) 
+    accelerateAudio.current.setVolume((0.4 * state.speed) / 10)
     brakeAudio.current.setVolume(brake ? 1 : 0.2)
     if (honk) {
       if (!honkAudio.current.isPlaying) honkAudio.current.play()
@@ -131,11 +133,10 @@ function VehicleAudio() {
     return () => void [engine, honk, brake].forEach((sound) => sound.stop)
   }, [])
 
-  console.log("hum")
-
   return (
     <>
       <PositionalAudio ref={engineAudio} url="/sounds/engine.mp3" loop distance={5} />
+      <PositionalAudio ref={accelerateAudio} url="/sounds/accelerate.mp3" loop distance={5} />
       <PositionalAudio ref={honkAudio} url="/sounds/honk.mp3" loop distance={10} />
       <PositionalAudio ref={brakeAudio} url="/sounds/tire-brake.mp3" loop distance={10} />
     </>
