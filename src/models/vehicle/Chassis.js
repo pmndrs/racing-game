@@ -50,12 +50,6 @@ const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...pro
 
   return (
     <group ref={ref} api={api} dispose={null}>
-      {debug && (
-        <mesh>
-          <boxGeometry args={args} />
-          <meshBasicMaterial transparent opacity={0.25} color="green" />
-        </mesh>
-      )}
       <group position={[0, -0.2, -0.2]}>
         <mesh castShadow receiveShadow geometry={nodes.Chassis_1.geometry} material={materials.BodyPaint} material-color="#f0c050" />
         <mesh castShadow geometry={nodes.Chassis_2.geometry} material={nodes.Chassis_2.material} material-color="#353535" />
@@ -77,6 +71,12 @@ const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...pro
       </group>
       {children}
       {ready && <PositionalAudio ref={crashAudio} url="/sounds/crash.mp3" loop={false} autoplay={false} distance={5} />}
+      {debug && (
+        <mesh>
+          <boxGeometry args={args} />
+          <meshBasicMaterial transparent opacity={0.25} color="green" />
+        </mesh>
+      )}
     </group>
   )
 })
