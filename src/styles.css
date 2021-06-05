@@ -234,3 +234,11 @@ button {
   text-decoration: underline;
   color: inherit;
 }
+
+/* --------------- LOADING SCREEN --------------- */
+
+.loading-title { 
+    padding-left: 20%;
+    padding-bottom: 20%;
+    text-align:center;
+}
