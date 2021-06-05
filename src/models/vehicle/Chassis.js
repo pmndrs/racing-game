@@ -24,7 +24,7 @@ const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...pro
   useFrame((_, delta) => {
     const state = useStore.getState()
     const isBraking = state.controls.brake
-    const isCockpit = state.controls.cameraType === 'FIRST_PERSON'
+    const isCockpit = state.camera === 'FIRST_PERSON'
     const controls = state.controls
     brake.current.material.color.lerp(c.set(isBraking ? '#555' : 'white'), delta * 10)
     brake.current.material.emissive.lerp(c.set(isBraking ? 'red' : 'red'), delta * 10)
