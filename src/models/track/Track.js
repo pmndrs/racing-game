@@ -10,10 +10,9 @@ import { useStore } from '../../store'
 useGLTF.preload('/models/track-draco.glb')
 
 export function Track(props) {
-  const group = useRef()
-  const ready = useStore((state) => state.ready)
+  const { ready, level } = useStore(({ ready, level }) => ({ ready, level }))
   const { animations, nodes: n, materials: m } = useGLTF('/models/track-draco.glb')
-  const { actions } = useAnimations(animations, group)
+  const { actions } = useAnimations(animations, level)
   const config = { receiveShadow: true, castShadow: true, 'material-roughness': 1 }
 
   const birds = useRef()
@@ -28,7 +27,7 @@ export function Track(props) {
   }, [actions])
 
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group ref={level} {...props} dispose={null}>
       <group name="train" position={[-5.16, 0.13, 2.45]}>
         <mesh geometry={n.train_1.geometry} material={m.custom7Clone} {...config} />
         <mesh geometry={n.train_2.geometry} material={m.blueSteelClone} {...config} />

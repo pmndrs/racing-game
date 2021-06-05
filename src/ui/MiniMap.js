@@ -1,52 +1,73 @@
-import { OrthographicCamera, Ring } from '@react-three/drei'
-import { useFrame, useThree } from '@react-three/fiber'
-import { useRef } from 'react'
+import { OrthographicCamera, useFBO } from '@react-three/drei'
+import { createPortal, useFrame, useThree } from '@react-three/fiber'
+import { useEffect, useMemo, useRef } from 'react'
+import { Box3, Scene } from 'three'
+import { Matrix4 } from 'three'
 import { Vector3 } from 'three'
 import { useStore } from '../store'
 
-const cameraDistance = new Vector3(0, 100, 0)
-const ringDistance = new Vector3(0, -20, 0)
-function MiniMap() {
-  const miniMapCamera = useRef()
-  const frame = useRef()
-  const raycast = useStore((state) => state.raycast)
-  const { gl, camera, scene, size } = useThree(({ camera, gl, scene, size }) => ({ gl, camera, scene, size }))
-  const ratio = size.width / size.height
+const levelCenter = new Vector3()
+function useLevelDimensions(callback) {
+  const callbackRef = useRef(callback)
+  const level = useStore((state) => state.level)
 
-  useFrame((state, delta) => {
+  useEffect(() => {
+    const levelBox = new Box3().setFromObject(level.current)
+    levelBox.getCenter(levelCenter)
+    callbackRef.current({ levelBox, levelCenter })
+  }, [])
+}
+
+function MiniMapTexture({ buffer }) {
+  const camera = useRef()
+  const { gl, scene } = useThree(({ gl, scene }) => ({ gl, scene }))
+
+  useLevelDimensions(({ levelBox, levelCenter }) => {
+    gl.setRenderTarget(buffer)
+    camera.current.bottom = levelBox.min.z - levelCenter.z
+    camera.current.top = levelBox.max.z - levelCenter.z
+    camera.current.left = levelBox.min.x - levelCenter.x
+    camera.current.right = levelBox.max.x - levelCenter.x
+    camera.current.position.set(levelCenter.x, levelCenter.y + levelBox.max.y, levelCenter.z)
+    camera.current.updateProjectionMatrix()
+    gl.render(scene, camera.current)
+    gl.setRenderTarget(null)
+  })
+
+  return <OrthographicCamera ref={camera} makeDefault={false} rotation={[-Math.PI / 2, 0, 0]} near={20} far={500} />
+}
+
+function MiniMap() {
+  const virtualScene = useMemo(() => new Scene(), [])
+  const buffer = useFBO(600, 600)
+  const miniMapCamera = useRef()
+  const miniMap = useRef()
+
+  const matrix = new Matrix4()
+  const { gl, camera, scene, size } = useThree(({ camera, gl, scene, size }) => ({ gl, camera, scene, size }))
+
+  useFrame(() => {
+    matrix.copy(camera.matrix).invert()
+    miniMap.current.quaternion.setFromRotationMatrix(matrix)
     gl.autoClear = true
     gl.render(scene, camera)
-    if (miniMapCamera.current && raycast.chassisBody.current && frame.current) {
-      gl.autoClear = false
-      gl.clearDepth()
-
-      const lerpAlpha = 1.0 - Math.pow(0.001, delta)
-      const newPosition = raycast.chassisBody.current.position.clone().add(cameraDistance)
-      const framePosition = newPosition.clone().add(ringDistance)
-      miniMapCamera.current.position.lerp(newPosition, lerpAlpha)
-      frame.current.position.lerp(framePosition, lerpAlpha)
-
-      gl.setViewport(0, size.height - size.height * 0.15 * ratio, size.width * 0.15, size.height * 0.15 * ratio)
-      gl.render(scene, miniMapCamera.current)
-      gl.setViewport(0, 0, size.width, size.height)
-    }
+    gl.autoClear = false
+    gl.clearDepth()
+    gl.render(virtualScene, miniMapCamera.current)
   }, 1)
 
   return (
     <>
-      <OrthographicCamera
-        ref={miniMapCamera}
-        makeDefault={false}
-        position={cameraDistance}
-        rotation={[(-1 * Math.PI) / 2, 0, Math.PI]}
-        near={20}
-        far={120}
-        left={-100}
-        right={100}
-        bottom={-100}
-        top={100}
-      />
-      <Ring ref={frame} position={cameraDistance.clone().add(ringDistance)} rotation={[-Math.PI / 2, 0, Math.PI / 4]} args={[140, 150, 4]} />
+      {createPortal(
+        <>
+          <OrthographicCamera ref={miniMapCamera} makeDefault={false} position={[0, 0, 100]} />
+          <sprite ref={miniMap} position={[size.width / 2 - 200, size.height / 2 - 200, 0]} scale={[300, 300, 1]}>
+            <spriteMaterial map={buffer.texture} />
+          </sprite>
+        </>,
+        virtualScene,
+      )}
+      <MiniMapTexture buffer={buffer} />
     </>
   )
 }
