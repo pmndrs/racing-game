@@ -1,6 +1,6 @@
 # 🏎️ @pmndrs/racing-game
 
-![img](thumbnail.jpg)
+![img](thumbnail.webp)
 
 Live demo (current state): http://encouraging-ducks.surge.sh/
 
