@@ -1,9 +1,8 @@
 import { OrthographicCamera, useFBO } from '@react-three/drei'
 import { createPortal, useFrame, useThree } from '@react-three/fiber'
-import { useEffect, useMemo, useRef } from 'react'
-import { Box3, Scene } from 'three'
-import { Matrix4 } from 'three'
-import { Vector3 } from 'three'
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
+import { Box3, Matrix4, Scene, Vector3 } from 'three'
+import { levelLayer } from '../enums'
 import { useStore } from '../store'
 
 const levelCenter = new Vector3()
@@ -33,6 +32,11 @@ function MiniMapTexture({ buffer }) {
     gl.render(scene, camera.current)
     gl.setRenderTarget(null)
   })
+
+  useLayoutEffect(() => {
+    camera.current.layers.disableAll()
+    camera.current.layers.enable(levelLayer)
+  }, [])
 
   return <OrthographicCamera ref={camera} makeDefault={false} rotation={[-Math.PI / 2, 0, 0]} near={20} far={500} />
 }
