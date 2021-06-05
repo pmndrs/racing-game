@@ -1,6 +1,3 @@
-import { Suspense, useEffect, useState } from 'react'
-import { useStore } from '../store'
-
 export function Loader({ children }) {
 
     return (
