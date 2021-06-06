@@ -51,16 +51,11 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [0
       raycast.chassisBody.current.api.rotation.set(...rotation)
     }
 
+    // left-right, up-down, near-far
     if (!editor) {
-      if (camera === 'FIRST_PERSON') {
-        defaultCamera.current.position.lerp(v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.5, 0.01), delta)
-      } else if (camera === 'DEFAULT') {
-        // left-right, up-down, near-far
-        defaultCamera.current.position.lerp(
-          v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (brake ? 1 : 0)),
-          delta,
-        )
-      }
+      if (camera === 'FIRST_PERSON') v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.5, 0.01)
+      else if (camera === 'DEFAULT') v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (brake ? 1 : 0))
+      defaultCamera.current.position.lerp(v, delta)
       // left-right swivel
       defaultCamera.current.rotation.z = THREE.MathUtils.lerp(defaultCamera.current.rotation.z, Math.PI + (-steeringValue * speed) / 45, delta)
     }
@@ -118,10 +113,10 @@ function VehicleAudio() {
     brakeAudio.current.setVolume(brake ? 1 : 0.5)
     if (honk) {
       if (!honkAudio.current.isPlaying) honkAudio.current.play()
-    } else honkAudio.current.stop()
+    } else honkAudio.current.isPlaying && honkAudio.current.stop()
     if ((state.sliding || brake) && state.speed > 5) {
       if (!brakeAudio.current.isPlaying) brakeAudio.current.play()
-    } else brakeAudio.current.stop()
+    } else brakeAudio.current.isPlaying && brakeAudio.current.stop()
   })
 
   useEffect(() => {
@@ -133,8 +128,8 @@ function VehicleAudio() {
 
   return (
     <>
-      <PositionalAudio ref={engineAudio} url="/sounds/engine.mp3" loop distance={5} />
-      <PositionalAudio ref={accelerateAudio} url="/sounds/accelerate.mp3" loop distance={5} />
+      <PositionalAudio ref={engineAudio} url="/sounds/engine.mp3" autoplay loop distance={5} />
+      <PositionalAudio ref={accelerateAudio} url="/sounds/accelerate.mp3" autoplay loop distance={5} />
       <PositionalAudio ref={honkAudio} url="/sounds/honk.mp3" loop distance={10} />
       <PositionalAudio ref={brakeAudio} url="/sounds/tire-brake.mp3" loop distance={10} />
     </>
