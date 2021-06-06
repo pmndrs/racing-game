@@ -5,16 +5,54 @@ import * as THREE from 'three'
 import { useLayoutEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { MeshDistortMaterial, useGLTF, useAnimations, PositionalAudio } from '@react-three/drei'
+import { useBox } from '@react-three/cannon'
 import { useStore, levelLayer } from '../../store'
 
 useGLTF.preload('/models/track-draco.glb')
+
+function Train({ args = [38, 8, 10], position = [-145.84, 3.42, 54.67], rotation = [0, -0.09, 0], config }) {
+  const group = useRef()
+  const debug = useStore((state) => state.debug)
+  const ready = useStore((state) => state.ready)
+  const { animations, nodes: n, materials: m } = useGLTF('/models/track-draco.glb')
+  const [ref, api] = useBox(() => ({ mass: 10000, type: 'Kinematic', args, position, rotation }), undefined, [args, position, rotation])
+  const { actions } = useAnimations(animations, group)
+  useLayoutEffect(() => void actions.train.play(), [actions])
+
+  useFrame(() => {
+    api.position.set(group.current.position.x, group.current.position.y, group.current.position.z)
+    api.rotation.set(group.current.rotation.x, group.current.rotation.y - 0.09, group.current.rotation.z)
+  })
+
+  return (
+    <>
+      <group ref={group} name="train" position={[-145.84, 3.42, 54.67]} rotation={[0, -0.09, 0]}>
+        <mesh geometry={n.train_1.geometry} material={m.custom7Clone} {...config} />
+        <mesh geometry={n.train_2.geometry} material={m.blueSteelClone} {...config} />
+        <mesh geometry={n.train_3.geometry} material={m.custom12Clone} {...config} />
+        <mesh geometry={n.train_4.geometry} material={m.custom14Clone} {...config} />
+        <mesh geometry={n.train_5.geometry} material={m.defaultMatClone} {...config} />
+        <mesh geometry={n.train_6.geometry} material={m.glassClone} {...config} />
+        <mesh geometry={n.train_7.geometry} material={m.steelClone} {...config} />
+        <mesh geometry={n.train_8.geometry} material={m.lightRedClone} {...config} />
+        <mesh geometry={n.train_9.geometry} material={m.darkClone} {...config} />
+        {ready && <PositionalAudio url="/sounds/train.mp3" loop autoplay distance={5} />}
+      </group>
+      {debug && (
+        <mesh ref={ref}>
+          <boxGeometry args={args} />
+          <meshBasicMaterial color="hotpink" transparent opacity={0.7} />
+        </mesh>
+      )}
+    </>
+  )
+}
 
 export function Track(props) {
   const group = useRef()
   const ready = useStore((state) => state.ready)
   const level = useStore((state) => state.level)
-  const { animations, nodes: n, materials: m } = useGLTF('/models/track-draco.glb')
-  const { actions } = useAnimations(animations, group)
+  const { nodes: n, materials: m } = useGLTF('/models/track-draco.glb')
   const config = { receiveShadow: true, castShadow: true, 'material-roughness': 1 }
 
   const birds = useRef()
@@ -24,26 +62,11 @@ export function Track(props) {
     clouds.current.children.forEach((bird, index) => (bird.rotation.y += delta / 25 / index))
   })
 
-  useLayoutEffect(() => {
-    console.log(actions)
-    actions.train.play()
-  }, [actions])
   useLayoutEffect(() => void level.current.traverse((child) => child.layers.enable(levelLayer)), [])
 
   return (
     <group ref={group} {...props} dispose={null}>
-      <group name="train" position={[-145.84, 3.42, 54.67]} rotation={[0, -0.09, 0]}>
-        <mesh geometry={n.train_1.geometry} material={m.custom7Clone} />
-        <mesh geometry={n.train_2.geometry} material={m.blueSteelClone} />
-        <mesh geometry={n.train_3.geometry} material={m.custom12Clone} />
-        <mesh geometry={n.train_4.geometry} material={m.custom14Clone} />
-        <mesh geometry={n.train_5.geometry} material={m.defaultMatClone} />
-        <mesh geometry={n.train_6.geometry} material={m.glassClone} />
-        <mesh geometry={n.train_7.geometry} material={m.steelClone} />
-        <mesh geometry={n.train_8.geometry} material={m.lightRedClone} />
-        <mesh geometry={n.train_9.geometry} material={m.darkClone} />
-        {ready && <PositionalAudio url="/sounds/train.mp3" loop autoplay distance={5} />}
-      </group>
+      <Train config={config} />
       <mesh geometry={n.track_2.geometry} material={m['Material.001']} {...config} />
       <mesh geometry={n.tube.geometry} material={m['default']} {...config} />
       <group ref={level}>

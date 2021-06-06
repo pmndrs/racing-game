@@ -12,7 +12,7 @@
   "dependencies": {
     "@pmndrs/branding": "^0.0.8",
     "@react-three/cannon": "1.2.4",
-    "@react-three/drei": "5.3.4",
+    "@react-three/drei": "6.0.0",
     "@react-three/fiber": "6.2.2",
     "@react-three/postprocessing": "2.0.4",
     "@types/three": "0.129.1",

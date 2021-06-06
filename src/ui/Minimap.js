@@ -14,7 +14,7 @@ function useLevelGeometricProperties() {
   const level = useStore((state) => state.level)
 
   useLayoutEffect(() => {
-    level.current.parent.updateWorldMatrix()
+    level.current.parent?.updateWorldMatrix()
     box.setFromObject(level.current)
     box.getCenter(center)
     box.getSize(dimensions)

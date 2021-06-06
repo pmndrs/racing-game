@@ -1744,10 +1744,10 @@
   resolved "https://registry.yarnpkg.com/@react-three/cannon/-/cannon-1.2.4.tgz#2ffe40413f1e7d4cb46a8241840669461ec4cfba"
   integrity sha512-KzAy1zA0ThjwU0nNejtRokfRw9T4AIgeqZwXqbuB3FBYkJ2hxLae5KxAcqqv5Cr64y03XSUDuqTDnqkwPaimdQ==
 
-"@react-three/drei@5.3.4":
-  version "5.3.4"
-  resolved "https://registry.yarnpkg.com/@react-three/drei/-/drei-5.3.4.tgz#70712d4dd83dbd2fc6f0a98a75e2d76effd64459"
-  integrity sha512-9ysZbP5Sei+Nt/ks3ADCpMDW3OSedptAO8izzC7WBgYiTfjdxgDfcnj8CLRLz7YNIOIxl5PeOVSlg1nDB3MP0A==
+"@react-three/drei@6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@react-three/drei/-/drei-6.0.0.tgz#9be42a2efa135555b921f61a9144d7eb123e7abd"
+  integrity sha512-KyUFkJS+dVOBb7El6Jqzz0hNmQPWELmaU5LaOw7mu35oAhg6KP+ho3y1yEEKWYG9I4wRl71sva5M6CCdHki8Zw==
   dependencies:
     "@babel/runtime" "^7.11.2"
     blob-polyfill "^5.0.20210201"

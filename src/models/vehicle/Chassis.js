@@ -24,8 +24,8 @@ const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...pro
   const { nodes: n, materials: m } = useGLTF('/models/chassis-draco.glb')
   
   const onCollide = () => {
-    crashAudio.current.setVolume((0.4 * useStore.getState().speed) / 10)
-    if (!crashAudio.current.isPlaying) crashAudio.current.play()
+    crashAudio.current?.setVolume((0.4 * useStore.getState().speed) / 10)
+    if (!crashAudio.current?.isPlaying) crashAudio.current?.play()
   }
   const [, api] = useBox(() => ({ mass, args, allowSleep: false, onCollide, ...props }), ref)
 
