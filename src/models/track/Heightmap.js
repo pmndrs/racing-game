@@ -4,6 +4,7 @@ import { extend } from '@react-three/fiber'
 import { useTexture } from '@react-three/drei'
 import { useHeightfield } from '@react-three/cannon'
 import { useAsset } from 'use-asset'
+import { useStore } from '../../store'
 
 function HeightmapGeometry({ heights, elementSize, ...rest }) {
   const ref = useRef()
@@ -38,6 +39,15 @@ function HeightmapGeometry({ heights, elementSize, ...rest }) {
 
 extend({ HeightmapGeometry })
 
+let canvas
+let context
+
+function createCanvas() {
+  canvas = document.createElement('canvas')
+  context = canvas.getContext('2d')
+  context.imageSmoothingEnabled = false
+}
+
 /**
  * Returns matrix data to be passed to heightfield.
  * set elementSize as `size` / matrix[0].length (image width)
@@ -46,41 +56,43 @@ extend({ HeightmapGeometry })
  * @returns {[[Number]]} height data extracted from image
  */
 function createHeightfieldMatrix(image) {
+  if (!canvas) {
+    createCanvas()
+  }
   let matrix = []
-  const w = image.width
-  const h = image.height
-  const canvas = document.createElement('canvas')
-  const ctx = canvas.getContext('2d')
+  const width = image.width
+  const height = image.height
   const scale = 40 // determines the vertical scale of the heightmap
   let p, row
 
-  canvas.width = w
-  canvas.height = h
-  ctx.drawImage(image, 0, 0, w, h)
-
-  for (let x = 0; x < w; x++) {
+  canvas.width = width
+  canvas.height = height
+  context.drawImage(image, 0, 0, width, height)
+  const imageData = context.getImageData(0, 0, width, height).data
+  for (let x = 0; x < width; x++) {
     row = []
-    for (let y = 0; y < h; y++) {
+    for (let y = 0; y < height; y++) {
       // returned pixel data is [r, g, b, alpha], since image is in b/w -> any rgb val
-      p = Math.max(0, parseFloat((ctx.getImageData(x, y, 1, 1).data[0] / 255).toPrecision(1)) * scale)
+      p = Math.max(0, parseFloat((imageData[4 * (y * width + x)] / 255).toPrecision(1)) * scale)
       row.push(p)
     }
     matrix.push(row)
   }
-  console.log(matrix)
+  context.clearRect(0, 0, width, height)
   return matrix
 }
 
 export function Heightmap(props) {
   const { elementSize, position, rotation } = props
-  const heightmap = useTexture('/textures/heightmap_512.png')
+  const debug = useStore((state) => state.debug)
+  const heightmap = useTexture('/textures/heightmap_1024.png')
   const heights = useAsset(async () => createHeightfieldMatrix(heightmap.image), heightmap)
   useHeightfield(() => ({ args: [heights, { elementSize }], position, rotation }))
-  return null
+  return debug ? <HeightmapDebug {...props} /> : null
 }
 
-export function HeightmapDebug({ elementSize, ...props }) {
-  const heightmap = useTexture('/textures/heightmap_512.png')
+function HeightmapDebug({ elementSize, ...props }) {
+  const heightmap = useTexture('/textures/heightmap_1024.png')
   const heights = useAsset(async () => createHeightfieldMatrix(heightmap.image), heightmap)
   return (
     <mesh {...props}>

@@ -30,6 +30,11 @@ function Ready({ setReady }) {
   )
 }
 
+function Loader() {
+  const { progress } = useProgress()
+  return <div>loading {progress.toFixed()} %</div>
+}
+
 export function Overlay({ children }) {
   const [ready, setReady] = useState(false)
   const [clicked, setClicked] = useState(false)
@@ -46,7 +51,7 @@ export function Overlay({ children }) {
         <div className="stack">
           <Keys style={{ paddingBottom: 20 }} />
           <a href="#" onClick={() => ready && setClicked(true)}>
-            {!ready ? 'loading' : 'Click to continue'}
+            {!ready ? <Loader /> : 'Click to continue'}
           </a>
         </div>
         <Footer

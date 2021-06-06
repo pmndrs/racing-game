@@ -1,16 +1,19 @@
 // https://sketchfab.com/3d-models/desert-race-game-prototype-map-v2-2ccd3dcbd197415d9f1b97c30b1248c5
 // by: Batuhan13
 
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import * as THREE from 'three'
+import { useLayoutEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { MeshDistortMaterial, useGLTF, useAnimations, PositionalAudio } from '@react-three/drei'
 import { useStore } from '../../store'
+import { levelLayer } from '../../enums'
 
 useGLTF.preload('/models/track-draco.glb')
 
 export function Track(props) {
   const group = useRef()
   const ready = useStore((state) => state.ready)
+  const level = useStore((state) => state.level)
   const { animations, nodes: n, materials: m } = useGLTF('/models/track-draco.glb')
   const { actions } = useAnimations(animations, group)
   const config = { receiveShadow: true, castShadow: true, 'material-roughness': 1 }
@@ -22,15 +25,8 @@ export function Track(props) {
     clouds.current.children.forEach((bird, index) => (bird.rotation.y += delta / 10 / index))
   })
 
-  useLayoutEffect(() => {
-    actions.train.play()
-  }, [actions])
-
-  const trainAudio = useRef()
-  useEffect(() => {
-    const train = trainAudio.current
-    return () => void train && train.stop()
-  }, [])
+  useLayoutEffect(() => void actions.train.play(), [actions])
+  useLayoutEffect(() => void level.current.traverse((child) => child.layers.enable(levelLayer)), [])
 
   return (
     <group ref={group} {...props} dispose={null}>
@@ -44,15 +40,20 @@ export function Track(props) {
         <mesh geometry={n.train_7.geometry} material={m.steelClone} {...config} />
         <mesh geometry={n.train_8.geometry} material={m.lightRedClone} {...config} />
         <mesh geometry={n.train_9.geometry} material={m.darkClone} {...config} />
-        {ready && <PositionalAudio ref={trainAudio} url="/sounds/train.mp3" loop distance={5} />}
+        {ready && <PositionalAudio url="/sounds/train.mp3" loop autoplay distance={10} />}
       </group>
-      <mesh geometry={n.strip.geometry} material={n.strip.material} {...config} />
-      <mesh geometry={n.track.geometry} material={n.track.material} {...config} />
-      <mesh geometry={n.mountains.geometry} material={n.mountains.material} {...config} />
-      <mesh geometry={n.terrain.geometry} material={n.terrain.material} {...config} />
-      <mesh geometry={n.water.geometry}>
-        <MeshDistortMaterial speed={4} map={m.ColorPaletteWater.map} roughness={0} />
-      </mesh>
+      <mesh geometry={n.track_2.geometry} material={m['Material.001']} {...config} />
+      <mesh geometry={n.tube.geometry} material={m['default']} {...config} />
+      <group ref={level}>
+        <mesh geometry={n.strip.geometry} material={n.strip.material} {...config} />
+        <mesh geometry={n.track_1.geometry} material={n.track_1.material} {...config} />
+        <mesh geometry={n.mountains.geometry} material={n.mountains.material} {...config} />
+        <mesh geometry={n.terrain.geometry} material={n.terrain.material} {...config} />
+        <mesh geometry={n.water.geometry}>
+          <MeshDistortMaterial speed={4} map={m.ColorPaletteWater.map} roughness={0} side={THREE.DoubleSide} />
+          {ready && <PositionalAudio url="/sounds/water.mp3" loop autoplay distance={20} />}
+        </mesh>
+      </group>
       <group ref={birds}>
         <mesh geometry={n.bird001.geometry} material={n.bird001.material} {...config} />
         <mesh geometry={n.bird002.geometry} material={n.bird002.material} {...config} />

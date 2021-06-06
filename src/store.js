@@ -1,7 +1,6 @@
 import { createRef } from 'react'
 import create from 'zustand'
-
-const cameraTypes = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE']
+import { camera } from './enums.js'
 
 const vehicleConfig = {
   radius: 0.35,
@@ -58,10 +57,13 @@ const useStore = create((set, get) => {
   return {
     set,
     get,
+    camera,
     ready: false,
     editor: false,
     help: false,
     debug: false,
+    stats: false,
+    level: createRef(),
     raycast: {
       chassisBody: createRef(),
       wheels: [createRef(), createRef(), createRef(), createRef()],
@@ -78,21 +80,13 @@ const useStore = create((set, get) => {
       brake: false,
       honk: false,
       boost: false,
-      cameraType: cameraTypes[0],
       reset: false,
+      map: true,
     },
+    vehicleConfig,
     velocity: [0, 0, 0],
     speed: 0,
-    constants: {
-      cameraTypes,
-      vehicleConfig,
-      vehicleStart: {
-        rotation: [0, Math.PI / 2, 0],
-        position: [0, 4, 0],
-        angularVelocity: [0, 0.5, 0],
-      },
-    },
   }
 })
 
-export { useStore, cameraTypes, vehicleConfig, wheelInfo, wheelInfo1, wheelInfo2, wheelInfo3, wheelInfo4 }
+export { useStore, vehicleConfig, wheelInfo, wheelInfo1, wheelInfo2, wheelInfo3, wheelInfo4 }

@@ -11,19 +11,17 @@ import { Skid } from '../../effects/Skid'
 
 const v = new THREE.Vector3()
 
-export function Vehicle({ children }) {
+export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [0, 4, 0], rotation = [0, Math.PI / 2, 0] }) {
   const defaultCamera = useRef()
   const birdEyeCamera = useRef()
 
   const set = useStore((state) => state.set)
   const editor = useStore((state) => state.editor)
   const raycast = useStore((state) => state.raycast)
-  const cameraType = useStore((state) => state.controls.cameraType)
-  const { vehicleStart, vehicleConfig } = useStore((state) => state.constants)
+  const camera = useStore((state) => state.camera)
+  const { force, maxBrake, steer, maxSpeed } = useStore((state) => state.vehicleConfig)
   const ready = useStore((state) => state.ready)
   const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
-
-  const { force, maxBrake, steer, maxSpeed } = vehicleConfig
 
   useLayoutEffect(() => {
     defaultCamera.current.lookAt(raycast.chassisBody.current.position)
@@ -32,7 +30,7 @@ export function Vehicle({ children }) {
     const vSub = raycast.chassisBody.current.api.velocity.subscribe((velocity) => set({ velocity, speed: v.set(...velocity).length() }))
     const sSub = api.sliding.subscribe((sliding) => set({ sliding }))
     return () => void [vSub, sSub].forEach((sub) => sub())
-  }, [])
+  }, [editor])
 
   useFrame((state, delta) => {
     const { speed, controls } = useStore.getState()
@@ -47,16 +45,16 @@ export function Vehicle({ children }) {
     for (let s = 0; s < 2; s++) api.setSteeringValue(steeringValue, s)
     for (let b = 2; b < 4; b++) api.setBrake(brake ? (forward ? maxBrake / 1.5 : maxBrake) : 0, b)
     if (reset) {
-      raycast.chassisBody.current.api.position.set(...vehicleStart.position)
+      raycast.chassisBody.current.api.position.set(...position)
       raycast.chassisBody.current.api.velocity.set(0, 0, 0)
-      raycast.chassisBody.current.api.angularVelocity.set(...vehicleStart.angularVelocity)
-      raycast.chassisBody.current.api.rotation.set(...vehicleStart.rotation)
+      raycast.chassisBody.current.api.angularVelocity.set(...angularVelocity)
+      raycast.chassisBody.current.api.rotation.set(...rotation)
     }
 
     if (!editor) {
-      if (cameraType === 'FIRST_PERSON') {
+      if (camera === 'FIRST_PERSON') {
         defaultCamera.current.position.lerp(v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.5, 0.01), delta)
-      } else if (cameraType === 'DEFAULT') {
+      } else if (camera === 'DEFAULT') {
         // left-right, up-down, near-far
         defaultCamera.current.position.lerp(
           v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (brake ? 1 : 0)),
@@ -77,17 +75,19 @@ export function Vehicle({ children }) {
 
   return (
     <group ref={vehicle}>
-      <Chassis ref={raycast.chassisBody} {...vehicleStart}>
+      <Chassis ref={raycast.chassisBody} {...{ angularVelocity, position, rotation }}>
         <PerspectiveCamera
+          key={'pc' + editor}
           ref={defaultCamera}
-          makeDefault={['DEFAULT', 'FIRST_PERSON'].includes(cameraType)}
+          makeDefault={['DEFAULT', 'FIRST_PERSON'].includes(camera)}
           fov={75}
           rotation={[0, Math.PI, 0]}
           position={[0, 10, -20]}
         />
         <OrthographicCamera
+          key={'oc' + editor}
           ref={birdEyeCamera}
-          makeDefault={cameraType === 'BIRD_EYE'}
+          makeDefault={camera === 'BIRD_EYE'}
           position={[0, 100, 0]}
           rotation={[(-1 * Math.PI) / 2, 0, Math.PI]}
           zoom={15}
@@ -107,13 +107,15 @@ export function Vehicle({ children }) {
 
 function VehicleAudio() {
   const engineAudio = useRef()
+  const accelerateAudio = useRef()
   const honkAudio = useRef()
   const brakeAudio = useRef()
   useFrame(() => {
     const state = useStore.getState()
     const { honk, brake } = state.controls
-    engineAudio.current.setVolume((0.4 * state.speed) / 50)
-    brakeAudio.current.setVolume(brake ? 1 : 0.2)
+    engineAudio.current.setVolume(1)
+    accelerateAudio.current.setVolume((0.4 * state.speed) / 5)
+    brakeAudio.current.setVolume(brake ? 1 : 0.5)
     if (honk) {
       if (!honkAudio.current.isPlaying) honkAudio.current.play()
     } else honkAudio.current.stop()
@@ -132,6 +134,7 @@ function VehicleAudio() {
   return (
     <>
       <PositionalAudio ref={engineAudio} url="/sounds/engine.mp3" loop distance={5} />
+      <PositionalAudio ref={accelerateAudio} url="/sounds/accelerate.mp3" loop distance={5} />
       <PositionalAudio ref={honkAudio} url="/sounds/honk.mp3" loop distance={10} />
       <PositionalAudio ref={brakeAudio} url="/sounds/tire-brake.mp3" loop distance={10} />
     </>

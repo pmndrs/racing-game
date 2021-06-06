@@ -19,11 +19,11 @@
         "react"
     ],
     "rules": {
-        "no-unused-vars": "warn",
-        "react/display-name": "warn",
-        "react/prop-types": "warn",
-        "react/react-in-jsx-scope": "warn",
-        "semi": "warn"
+        "no-unused-vars": ["warn", { "ignoreRestSiblings": true }],
+        "react/display-name": 0,
+        "react/prop-types": 0,
+        "react/react-in-jsx-scope": 0,
+        "semi": ["warn", "never"]
     },
     "settings": {
         "react": {

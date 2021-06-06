@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useStore } from '../store'
+import { cameras } from '../enums.js'
 
 const pressed = []
 
@@ -31,7 +32,6 @@ function useKeys(target, event, up = true) {
 
 export function KeyboardControls() {
   const set = useStore((state) => state.set)
-  const cameraTypes = useStore((state) => state.constants.cameraTypes)
   useKeys(['ArrowUp', 'w', 'W'], (forward) => set((state) => ({ ...state, controls: { ...state.controls, forward } })))
   useKeys(['ArrowDown', 's', 'S'], (backward) => set((state) => ({ ...state, controls: { ...state.controls, backward } })))
   useKeys(['ArrowLeft', 'a', 'A'], (left) => set((state) => ({ ...state, controls: { ...state.controls, left } })))
@@ -46,12 +46,14 @@ export function KeyboardControls() {
     ['c', 'C'],
     () =>
       set((state) => {
-        const currentCameraIndex = cameraTypes.indexOf(state.controls.cameraType)
-        const nextCameraIndex = (currentCameraIndex + 1) % cameraTypes.length
-        const cameraType = cameraTypes[nextCameraIndex]
-        return { ...state, controls: { ...state.controls, cameraType } }
+        const current = cameras.indexOf(state.camera)
+        const next = (current + 1) % cameras.length
+        const camera = cameras[next]
+        return { ...state, camera }
       }),
     false,
   )
+  useKeys(['m', 'M'], (toggleMap) => set((state) => ({ ...state, controls: { ...state.controls, map: toggleMap ? !state.controls.map : state.controls.map } })))
+
   return null
 }
