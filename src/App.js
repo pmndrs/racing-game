@@ -49,7 +49,7 @@ export function App() {
           </Vehicle>
           <Ramp args={[30, 6, 5]} position={[110, -0.5, -45]} rotation={[0, 0.45, Math.PI / 16]} />
         </Physics>
-        <Track position={[80, -0.1, -210]} scale={26} />
+        {!editor && <Track position={[80, -0.1, -210]} scale={26} />}
         <Minimap />
         <Environment preset="night" />
         {editor && <OrbitControls />}

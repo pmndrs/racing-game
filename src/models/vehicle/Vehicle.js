@@ -1,31 +1,26 @@
 import * as THREE from 'three'
 import { useRef, useLayoutEffect, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { PerspectiveCamera, OrthographicCamera, PositionalAudio } from '@react-three/drei'
+import { PositionalAudio } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
 import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
 import { useStore } from '../../store'
 import { Dust } from '../../effects/Dust'
 import { Skid } from '../../effects/Skid'
+import { Cameras } from '../../components/Cameras'
 
 const v = new THREE.Vector3()
 
 export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [0, 4, 0], rotation = [0, Math.PI / 2, 0] }) {
-  const defaultCamera = useRef()
-  const birdEyeCamera = useRef()
-
   const set = useStore((state) => state.set)
   const editor = useStore((state) => state.editor)
   const raycast = useStore((state) => state.raycast)
-  const camera = useStore((state) => state.camera)
   const { force, maxBrake, steer, maxSpeed } = useStore((state) => state.vehicleConfig)
   const ready = useStore((state) => state.ready)
   const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
 
   useLayoutEffect(() => {
-    defaultCamera.current.lookAt(raycast.chassisBody.current.position)
-    defaultCamera.current.rotation.z = Math.PI // resolves the weird spin in the beginning
     // Subscriptions
     const vSub = raycast.chassisBody.current.api.velocity.subscribe((velocity) => set({ velocity, speed: v.set(...velocity).length() }))
     const sSub = api.sliding.subscribe((sliding) => set({ sliding }))
@@ -51,20 +46,6 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [0
       raycast.chassisBody.current.api.rotation.set(...rotation)
     }
 
-    if (!editor) {
-      if (camera === 'FIRST_PERSON') {
-        defaultCamera.current.position.lerp(v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.5, 0.01), delta)
-      } else if (camera === 'DEFAULT') {
-        // left-right, up-down, near-far
-        defaultCamera.current.position.lerp(
-          v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (brake ? 1 : 0)),
-          delta,
-        )
-      }
-      // left-right swivel
-      defaultCamera.current.rotation.z = THREE.MathUtils.lerp(defaultCamera.current.rotation.z, Math.PI + (-steeringValue * speed) / 45, delta)
-    }
-
     // lean chassis
     raycast.chassisBody.current.children[0].rotation.z = THREE.MathUtils.lerp(
       raycast.chassisBody.current.children[0].rotation.z,
@@ -76,22 +57,7 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [0
   return (
     <group ref={vehicle}>
       <Chassis ref={raycast.chassisBody} {...{ angularVelocity, position, rotation }}>
-        <PerspectiveCamera
-          key={'pc' + editor}
-          ref={defaultCamera}
-          makeDefault={['DEFAULT', 'FIRST_PERSON'].includes(camera)}
-          fov={75}
-          rotation={[0, Math.PI, 0]}
-          position={[0, 10, -20]}
-        />
-        <OrthographicCamera
-          key={'oc' + editor}
-          ref={birdEyeCamera}
-          makeDefault={camera === 'BIRD_EYE'}
-          position={[0, 100, 0]}
-          rotation={[(-1 * Math.PI) / 2, 0, Math.PI]}
-          zoom={15}
-        />
+        <Cameras />
         {ready && <VehicleAudio />}
         {children}
       </Chassis>
