@@ -11,7 +11,7 @@ import { Heightmap } from './models/track/Heightmap'
 import { Overlay } from './ui/Overlay'
 import { Speed } from './ui/Speed'
 import { Help } from './ui/Help'
-import { MiniMap } from './ui/MiniMap'
+import { Minimap } from './ui/Minimap'
 import { KeyboardControls } from './controls/KeyboardControls'
 
 const layers = new Layers()
@@ -50,9 +50,9 @@ export function App() {
           <Ramp args={[30, 6, 5]} position={[110, -0.5, -45]} rotation={[0, 0.45, Math.PI / 16]} />
         </Physics>
         <Track position={[80, -0.1, -210]} scale={26} />
+        <Minimap />
         <Environment preset="night" />
         {editor && <OrbitControls />}
-        <MiniMap />
       </Canvas>
       <Speed />
       <Help />

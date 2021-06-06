@@ -12,7 +12,8 @@ useGLTF.preload('/models/track-draco.glb')
 
 export function Track(props) {
   const group = useRef()
-  const { ready, level } = useStore(({ ready, level }) => ({ ready, level }))
+  const ready = useStore((state) => state.ready)
+  const level = useStore((state) => state.level)
   const { animations, nodes: n, materials: m } = useGLTF('/models/track-draco.glb')
   const { actions } = useAnimations(animations, group)
   const config = { receiveShadow: true, castShadow: true, 'material-roughness': 1 }
@@ -24,13 +25,8 @@ export function Track(props) {
     clouds.current.children.forEach((bird, index) => (bird.rotation.y += delta / 10 / index))
   })
 
-  useLayoutEffect(() => {
-    actions.train.play()
-  }, [actions])
-
-  useLayoutEffect(() => {
-    level.current.traverse((child) => void child.layers.enable(levelLayer))
-  }, [])
+  useLayoutEffect(() => void actions.train.play(), [actions])
+  useLayoutEffect(() => void level.current.traverse((child) => child.layers.enable(levelLayer)), [])
 
   return (
     <group ref={group} {...props} dispose={null}>
