@@ -64,16 +64,18 @@ function Minimap({ size = 200 }) {
   const screenPosition = useMemo(() => new Vector3(screenSize.width / 2 - size / 2 - 30, screenSize.height / 2 - size / 2 - 30, 0), [screenSize])
 
   useFrame(() => {
-    gl.autoClear = true
-    gl.render(scene, camera)
-    m.copy(camera.matrix).invert()
-    miniMap.current.quaternion.setFromRotationMatrix(m)
-    player.current.quaternion.setFromRotationMatrix(m)
-    gl.autoClear = false
-    gl.clearDepth()
-    v.subVectors(chassisBody.current.position, levelCenter)
-    player.current.position.set(screenPosition.x + (v.x / levelDimensions.x) * size, screenPosition.y - (v.z / levelDimensions.z) * size, 0)
-    gl.render(virtualScene, miniMapCamera.current)
+    if (map) {
+      gl.autoClear = true
+      gl.render(scene, camera)
+      m.copy(camera.matrix).invert()
+      miniMap.current.quaternion.setFromRotationMatrix(m)
+      player.current.quaternion.setFromRotationMatrix(m)
+      gl.autoClear = false
+      gl.clearDepth()
+      v.subVectors(chassisBody.current.position, levelCenter)
+      player.current.position.set(screenPosition.x + (v.x / levelDimensions.x) * size, screenPosition.y - (v.z / levelDimensions.z) * size, 0)
+      gl.render(virtualScene, miniMapCamera.current)
+    }
   })
 
   return (
