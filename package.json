@@ -19,21 +19,26 @@
     "leva": "^0.9.10",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-scripts": "4.0.3",
     "three": "0.129.0",
     "zustand": "^3.5.1"
   },
   "devDependencies": {
-    "eslint": "^7.27.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-react": "^7.24.0",
-    "prettier": "^2.3.0"
+    "@craco/craco": "6.1.2",
+    "craco-esbuild": "0.3.2",
+    "eslint": "7.27.0",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-react": "7.24.0",
+    "prettier": "2.3.0",
+    "react-scripts": "4.0.3"
+  },
+  "resolutions": {
+    "acorn": "8.3.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test --env=jsdom",
+    "eject": "craco eject",
     "lint": "eslint src",
     "prettier": "prettier --list-different '**/*.{js,jsx,md}'",
     "prettier-fix": "prettier --write '**/*.{js,jsx,md}'"
