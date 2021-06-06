@@ -11,19 +11,21 @@ function debounce(delay, fn) {
   }
 }
 
-export function InactiveMouse({ INACTIVITY_DELAY = 3000 }) {
-  let isIdle = true
-  const hideMouse = debounce(INACTIVITY_DELAY, () => {
-    isIdle = true
-    document.documentElement.style = 'cursor: none'
-  })
-
-  window.addEventListener('mousemove', () => {
+const INACTIVITY_DELAY = 3000
+let isIdle = true
+const hideMouse = debounce(INACTIVITY_DELAY, () => {
+  isIdle = true
+  document.documentElement.style = 'cursor: none'
+})
+const onMouseMovement = () => {
     if (isIdle) {
       isIdle = false
       document.documentElement.style = ''
     }
     hideMouse()
-  })
+}
+
+export function InactiveMouse() {
+  window.addEventListener('mousemove', onMouseMovement, {passive: true})
   return null
 }
