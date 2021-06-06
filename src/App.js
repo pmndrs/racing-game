@@ -13,6 +13,7 @@ import { Speed } from './ui/Speed'
 import { Help } from './ui/Help'
 import { Minimap } from './ui/Minimap'
 import { KeyboardControls } from './controls/KeyboardControls'
+import { InactiveMouse } from './controls/Inactivemouse'
 
 const layers = new Layers()
 layers.enable(levelLayer)
@@ -57,6 +58,7 @@ export function App() {
       <Speed />
       <Help />
       <KeyboardControls />
+      <InactiveMouse />
       {editor && <Editor />}
       {stats && <Stats />}
     </Overlay>
