@@ -62,7 +62,7 @@ const useStore = create((set, get) => {
     editor: false,
     help: false,
     debug: false,
-    debug: stats,
+    stats: false,
     level: createRef(),
     raycast: {
       chassisBody: createRef(),
