@@ -20,7 +20,7 @@ layers.enable(levelLayer)
 export function App() {
   const [light, setLight] = useState()
   const editor = useStore((state) => state.editor)
-  const statsMeter = useStore((state) => state.statsMeter)
+  const stats = useStore((state) => state.stats)
 
   return (
     <Overlay>
@@ -33,13 +33,13 @@ export function App() {
           layers={layers}
           position={[100, 100, 50]}
           intensity={1}
-          castShadow
           shadow-bias={-0.001}
           shadow-mapSize={[4096, 4096]}
           shadow-camera-left={-150}
           shadow-camera-right={150}
           shadow-camera-top={150}
           shadow-camera-bottom={-150}
+          castShadow
         />
         <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
           <Heightmap elementSize={1 / 2} position={[335.8, -20.1, -465.5]} rotation={[-Math.PI / 2, 0, -Math.PI]} />
@@ -58,7 +58,7 @@ export function App() {
       <Help />
       <KeyboardControls />
       {editor && <Editor />}
-      {statsMeter && <Stats />}
+      {stats && <Stats />}
     </Overlay>
   )
 }

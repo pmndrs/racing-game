@@ -47,7 +47,7 @@ function MinimapTexture({ buffer }) {
     camera.current.layers.enable(levelLayer)
   }, [])
 
-  return <OrthographicCamera ref={camera} makeDefault={false} zoom={1} rotation={[-Math.PI / 2, 0, 0]} near={20} far={500} />
+  return <OrthographicCamera ref={camera} makeDefault={false} rotation={[-Math.PI / 2, 0, 0]} near={20} far={500} />
 }
 
 function Minimap({ size = 200 }) {
@@ -59,8 +59,8 @@ function Minimap({ size = 200 }) {
   const buffer = useFBO(size * 2, size * 2)
   const { gl, camera, scene, size: screenSize } = useThree()
   const [, levelCenter, levelDimensions] = useLevelGeometricProperties()
-  const chassisBody = useStore(state => state.raycast.chassisBody)
-  const map = useStore(state => state.controls.map)
+  const chassisBody = useStore((state) => state.raycast.chassisBody)
+  const map = useStore((state) => state.controls.map)
   const screenPosition = useMemo(() => new Vector3(screenSize.width / 2 - size / 2 - 30, screenSize.height / 2 - size / 2 - 30, 0), [screenSize])
 
   useFrame(() => {

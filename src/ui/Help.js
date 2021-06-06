@@ -6,13 +6,13 @@ const controlOptions = [
   { keys: ['→', 'D'], action: 'Right' },
   { keys: ['↓', 'S'], action: 'Backward' },
   { keys: ['Space'], action: 'Drift' },
-  { keys: ['H'], action: 'Honk' },
   { keys: ['Shift'], action: 'Turbo Boost' },
+  { keys: ['H'], action: 'Honk' },
+  { keys: ['M'], action: 'Map' },
   { keys: ['C'], action: 'Toggle Camera' },
   { keys: ['R'], action: 'Reset' },
   { keys: ['E'], action: 'Editor' },
   { keys: ['I'], action: 'Help' },
-  { keys: ['M'], action: 'Map' },
 ]
 
 export function Help() {
