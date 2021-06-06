@@ -16,6 +16,7 @@ const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...pro
   const glass = useRef()
   const brake = useRef()
   const wheel = useRef()
+  const needle = useRef()
   const crashAudio = useRef()
 
   const ready = useStore((state) => state.ready)
@@ -46,6 +47,8 @@ const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...pro
     glass.current.material.opacity = THREE.MathUtils.lerp(glass.current.material.opacity, isCockpit ? 0.1 : 0.6, delta)
     glass.current.material.color.lerp(c.set(isCockpit ? 'white' : 'black'), delta)
     wheel.current.rotation.z = THREE.MathUtils.lerp(wheel.current.rotation.z, controls.left ? -Math.PI : controls.right ? Math.PI : 0, delta)
+
+    needle.current.rotation.y = (state.speed / state.vehicleConfig.maxSpeed) * -Math.PI * 2 - 0.9
   })
 
   return (
@@ -68,6 +71,26 @@ const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...pro
           <mesh geometry={nodes.License_1.geometry} material={materials.License} />
           <mesh geometry={nodes.License_2.geometry} material={nodes.License_2.material} />
         </group>
+        <group position={[0.22, 0.3, 0.68]} scale={[0.06, 0.06, 0.06]}>
+          <mesh geometry={nodes.Cube013.geometry} material={nodes.Cube013.material} />
+          <mesh geometry={nodes.Cube013_1.geometry} material={nodes.Cube013_1.material} />
+          <mesh geometry={nodes.Cube013_2.geometry} material={nodes.Cube013_2.material} />
+        </group>
+        <mesh
+          geometry={nodes['pointer-left'].geometry}
+          material={nodes['pointer-left'].material}
+          position={[0.51, 0.3, 0.65]}
+          rotation={[Math.PI / 2, -1.2, 0]}
+          scale={[0.02, 0.02, 0.02]}
+        />
+        <mesh
+          ref={needle}
+          geometry={nodes['pointer-right'].geometry}
+          material={nodes['pointer-right'].material}
+          position={[0.22, 0.3, 0.65]}
+          rotation={[-Math.PI / 2, -0.92, Math.PI]}
+          scale={[0.02, 0.02, 0.02]}
+        />
       </group>
       {children}
       {ready && <PositionalAudio ref={crashAudio} url="/sounds/crash.mp3" loop={false} autoplay={false} distance={5} />}
