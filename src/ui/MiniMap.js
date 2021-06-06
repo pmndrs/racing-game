@@ -58,9 +58,10 @@ function Minimap({ size = 200 }) {
   const mask = useTexture('textures/mask.svg')
   const buffer = useFBO(size * 2, size * 2)
   const { gl, camera, scene, size: screenSize } = useThree()
-  const screenPosition = useMemo(() => new Vector3(screenSize.width / 2 - size / 2 - 30, screenSize.height / 2 - size / 2 - 30, 0), [screenSize])
   const [, levelCenter, levelDimensions] = useLevelGeometricProperties()
-  const { chassisBody, map } = useStore(({ raycast: { chassisBody }, controls: { map } }) => ({ chassisBody, map }))
+  const chassisBody = useStore(state => state.raycast.chassisBody)
+  const map = useStore(state => state.controls.map)
+  const screenPosition = useMemo(() => new Vector3(screenSize.width / 2 - size / 2 - 30, screenSize.height / 2 - size / 2 - 30, 0), [screenSize])
 
   useFrame(() => {
     gl.autoClear = true
