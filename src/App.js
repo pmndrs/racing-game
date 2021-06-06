@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Layers } from 'three'
 import { Canvas } from '@react-three/fiber'
 import { Physics } from '@react-three/cannon'
@@ -14,6 +14,7 @@ import { Help } from './ui/Help'
 import { Minimap } from './ui/Minimap'
 import { KeyboardControls } from './controls/KeyboardControls'
 import { InactiveMouse } from './controls/Inactivemouse'
+import { CheatCodes } from './utils/CheatCodes'
 
 const layers = new Layers()
 layers.enable(levelLayer)
@@ -22,6 +23,7 @@ export function App() {
   const [light, setLight] = useState()
   const editor = useStore((state) => state.editor)
   const stats = useStore((state) => state.stats)
+  const gravity = useStore((state) => state.gravity)
 
   return (
     <Overlay>
@@ -42,7 +44,8 @@ export function App() {
           shadow-camera-bottom={-150}
           castShadow
         />
-        <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
+        {/* DYNAMIC GRAVITY PENDING ON https://github.com/pmndrs/use-cannon/issues/126 */}
+        <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep gravity={[0, gravity, 0]}>
           <Heightmap elementSize={1 / 2} position={[335.8, -20.1, -465.5]} rotation={[-Math.PI / 2, 0, -Math.PI]} />
           <Vehicle>
             {/* Mount the main-lights target as a child to the vehicle, so that light follows it */}
@@ -58,6 +61,7 @@ export function App() {
       <Speed />
       <Help />
       <KeyboardControls />
+      <CheatCodes />
       <InactiveMouse />
       {editor && <Editor />}
       {stats && <Stats />}

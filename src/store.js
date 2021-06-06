@@ -12,6 +12,7 @@ const vehicleConfig = {
   force: 1800,
   maxBrake: 65,
   maxSpeed: 128,
+  scale: 1,
 }
 
 const wheelInfo = {
@@ -86,6 +87,7 @@ const useStore = create((set, get) => {
     vehicleConfig,
     velocity: [0, 0, 0],
     speed: 0,
+    gravity: -10,
   }
 })
 

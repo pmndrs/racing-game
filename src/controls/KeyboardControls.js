@@ -37,11 +37,11 @@ export function KeyboardControls() {
   useKeys(['ArrowLeft', 'a', 'A'], (left) => set((state) => ({ ...state, controls: { ...state.controls, left } })))
   useKeys(['ArrowRight', 'd', 'D'], (right) => set((state) => ({ ...state, controls: { ...state.controls, right } })))
   useKeys([' '], (brake) => set((state) => ({ ...state, controls: { ...state.controls, brake } })))
-  useKeys(['h', 'H'], (honk) => set((state) => ({ ...state, controls: { ...state.controls, honk } })))
+  useKeys(['h'], (honk) => set((state) => ({ ...state, controls: { ...state.controls, honk } })))
   useKeys(['Shift'], (boost) => set((state) => ({ ...state, controls: { ...state.controls, boost } })))
-  useKeys(['r', 'R'], (reset) => set((state) => ({ ...state, controls: { ...state.controls, reset } })))
-  useKeys(['e', 'E'], () => set((state) => ({ ...state, editor: !state.editor })), false)
-  useKeys(['i', 'I'], () => set((state) => ({ ...state, help: !state.help })), false)
+  useKeys(['r'], (reset) => set((state) => ({ ...state, controls: { ...state.controls, reset } })))
+  useKeys(['e'], () => set((state) => ({ ...state, editor: !state.editor })), false)
+  useKeys(['i'], () => set((state) => ({ ...state, help: !state.help })), false)
   useKeys(
     ['c', 'C'],
     () =>

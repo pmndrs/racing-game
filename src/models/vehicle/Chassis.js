@@ -20,16 +20,18 @@ const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...pro
 
   const ready = useStore((state) => state.ready)
   const debug = useStore((state) => state.debug)
+  const { scale } = useStore((state) => state.vehicleConfig)
   const { nodes, materials } = useGLTF('/models/chassis-draco.glb')
   const [, api] = useBox(
     () => ({
-      mass,
+      mass: mass * scale,
       args,
       allowSleep: false,
       onCollide: () => {
         crashAudio.current.setVolume((0.4 * useStore.getState().speed) / 10)
         if (!crashAudio.current.isPlaying) crashAudio.current.play()
       },
+      scale,
       ...props,
     }),
     ref,
@@ -49,7 +51,7 @@ const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...pro
   })
 
   return (
-    <group ref={ref} api={api} dispose={null}>
+    <group ref={ref} api={api} dispose={null} scale={scale}>
       <group position={[0, -0.2, -0.2]}>
         <mesh castShadow receiveShadow geometry={nodes.Chassis_1.geometry} material={materials.BodyPaint} material-color="#f0c050" />
         <mesh castShadow geometry={nodes.Chassis_2.geometry} material={nodes.Chassis_2.material} material-color="#353535" />

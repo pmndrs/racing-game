@@ -6,10 +6,10 @@ import { useStore } from '../../store'
 useGLTF.preload('/models/wheel-draco.glb')
 
 const Wheel = forwardRef(({ leftSide, ...props }, ref) => {
-  const { radius } = useStore((state) => state.vehicleConfig)
+  const { radius, scale: vehicleScale } = useStore((state) => state.vehicleConfig)
   const debug = useStore((state) => state.debug)
   const { nodes, materials } = useGLTF('/models/wheel-draco.glb')
-  const scale = radius / 0.34
+  const scale = (radius / 0.34) * vehicleScale
   useCylinder(() => ({ mass: 50, type: 'Kinematic', material: 'wheel', collisionFilterGroup: 0, args: [radius, radius, 0.5, 16], ...props }), ref)
   return (
     <group ref={ref} dispose={null}>
