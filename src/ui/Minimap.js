@@ -76,7 +76,7 @@ function Minimap({ size = 200 }) {
       player.current.position.set(screenPosition.x + (v.x / levelDimensions.x) * size, screenPosition.y - (v.z / levelDimensions.z) * size, 0)
       gl.render(virtualScene, miniMapCamera.current)
     }
-  })
+  }, 1)
 
   return (
     <>
