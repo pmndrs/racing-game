@@ -18,14 +18,14 @@ const hideMouse = debounce(INACTIVITY_DELAY, () => {
   document.documentElement.style = 'cursor: none'
 })
 const onMouseMovement = () => {
-    if (isIdle) {
-      isIdle = false
-      document.documentElement.style = ''
-    }
-    hideMouse()
+  if (isIdle) {
+    isIdle = false
+    document.documentElement.style = ''
+  }
+  hideMouse()
 }
 
 export function InactiveMouse() {
-  window.addEventListener('mousemove', onMouseMovement, {passive: true})
+  window.addEventListener('mousemove', onMouseMovement, { passive: true })
   return null
 }
