@@ -71,7 +71,7 @@ const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...pro
           <mesh geometry={nodes.License_1.geometry} material={materials.License} />
           <mesh geometry={nodes.License_2.geometry} material={nodes.License_2.material} />
         </group>
-        <group position={[0.22, 0.3, 0.68]} scale={[0.06, 0.06, 0.06]}>
+        <group position={[0.2245, 0.3045, 0.6806]} scale={[0.0594, 0.0594, 0.0594]}>
           <mesh geometry={nodes.Cube013.geometry} material={nodes.Cube013.material} />
           <mesh geometry={nodes.Cube013_1.geometry} material={nodes.Cube013_1.material} />
           <mesh geometry={nodes.Cube013_2.geometry} material={nodes.Cube013_2.material} />
@@ -79,17 +79,17 @@ const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...pro
         <mesh
           geometry={nodes['pointer-left'].geometry}
           material={nodes['pointer-left'].material}
-          position={[0.51, 0.3, 0.65]}
-          rotation={[Math.PI / 2, -1.2, 0]}
-          scale={[0.02, 0.02, 0.02]}
+          position={[0.5107, 0.3045, 0.6536]}
+          rotation={[Math.PI / 2, -1.1954, 0]}
+          scale={[0.0209, 0.0209, 0.0209]}
         />
         <mesh
           ref={needle}
           geometry={nodes['pointer-right'].geometry}
           material={nodes['pointer-right'].material}
-          position={[0.22, 0.3, 0.65]}
-          rotation={[-Math.PI / 2, -0.92, Math.PI]}
-          scale={[0.02, 0.02, 0.02]}
+          position={[0.2245, 0.3045, 0.6536]}
+          rotation={[-Math.PI / 2, -0.9187, Math.PI]}
+          scale={[0.0209, 0.0209, 0.0209]}
         />
       </group>
       {children}

@@ -1,6 +1,8 @@
 import { createRef } from 'react'
 import create from 'zustand'
-import { camera } from './enums.js'
+
+export const cameras = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE']
+export const levelLayer = 1
 
 const vehicleConfig = {
   radius: 0.35,
@@ -57,7 +59,7 @@ const useStore = create((set, get) => {
   return {
     set,
     get,
-    camera,
+    camera: cameras[0],
     ready: false,
     editor: false,
     help: false,

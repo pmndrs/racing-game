@@ -5,8 +5,7 @@ import * as THREE from 'three'
 import { useLayoutEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { MeshDistortMaterial, useGLTF, useAnimations, PositionalAudio } from '@react-three/drei'
-import { useStore } from '../../store'
-import { levelLayer } from '../../enums'
+import { useStore, levelLayer } from '../../store'
 
 useGLTF.preload('/models/track-draco.glb')
 
@@ -40,7 +39,7 @@ export function Track(props) {
         <mesh geometry={n.train_7.geometry} material={m.steelClone} {...config} />
         <mesh geometry={n.train_8.geometry} material={m.lightRedClone} {...config} />
         <mesh geometry={n.train_9.geometry} material={m.darkClone} {...config} />
-        {ready && <PositionalAudio url="/sounds/train.mp3" loop autoplay distance={10} />}
+        {ready && <PositionalAudio url="/sounds/train.mp3" loop autoplay distance={5} />}
       </group>
       <mesh geometry={n.track_2.geometry} material={m['Material.001']} {...config} />
       <mesh geometry={n.tube.geometry} material={m['default']} {...config} />
@@ -51,7 +50,7 @@ export function Track(props) {
         <mesh geometry={n.terrain.geometry} material={n.terrain.material} {...config} />
         <mesh geometry={n.water.geometry}>
           <MeshDistortMaterial speed={4} map={m.ColorPaletteWater.map} roughness={0} side={THREE.DoubleSide} />
-          {ready && <PositionalAudio url="/sounds/water.mp3" loop autoplay distance={20} />}
+          {ready && <PositionalAudio url="/sounds/water.mp3" loop autoplay distance={10} />}
         </mesh>
       </group>
       <group ref={birds}>

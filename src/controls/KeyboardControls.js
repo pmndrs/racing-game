@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
-import { useStore } from '../store'
-import { cameras } from '../enums.js'
+import { useStore, cameras } from '../store'
 
 const pressed = []
 

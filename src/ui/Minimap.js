@@ -2,8 +2,7 @@ import { OrthographicCamera, useFBO, useTexture } from '@react-three/drei'
 import { createPortal, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Box3, Matrix4, Scene, Vector3 } from 'three'
-import { levelLayer } from '../enums'
-import { useStore } from '../store'
+import { useStore, levelLayer } from '../store'
 
 const m = new Matrix4()
 const v = new Vector3()
@@ -60,39 +59,35 @@ function Minimap({ size = 200 }) {
   const { gl, camera, scene, size: screenSize } = useThree()
   const [, levelCenter, levelDimensions] = useLevelGeometricProperties()
   const chassisBody = useStore((state) => state.raycast.chassisBody)
-  const map = useStore((state) => state.controls.map)
   const screenPosition = useMemo(() => new Vector3(screenSize.width / 2 - size / 2 - 30, screenSize.height / 2 - size / 2 - 30, 0), [screenSize])
 
   useFrame(() => {
-    if (map) {
-      gl.autoClear = true
-      gl.render(scene, camera)
-      m.copy(camera.matrix).invert()
-      miniMap.current.quaternion.setFromRotationMatrix(m)
-      player.current.quaternion.setFromRotationMatrix(m)
-      gl.autoClear = false
-      gl.clearDepth()
-      v.subVectors(chassisBody.current.position, levelCenter)
-      player.current.position.set(screenPosition.x + (v.x / levelDimensions.x) * size, screenPosition.y - (v.z / levelDimensions.z) * size, 0)
-      gl.render(virtualScene, miniMapCamera.current)
-    }
+    gl.autoClear = true
+    gl.render(scene, camera)
+    m.copy(camera.matrix).invert()
+    miniMap.current.quaternion.setFromRotationMatrix(m)
+    player.current.quaternion.setFromRotationMatrix(m)
+    gl.autoClear = false
+    gl.clearDepth()
+    v.subVectors(chassisBody.current.position, levelCenter)
+    player.current.position.set(screenPosition.x + (v.x / levelDimensions.x) * size, screenPosition.y - (v.z / levelDimensions.z) * size, 0)
+    gl.render(virtualScene, miniMapCamera.current)
   }, 1)
 
   return (
     <>
-      {map &&
-        createPortal(
-          <>
-            <ambientLight intensity={1} />
-            <sprite ref={miniMap} position={screenPosition} scale={[size, size, 1]}>
-              <spriteMaterial map={buffer.texture} alphaMap={mask} />
-            </sprite>
-            <sprite ref={player} position={screenPosition} scale={[size / 30, size / 30, 1]}>
-              <spriteMaterial color="white" alphaMap={mask} />
-            </sprite>
-          </>,
-          virtualScene,
-        )}
+      {createPortal(
+        <>
+          <ambientLight intensity={1} />
+          <sprite ref={miniMap} position={screenPosition} scale={[size, size, 1]}>
+            <spriteMaterial map={buffer.texture} alphaMap={mask} />
+          </sprite>
+          <sprite ref={player} position={screenPosition} scale={[size / 30, size / 30, 1]}>
+            <spriteMaterial color="white" alphaMap={mask} />
+          </sprite>
+        </>,
+        virtualScene,
+      )}
       <OrthographicCamera ref={miniMapCamera} makeDefault={false} position={[0, 0, 0.1]} />
       <MinimapTexture buffer={buffer} />
     </>

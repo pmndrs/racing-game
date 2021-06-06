@@ -4,8 +4,7 @@ import { Canvas } from '@react-three/fiber'
 import { Physics } from '@react-three/cannon'
 import { Sky, Environment, OrbitControls, Stats } from '@react-three/drei'
 import { Editor } from './ui/Editor'
-import { useStore } from './store'
-import { levelLayer } from './enums'
+import { useStore, levelLayer } from './store'
 import { Ramp, Track, Vehicle } from './models'
 import { Heightmap } from './models/track/Heightmap'
 import { Overlay } from './ui/Overlay'
@@ -22,6 +21,7 @@ export function App() {
   const [light, setLight] = useState()
   const editor = useStore((state) => state.editor)
   const stats = useStore((state) => state.stats)
+  const map = useStore((state) => state.controls.map)
 
   return (
     <Overlay>
@@ -51,8 +51,8 @@ export function App() {
           <Ramp args={[30, 6, 5]} position={[110, -0.5, -45]} rotation={[0, 0.45, Math.PI / 16]} />
         </Physics>
         <Track position={[80, -0.1, -210]} scale={26} />
-        <Minimap />
         <Environment preset="night" />
+        {map && <Minimap />}
         {editor && <OrbitControls />}
       </Canvas>
       <Speed />
