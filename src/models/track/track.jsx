@@ -2,7 +2,7 @@
 // by: Batuhan13
 
 import * as THREE from 'three'
-import { useLayoutEffect, useRef } from 'react'
+import React, { useLayoutEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { MeshDistortMaterial, useGLTF, useAnimations, PositionalAudio } from '@react-three/drei'
 import { useBox } from '@react-three/cannon'

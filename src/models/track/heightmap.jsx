@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { extend } from '@react-three/fiber'
 import { useTexture } from '@react-three/drei'
 import { useHeightfield } from '@react-three/cannon'

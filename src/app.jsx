@@ -1,18 +1,12 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Layers } from 'three'
 import { Canvas } from '@react-three/fiber'
 import { Physics } from '@react-three/cannon'
 import { Sky, Environment, OrbitControls, Stats } from '@react-three/drei'
-import { Editor } from './ui/Editor'
 import { useStore, levelLayer } from './store'
-import { Ramp, Track, Vehicle } from './models'
-import { Heightmap } from './models/track/Heightmap'
-import { Overlay } from './ui/Overlay'
-import { Speed } from './ui/Speed'
-import { Help } from './ui/Help'
-import { Minimap } from './ui/Minimap'
-import { KeyboardControls } from './controls/KeyboardControls'
-import { HideMouse } from './controls/HideMouse'
+import { Heightmap, Ramp, Track, Vehicle } from './models'
+import { Editor, Help, Minimap, Overlay, Speed } from './ui'
+import { HideMouse, KeyboardControls } from './controls'
 
 const layers = new Layers()
 layers.enable(levelLayer)

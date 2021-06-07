@@ -1,6 +1,6 @@
 import { OrthographicCamera, useFBO, useTexture } from '@react-three/drei'
 import { createPortal, useFrame, useThree } from '@react-three/fiber'
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Box3, Matrix4, Scene, Vector3 } from 'three'
 import { useStore, levelLayer } from '../store'
 

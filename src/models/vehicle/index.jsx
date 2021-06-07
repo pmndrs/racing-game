@@ -1,13 +1,12 @@
 import * as THREE from 'three'
-import { useRef, useLayoutEffect, useEffect } from 'react'
+import React, { useRef, useLayoutEffect, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { PerspectiveCamera, OrthographicCamera, PositionalAudio } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
-import { Chassis } from './Chassis'
-import { Wheel } from './Wheel'
+import { Chassis } from './chassis.jsx'
+import { Wheel } from './wheel.jsx'
 import { useStore } from '../../store'
-import { Dust } from '../../effects/Dust'
-import { Skid } from '../../effects/Skid'
+import { Dust, Skid } from '../../effects'
 
 const v = new THREE.Vector3()
 

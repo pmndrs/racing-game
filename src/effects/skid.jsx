@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { useRef, useLayoutEffect } from 'react'
+import React, { useRef, useLayoutEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useStore } from '../store'
 
