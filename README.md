@@ -2,7 +2,7 @@
 
 ![img](thumbnail.webp)
 
-Live demo (current state): http://encouraging-ducks.surge.sh/
+Live demo (current state): https://racing.pmnd.rs/
 
 This project is a showcase for the feasibility of react in gaming. We would like to develop it open source, anyone can participate. If you have a PR merged you gain access as a co-contributor/maintainer. :-)
 
