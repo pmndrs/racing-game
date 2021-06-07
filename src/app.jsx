@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Layers } from 'three'
 import { Canvas } from '@react-three/fiber'
 import { Physics } from '@react-three/cannon'

@@ -1,4 +1,3 @@
-import React from 'react'
 import { useBox } from '@react-three/cannon'
 
 export function Ramp({ args, ...props }) {

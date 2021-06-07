@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { Footer } from '@pmndrs/branding'
 import { useProgress } from '@react-three/drei'
 import { Keys } from './help.jsx'

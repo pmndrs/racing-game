@@ -1,4 +1,3 @@
-import React from 'react'
 import { useControls, folder } from 'leva'
 import { useStore, vehicleConfig, wheelInfo } from '../store'
 

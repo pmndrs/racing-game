@@ -1,4 +1,4 @@
-export * from './editor.jsx'
+export * from './editor.js'
 export * from './help.jsx'
 export * from './minimap.jsx'
 export * from './overlay.jsx'
