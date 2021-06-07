@@ -5,8 +5,29 @@ import { Keys } from './Help'
 import { useStore } from '../store'
 
 function Ready({ setReady }) {
-  useEffect(() => () => void setReady(true), [])
-  return null
+  const { progress } = useProgress()
+
+  useEffect(() => {
+    if (progress === 100) {
+      setReady(true);
+    }
+  }, [progress])
+
+  return (
+    <>
+      <div
+        className="fullscreen"
+        style={{
+          backgroundImage: 'url(/graphics/loadingscreen.png)',
+          backgroundSize: 'cover',
+        }}>
+        <div className="loading-title">
+          <h1>POIMANDRES RACING GAME</h1>
+          <h2>{progress}%</h2>
+        </div>
+      </div>
+    </>
+  )
 }
 
 function Loader() {
