@@ -51,7 +51,6 @@ export function App() {
           <Ramp args={[30, 6, 6]} position={[5, -1, 165]} rotation={[0, 0.45, Math.PI / 16]} />
           <Track position={[0, -0.1, 0]} />
         </Physics>
-<<<<<<< HEAD
         {editor ? (
           <OrbitControls />
         ) : (
@@ -61,11 +60,6 @@ export function App() {
           </>
         )}
         <Environment preset="night" />
-=======
-        <Environment preset="night" />
-        {map && <Minimap />}
-        {editor && <OrbitControls />}
->>>>>>> main
       </Canvas>
       <Speed />
       <Help />
