@@ -13,6 +13,7 @@ export function Cameras() {
   const editor = useStore((state) => state.editor)
   const raycast = useStore((state) => state.raycast)
   const camera = useStore((state) => state.camera)
+  const { steer } = useStore((state) => state.vehicleConfig)
 
   useLayoutEffect(() => {
     if (!raycast.chassisBody.current) {
@@ -24,23 +25,19 @@ export function Cameras() {
 
   useFrame((state, delta) => {
     const { speed, controls } = useStore.getState()
-    const { forward, backward, left, right, brake, boost, reset } = controls
+    const { left, right, brake } = controls
 
-    const steeringValue = 0
-    const engineValue = 1
+    const steeringValue = left || right ? steer * (left && !right ? 1 : -1) : 0
 
     if (!editor) {
       if (camera === 'FIRST_PERSON') {
         defaultCamera.current.position.lerp(v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.5, 0.01), delta)
       } else if (camera === 'DEFAULT') {
         // left-right, up-down, near-far
-        defaultCamera.current.position.lerp(
-          v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (brake ? 1 : 0)),
-          delta,
-        )
+        defaultCamera.current.position.lerp(v.set(0, 1.25 + (speed / 1000) * -0.5, -5 - speed / 15 + (brake && speed > 1 ? 1 : 0)), delta)
       }
       // left-right swivel
-      defaultCamera.current.rotation.z = THREE.MathUtils.lerp(defaultCamera.current.rotation.z, Math.PI + (-steeringValue * speed) / 45, delta)
+      defaultCamera.current.rotation.y = THREE.MathUtils.lerp(defaultCamera.current.rotation.y, Math.sin(-steeringValue), delta)
     }
   })
 
