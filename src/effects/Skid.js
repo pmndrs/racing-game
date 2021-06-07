@@ -5,7 +5,7 @@ import { useStore } from '../store'
 
 const o = new THREE.Object3D()
 
-export function Skid({ opacity = 0.75, length = 1000, size = 0.4 }) {
+export function Skid({ opacity = 0.5, length = 500, size = 0.4 }) {
   let index = 0
   const ref = useRef()
   const { wheels, chassisBody } = useStore((state) => state.raycast)
@@ -28,9 +28,7 @@ export function Skid({ opacity = 0.75, length = 1000, size = 0.4 }) {
     }
   })
 
-  useLayoutEffect(() => {
-    ref.current.geometry.rotateX(-Math.PI / 2)
-  }, [])
+  useLayoutEffect(() => void ref.current.geometry.rotateX(-Math.PI / 2), [])
 
   return (
     <instancedMesh ref={ref} args={[null, null, length]}>

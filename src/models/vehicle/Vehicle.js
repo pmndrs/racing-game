@@ -32,16 +32,16 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
     return () => void [vSub, sSub].forEach((sub) => sub())
   }, [editor])
 
+  let steeringValue = 0
+  let engineValue = 0
+
   useFrame((state, delta) => {
     const { speed, controls } = useStore.getState()
     const { forward, backward, left, right, brake, boost, reset } = controls
 
-    //const dynamicSteer = // the higher the speed the less the car can turn
-    const dynamicSteer = steer
-    const engineValue = forward || backward ? force * (forward && !backward ? (boost ? -1.5 : -1) : 1) : 0
-
+    engineValue = THREE.MathUtils.lerp(engineValue, forward || backward ? force * (forward && !backward ? (boost ? -1.5 : -1) : 1) : 0, delta * 20)
+    steeringValue = THREE.MathUtils.lerp(steeringValue, left || right ? steer * (left && !right ? 1 : -1) : 0, delta * 20)
     for (let e = 2; e < 4; e++) api.applyEngineForce(speed < maxSpeed ? engineValue : 0, e)
-    const steeringValue = left || right ? dynamicSteer * (left && !right ? 1 : -1) : 0
     for (let s = 0; s < 2; s++) api.setSteeringValue(steeringValue, s)
     for (let b = 2; b < 4; b++) api.setBrake(brake ? (forward ? maxBrake / 1.5 : maxBrake) : 0, b)
     if (reset) {
@@ -51,13 +51,17 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
       raycast.chassisBody.current.api.rotation.set(...rotation)
     }
 
-    // left-right, up-down, near-far
     if (!editor) {
       if (camera === 'FIRST_PERSON') v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.5, 0.01)
       else if (camera === 'DEFAULT') v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (brake ? 1 : 0))
+      // left-right, up-down, near-far
       defaultCamera.current.position.lerp(v, delta)
       // left-right swivel
-      defaultCamera.current.rotation.z = THREE.MathUtils.lerp(defaultCamera.current.rotation.z, Math.PI + (-steeringValue * speed) / 45, delta)
+      defaultCamera.current.rotation.z = THREE.MathUtils.lerp(
+        defaultCamera.current.rotation.z,
+        Math.PI + (-steeringValue * speed) / (camera === 'DEFAULT' ? 40 : 60),
+        delta,
+      )
     }
 
     // lean chassis

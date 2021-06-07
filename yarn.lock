@@ -1739,15 +1739,15 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
 
-"@react-three/cannon@1.2.4":
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/@react-three/cannon/-/cannon-1.2.4.tgz#2ffe40413f1e7d4cb46a8241840669461ec4cfba"
-  integrity sha512-KzAy1zA0ThjwU0nNejtRokfRw9T4AIgeqZwXqbuB3FBYkJ2hxLae5KxAcqqv5Cr64y03XSUDuqTDnqkwPaimdQ==
+"@react-three/cannon@1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@react-three/cannon/-/cannon-1.3.0.tgz#b8c5315fe1187c17d5cff760c5b559ddd7279f3e"
+  integrity sha512-6UbIGG/BugsZlCf53PYuJhO/DM34YY1Q3qLlYw3yUT7QAhlEa0mF4eioYljCsJdK4eetIS3gNeE/F3C8ZSfkdQ==
 
-"@react-three/drei@6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@react-three/drei/-/drei-6.0.0.tgz#9be42a2efa135555b921f61a9144d7eb123e7abd"
-  integrity sha512-KyUFkJS+dVOBb7El6Jqzz0hNmQPWELmaU5LaOw7mu35oAhg6KP+ho3y1yEEKWYG9I4wRl71sva5M6CCdHki8Zw==
+"@react-three/drei@6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/@react-three/drei/-/drei-6.0.1.tgz#42578b9298c2d36f83c5f49c1bbc95b6b94dc216"
+  integrity sha512-A9MkGipdLN+R8yWCms4BzyNKclhPya/yymaC5F6F01nXimayO53J2QfgGo+wpH1PHPv3HoZKmOre5T0GNMHB1w==
   dependencies:
     "@babel/runtime" "^7.11.2"
     blob-polyfill "^5.0.20210201"
@@ -9458,14 +9458,14 @@ react-dev-utils@^11.0.3:
     strip-ansi "6.0.0"
     text-table "0.2.0"
 
-react-dom@^0.0.0-experimental-cc4d24ab0:
-  version "0.0.0-experimental-cc4d24ab0"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-0.0.0-experimental-cc4d24ab0.tgz#89da2db253f97ff393b429fa2065fd3c4e6ab39e"
-  integrity sha512-oNksk6tU1AQhLdkWrniykFXCZQarvBUId6kPkUeWyXi93KxdzVI9a2WN6o2KW+ifgpQbAcn+cIBJSe2B/uuhFw==
+react-dom@^17.0.2:
+  version "17.0.2"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-17.0.2.tgz#ecffb6845e3ad8dbfcdc498f0d0a939736502c23"
+  integrity sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
-    scheduler "0.0.0-experimental-cc4d24ab0"
+    scheduler "^0.20.2"
 
 react-dropzone@^11.3.2:
   version "11.3.2"
@@ -9593,10 +9593,10 @@ react-use-measure@^2.0.4:
   dependencies:
     debounce "^1.2.0"
 
-react@^0.0.0-experimental-cc4d24ab0:
-  version "0.0.0-experimental-cc4d24ab0"
-  resolved "https://registry.yarnpkg.com/react/-/react-0.0.0-experimental-cc4d24ab0.tgz#f9cc69e5e5f521781b4f0879283375e8d8969d2b"
-  integrity sha512-IzCNSZpiWTLC3ktoMJPOK3CUuFI713Cz55IL6RlZRdYtf6Ph7tHjzEzDRtvfNvvVhJHagEKtXbuK+eR0R6BIGA==
+react@^17.0.2:
+  version "17.0.2"
+  resolved "https://registry.yarnpkg.com/react/-/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"
+  integrity sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
@@ -10089,14 +10089,6 @@ saxes@^5.0.1:
   integrity sha512-5LBh1Tls8c9xgGjw3QrMwETmTMVk0oFgvrFSvWx62llR2hcEInrKNZ2GZCCuuy2lvWrdl5jhbpeqc5hRYKFOcw==
   dependencies:
     xmlchars "^2.2.0"
-
-scheduler@0.0.0-experimental-cc4d24ab0:
-  version "0.0.0-experimental-cc4d24ab0"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.0.0-experimental-cc4d24ab0.tgz#0fa760cbbfd3309b2772750a3c4444420a564395"
-  integrity sha512-4jOhr3GVwQuFUgagRGkT4nHVygSrWxuEuJp0P/il88vGIiTBg2UbCU2YrWRlnpytzKkMLs7aHRc6zJxMDEkWeA==
-  dependencies:
-    loose-envify "^1.1.0"
-    object-assign "^4.1.1"
 
 scheduler@^0.20.2:
   version "0.20.2"
