@@ -1,7 +1,7 @@
 import { Suspense, useEffect, useState } from 'react'
 import { Footer } from '@pmndrs/branding'
 import { useProgress } from '@react-three/drei'
-import { Keys } from './help'
+import { Keys } from './Help'
 import { useStore } from '../store'
 
 function Ready({ setReady }) {
