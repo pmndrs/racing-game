@@ -4,8 +4,7 @@ import { Canvas } from '@react-three/fiber'
 import { Physics } from '@react-three/cannon'
 import { Sky, Environment, OrbitControls, Stats } from '@react-three/drei'
 import { Editor } from './ui/Editor'
-import { useStore } from './store'
-import { levelLayer } from './enums'
+import { useStore, levelLayer } from './store'
 import { Ramp, Track, Vehicle } from './models'
 import { Heightmap } from './models/track/Heightmap'
 import { Overlay } from './ui/Overlay'
@@ -13,6 +12,7 @@ import { Speed } from './ui/Speed'
 import { Help } from './ui/Help'
 import { Minimap } from './ui/Minimap'
 import { KeyboardControls } from './controls/KeyboardControls'
+import { InactiveMouse } from './controls/Inactivemouse'
 
 const layers = new Layers()
 layers.enable(levelLayer)
@@ -21,6 +21,7 @@ export function App() {
   const [light, setLight] = useState()
   const editor = useStore((state) => state.editor)
   const stats = useStore((state) => state.stats)
+  const map = useStore((state) => state.controls.map)
 
   return (
     <Overlay>
@@ -31,7 +32,7 @@ export function App() {
         <directionalLight
           ref={setLight}
           layers={layers}
-          position={[100, 100, 50]}
+          position={[0, 100, 250]}
           intensity={1}
           shadow-bias={-0.001}
           shadow-mapSize={[4096, 4096]}
@@ -42,13 +43,15 @@ export function App() {
           castShadow
         />
         <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
-          <Heightmap elementSize={1 / 2} position={[335.8, -20.1, -465.5]} rotation={[-Math.PI / 2, 0, -Math.PI]} />
+          <Heightmap elementSize={1 / 2} position={[327.2 - 80, -20.1, -473.5 + 210]} rotation={[-Math.PI / 2, 0, -Math.PI]} />
           <Vehicle>
             {/* Mount the main-lights target as a child to the vehicle, so that light follows it */}
             {light && <primitive object={light.target} />}
           </Vehicle>
-          <Ramp args={[30, 6, 5]} position={[110, -0.5, -45]} rotation={[0, 0.45, Math.PI / 16]} />
+          <Ramp args={[30, 6, 6]} position={[5, -1, 165]} rotation={[0, 0.45, Math.PI / 16]} />
+          <Track position={[0, -0.1, 0]} />
         </Physics>
+<<<<<<< HEAD
         {editor ? (
           <OrbitControls />
         ) : (
@@ -58,10 +61,16 @@ export function App() {
           </>
         )}
         <Environment preset="night" />
+=======
+        <Environment preset="night" />
+        {map && <Minimap />}
+        {editor && <OrbitControls />}
+>>>>>>> main
       </Canvas>
       <Speed />
       <Help />
       <KeyboardControls />
+      <InactiveMouse />
       {editor && <Editor />}
       {stats && <Stats />}
     </Overlay>

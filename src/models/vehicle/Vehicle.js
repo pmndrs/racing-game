@@ -12,7 +12,7 @@ import { Cameras } from '../../components/Cameras'
 
 const v = new THREE.Vector3()
 
-export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [0, 4, 0], rotation = [0, Math.PI / 2, 0] }) {
+export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-115, 0.5, 220], rotation = [0, Math.PI / 2 + 0.5, 0] }) {
   const set = useStore((state) => state.set)
   const editor = useStore((state) => state.editor)
   const raycast = useStore((state) => state.raycast)
@@ -85,14 +85,14 @@ function VehicleAudio() {
     const state = useStore.getState()
     const { honk, brake } = state.controls
     engineAudio.current.setVolume(1)
-    accelerateAudio.current.setVolume((0.4 * state.speed) / 5)
+    accelerateAudio.current.setVolume((state.speed / state.vehicleConfig.maxSpeed) * 2)
     brakeAudio.current.setVolume(brake ? 1 : 0.5)
     if (honk) {
       if (!honkAudio.current.isPlaying) honkAudio.current.play()
-    } else honkAudio.current.stop()
+    } else honkAudio.current.isPlaying && honkAudio.current.stop()
     if ((state.sliding || brake) && state.speed > 5) {
       if (!brakeAudio.current.isPlaying) brakeAudio.current.play()
-    } else brakeAudio.current.stop()
+    } else brakeAudio.current.isPlaying && brakeAudio.current.stop()
   })
 
   useEffect(() => {
@@ -104,8 +104,8 @@ function VehicleAudio() {
 
   return (
     <>
-      <PositionalAudio ref={engineAudio} url="/sounds/engine.mp3" loop distance={5} />
-      <PositionalAudio ref={accelerateAudio} url="/sounds/accelerate.mp3" loop distance={5} />
+      <PositionalAudio ref={engineAudio} url="/sounds/engine.mp3" autoplay loop distance={5} />
+      <PositionalAudio ref={accelerateAudio} url="/sounds/accelerate.mp3" autoplay loop distance={5} />
       <PositionalAudio ref={honkAudio} url="/sounds/honk.mp3" loop distance={10} />
       <PositionalAudio ref={brakeAudio} url="/sounds/tire-brake.mp3" loop distance={10} />
     </>
