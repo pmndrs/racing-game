@@ -1,7 +1,7 @@
 import { createRef } from 'react'
 import create from 'zustand'
 
-export const cameras = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE']
+export const cameras = ['DEFAULT', 'STATIC_FOLLOW', 'FIRST_PERSON', 'BIRD_EYE']
 export const levelLayer = 1
 
 const vehicleConfig = {
