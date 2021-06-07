@@ -12,7 +12,7 @@ import { Speed } from './ui/Speed'
 import { Help } from './ui/Help'
 import { Minimap } from './ui/Minimap'
 import { KeyboardControls } from './controls/KeyboardControls'
-import { InactiveMouse } from './controls/Inactivemouse'
+import { InactiveMouse } from './controls/InactiveMouse'
 
 const layers = new Layers()
 layers.enable(levelLayer)

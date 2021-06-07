@@ -1,31 +1,25 @@
-function debounce(delay, fn) {
-  let timeoutId = null
-  return (...args) => {
-    if (timeoutId) {
-      clearTimeout(timeoutId)
-    }
-    timeoutId = setTimeout(() => {
-      timeoutId = null
-      fn(...args)
+import { useEffect } from 'react'
+import debounce from 'lodash-es/debounce'
+
+export function InactiveMouse({ delay = 3000 }) {
+  useEffect(() => {
+    let isIdle = true
+
+    const hideMouse = debounce(() => {
+      isIdle = true
+      document.documentElement.style = 'cursor: none'
     }, delay)
-  }
-}
 
-const INACTIVITY_DELAY = 3000
-let isIdle = true
-const hideMouse = debounce(INACTIVITY_DELAY, () => {
-  isIdle = true
-  document.documentElement.style = 'cursor: none'
-})
-const onMouseMovement = () => {
-  if (isIdle) {
-    isIdle = false
-    document.documentElement.style = ''
-  }
-  hideMouse()
-}
+    const onMouseMovement = () => {
+      if (isIdle) {
+        isIdle = false
+        document.documentElement.style = ''
+      }
+      hideMouse()
+    }
 
-export function InactiveMouse() {
-  window.addEventListener('mousemove', onMouseMovement, { passive: true })
+    window.addEventListener('mousemove', onMouseMovement, { passive: true })
+    return () => window.removeEventListener('mousemove', onMouseMovement)
+  }, [delay])
   return null
 }
