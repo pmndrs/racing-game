@@ -1,3 +1,4 @@
+const { join, resolve } = require('path')
 const CracoEsbuildPlugin = require('craco-esbuild')
 const { ProvidePlugin } = require('webpack')
 
@@ -9,5 +10,12 @@ module.exports = {
       }),
     ],
   },
-  plugins: [{ plugin: CracoEsbuildPlugin }],
+  plugins: [
+    {
+      options: {
+        includePaths: [resolve(join('.', 'node_modules'))],
+      },
+      plugin: CracoEsbuildPlugin,
+    },
+  ],
 }
