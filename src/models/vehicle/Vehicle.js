@@ -20,7 +20,15 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [0
   const ready = useStore((state) => state.ready)
   const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
 
+  const resetVehicle = () => {
+    raycast.chassisBody.current.api.position.set(...position)
+    raycast.chassisBody.current.api.velocity.set(0, 0, 0)
+    raycast.chassisBody.current.api.angularVelocity.set(...angularVelocity)
+    raycast.chassisBody.current.api.rotation.set(...rotation)
+  }
+
   useLayoutEffect(() => {
+    resetVehicle()
     // Subscriptions
     const vSub = raycast.chassisBody.current.api.velocity.subscribe((velocity) => set({ velocity, speed: v.set(...velocity).length() }))
     const sSub = api.sliding.subscribe((sliding) => set({ sliding }))
@@ -39,13 +47,10 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [0
     const steeringValue = left || right ? dynamicSteer * (left && !right ? 1 : -1) : 0
     for (let s = 0; s < 2; s++) api.setSteeringValue(steeringValue, s)
     for (let b = 2; b < 4; b++) api.setBrake(brake ? (forward ? maxBrake / 1.5 : maxBrake) : 0, b)
-    if (reset) {
-      raycast.chassisBody.current.api.position.set(...position)
-      raycast.chassisBody.current.api.velocity.set(0, 0, 0)
-      raycast.chassisBody.current.api.angularVelocity.set(...angularVelocity)
-      raycast.chassisBody.current.api.rotation.set(...rotation)
-    }
 
+    if (reset) {
+      resetVehicle()
+    }
     // lean chassis
     raycast.chassisBody.current.children[0].rotation.z = THREE.MathUtils.lerp(
       raycast.chassisBody.current.children[0].rotation.z,

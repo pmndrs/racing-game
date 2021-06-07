@@ -40,7 +40,16 @@ export function KeyboardControls() {
   useKeys(['h', 'H'], (honk) => set((state) => ({ ...state, controls: { ...state.controls, honk } })))
   useKeys(['Shift'], (boost) => set((state) => ({ ...state, controls: { ...state.controls, boost } })))
   useKeys(['r', 'R'], (reset) => set((state) => ({ ...state, controls: { ...state.controls, reset } })))
-  useKeys(['e', 'E'], () => set((state) => ({ ...state, editor: !state.editor })), false)
+  useKeys(
+    ['e', 'E'],
+    () =>
+      set((state) => ({
+        ...state,
+        editor: !state.editor,
+        speed: 0,
+      })),
+    false,
+  )
   useKeys(['i', 'I'], () => set((state) => ({ ...state, help: !state.help })), false)
   useKeys(
     ['c', 'C'],
