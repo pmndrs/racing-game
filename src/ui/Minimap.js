@@ -14,10 +14,12 @@ function useLevelGeometricProperties() {
   const level = useStore((state) => state.level)
 
   useLayoutEffect(() => {
-    level.current.parent?.updateWorldMatrix()
-    box.setFromObject(level.current)
-    box.getCenter(center)
-    box.getSize(dimensions)
+    if (level.current) {
+      level.current.parent.updateWorldMatrix()
+      box.setFromObject(level.current)
+      box.getCenter(center)
+      box.getSize(dimensions)
+    }
   }, [])
 
   return [box, center, dimensions]
@@ -49,7 +51,7 @@ function MinimapTexture({ buffer }) {
   return <OrthographicCamera ref={camera} makeDefault={false} rotation={[-Math.PI / 2, 0, 0]} near={20} far={500} />
 }
 
-function Minimap({ size = 200 }) {
+export function Minimap({ size = 200 }) {
   const player = useRef()
   const miniMap = useRef()
   const miniMapCamera = useRef()
@@ -62,16 +64,18 @@ function Minimap({ size = 200 }) {
   const screenPosition = useMemo(() => new Vector3(screenSize.width / 2 - size / 2 - 30, screenSize.height / 2 - size / 2 - 30, 0), [screenSize])
 
   useFrame(() => {
-    gl.autoClear = true
-    gl.render(scene, camera)
-    m.copy(camera.matrix).invert()
-    miniMap.current.quaternion.setFromRotationMatrix(m)
-    player.current.quaternion.setFromRotationMatrix(m)
-    gl.autoClear = false
-    gl.clearDepth()
-    v.subVectors(chassisBody.current.position, levelCenter)
-    player.current.position.set(screenPosition.x + (v.x / levelDimensions.x) * size, screenPosition.y - (v.z / levelDimensions.z) * size, 0)
-    gl.render(virtualScene, miniMapCamera.current)
+    if (chassisBody.current) {
+      gl.autoClear = true
+      gl.render(scene, camera)
+      m.copy(camera.matrix).invert()
+      miniMap.current.quaternion.setFromRotationMatrix(m)
+      player.current.quaternion.setFromRotationMatrix(m)
+      gl.autoClear = false
+      gl.clearDepth()
+      v.subVectors(chassisBody.current.position, levelCenter)
+      player.current.position.set(screenPosition.x + (v.x / levelDimensions.x) * size, screenPosition.y - (v.z / levelDimensions.z) * size, 0)
+      gl.render(virtualScene, miniMapCamera.current)
+    }
   }, 1)
 
   return (
@@ -93,5 +97,3 @@ function Minimap({ size = 200 }) {
     </>
   )
 }
-
-export { Minimap }

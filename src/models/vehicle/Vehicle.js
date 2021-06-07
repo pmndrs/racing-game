@@ -123,7 +123,10 @@ function VehicleAudio() {
     const engine = engineAudio.current
     const honk = honkAudio.current
     const brake = brakeAudio.current
-    return () => void [engine, honk, brake].forEach((sound) => sound.stop)
+    return () =>
+      [engine, honk, brake].forEach((sound) => {
+        if (sound.current && sound.current.isPlaying) sound.current.stop()
+      })
   }, [])
 
   return (

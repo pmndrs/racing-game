@@ -5,9 +5,9 @@ export const cameras = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE']
 export const levelLayer = 1
 
 const vehicleConfig = {
-  radius: 0.35,
+  radius: 0.39,
   width: 1.7,
-  height: -0.2,
+  height: -0.3,
   front: 1.35,
   back: -1.3,
   steer: 0.3,

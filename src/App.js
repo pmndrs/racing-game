@@ -48,7 +48,7 @@ export function App() {
             {/* Mount the main-lights target as a child to the vehicle, so that light follows it */}
             {light && <primitive object={light.target} />}
           </Vehicle>
-          <Ramp args={[30, 6, 6]} position={[5, -1, 165]} rotation={[0, 0.45, Math.PI / 16]} />
+          <Ramp args={[30, 6, 6]} position={[5, -1, 165]} rotation={[0, 0.45, Math.PI / 15]} />
           <Track position={[0, -0.1, 0]} />
         </Physics>
         <Environment preset="night" />
