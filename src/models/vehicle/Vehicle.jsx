@@ -3,11 +3,10 @@ import { useRef, useLayoutEffect, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { PerspectiveCamera, OrthographicCamera, PositionalAudio } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
-import { Chassis } from './Chassis'
-import { Wheel } from './Wheel'
+import { Chassis } from './Chassis.jsx'
+import { Wheel } from './wheel.jsx'
 import { useStore } from '../../store'
-import { Dust } from '../../effects/Dust'
-import { Skid } from '../../effects/Skid'
+import { Dust, Skid } from '../../effects'
 
 const v = new THREE.Vector3()
 
@@ -24,6 +23,8 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
   const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
 
   useLayoutEffect(() => {
+    defaultCamera.current.rotation.set(0, Math.PI, 0)
+    defaultCamera.current.position.set(0, 10, -20)
     defaultCamera.current.lookAt(raycast.chassisBody.current.position)
     defaultCamera.current.rotation.z = Math.PI // resolves the weird spin in the beginning
     // Subscriptions
@@ -75,16 +76,8 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
   return (
     <group ref={vehicle}>
       <Chassis ref={raycast.chassisBody} {...{ angularVelocity, position, rotation }}>
-        <PerspectiveCamera
-          key={'pc' + editor}
-          ref={defaultCamera}
-          makeDefault={['DEFAULT', 'FIRST_PERSON'].includes(camera)}
-          fov={75}
-          rotation={[0, Math.PI, 0]}
-          position={[0, 10, -20]}
-        />
+        <PerspectiveCamera ref={defaultCamera} makeDefault={camera !== 'BIRD_EYE'} fov={75} rotation={[0, Math.PI, 0]} position={[0, 10, -20]} />
         <OrthographicCamera
-          key={'oc' + editor}
           ref={birdEyeCamera}
           makeDefault={camera === 'BIRD_EYE'}
           position={[0, 100, 0]}
@@ -111,9 +104,9 @@ function VehicleAudio() {
   const brakeAudio = useRef()
   useFrame(() => {
     const state = useStore.getState()
-    const { honk, brake } = state.controls
+    const { honk, brake, boost } = state.controls
     engineAudio.current.setVolume(1)
-    accelerateAudio.current.setVolume((state.speed / state.vehicleConfig.maxSpeed) * 2)
+    accelerateAudio.current.setVolume((state.speed / state.vehicleConfig.maxSpeed) * (boost ? 3 : 2))
     brakeAudio.current.setVolume(brake ? 1 : 0.5)
     if (honk) {
       if (!honkAudio.current.isPlaying) honkAudio.current.play()
