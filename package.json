@@ -28,6 +28,8 @@
     "eslint": "7.28.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-react": "7.24.0",
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0",
     "prettier": "2.3.1",
     "react-scripts": "4.0.3"
   },
@@ -38,7 +40,8 @@
     "eject": "craco eject",
     "lint": "eslint src",
     "prettier": "prettier --list-different '**/*.{js,jsx,md}'",
-    "prettier-fix": "prettier --write '**/*.{js,jsx,md}'"
+    "prettier-fix": "prettier --write '**/*.{js,jsx,md}'",
+    "prepare": "husky install"
   },
   "browserslist": [
     ">0.2%",
@@ -46,5 +49,9 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "lint-staged": {
+    "*.js": "eslint --cache --fix",
+    "*.{js,md}": "prettier --write"
+  }
 }
