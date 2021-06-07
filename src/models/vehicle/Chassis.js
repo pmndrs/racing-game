@@ -22,7 +22,7 @@ const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...pro
   const ready = useStore((state) => state.ready)
   const debug = useStore((state) => state.debug)
   const { nodes: n, materials: m } = useGLTF('/models/chassis-draco.glb')
-  
+
   const onCollide = () => {
     crashAudio.current?.setVolume((0.4 * useStore.getState().speed) / 10)
     if (!crashAudio.current?.isPlaying) crashAudio.current?.play()
