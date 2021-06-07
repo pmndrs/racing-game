@@ -10,6 +10,7 @@
 
 # production
 /build
+/dist
 
 # IDE
 .vscode/
