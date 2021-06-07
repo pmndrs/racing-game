@@ -63,7 +63,7 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
     <group ref={vehicle}>
       <Chassis ref={raycast.chassisBody} {...{ angularVelocity, position, rotation }}>
         <Cameras />
-        {ready && <VehicleAudio />}
+        {ready && !editor && <VehicleAudio />}
         {children}
       </Chassis>
       <Wheel ref={raycast.wheels[0]} leftSide />

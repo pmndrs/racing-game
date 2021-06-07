@@ -65,6 +65,7 @@ function Minimap({ size = 200 }) {
   const screenPosition = useMemo(() => new Vector3(screenSize.width / 2 - size / 2 - 30, screenSize.height / 2 - size / 2 - 30, 0), [screenSize])
 
   useFrame(() => {
+    if (!chassisBody.current) { return }
     gl.autoClear = true
     gl.render(scene, camera)
     m.copy(camera.matrix).invert()

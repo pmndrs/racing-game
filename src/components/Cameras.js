@@ -15,6 +15,7 @@ export function Cameras() {
   const camera = useStore((state) => state.camera)
   const { steer } = useStore((state) => state.vehicleConfig)
 
+  console.log(camera)
   useLayoutEffect(() => {
     if (!raycast.chassisBody.current) {
       return
