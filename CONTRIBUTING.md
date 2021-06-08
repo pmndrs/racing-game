@@ -43,4 +43,4 @@ Join us on [discord](https://discord.gg/8PSnQYUZGA) and post your question there
 
 ## Any contributions you make will be under the MIT Software License
 
-In short, when you submit code changes, your submissions will be understood under the same MIT License that covers the project. Feel free to contact the maintainers if that's a concern.
+In short, when you submit code changes, your submissions will be under the same MIT License that covers the project. Feel free to contact the maintainers if that's a concern.
