@@ -21,7 +21,6 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "three": "0.129.0",
-    "vite-react-jsx": "^1.1.1",
     "zustand": "^3.5.2"
   },
   "devDependencies": {
@@ -32,7 +31,8 @@
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
     "prettier": "2.3.1",
-    "vite": "^2.3.6"
+    "vite": "^2.3.6",
+    "vite-react-jsx": "^1.1.1"
   },
   "scripts": {
     "dev": "vite",
