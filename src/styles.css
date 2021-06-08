@@ -295,6 +295,9 @@ button {
   .controls-container {
     gap: 0;
   }
+  .popup-btn {
+    display: none;
+  }
 }
 
 @media (max-width: 960px) and (min-aspect-ratio: 13/9) {
@@ -316,6 +319,10 @@ button {
     top: 30px;
     right: 30px;
   }
+
+  .popup-btn {
+    display: none;
+  }
   .speed {
     bottom: initial;
     top: 40px;
@@ -323,7 +330,7 @@ button {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 767px) and (max-aspect-ratio: 13/9) {
   .pmndrs-menu {
     flex-wrap: wrap;
     gap: 0.5rem 1.25rem;
