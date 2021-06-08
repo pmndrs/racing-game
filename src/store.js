@@ -63,6 +63,7 @@ const useStore = create((set, get) => {
     ready: false,
     editor: false,
     help: false,
+    menu: true,
     debug: false,
     stats: false,
     level: createRef(),
