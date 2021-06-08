@@ -111,7 +111,8 @@ function VehicleAudio() {
     if (honk) {
       if (!honkAudio.current.isPlaying) honkAudio.current.play()
     } else honkAudio.current.isPlaying && honkAudio.current.stop()
-    if ((state.sliding || brake) && state.speed > 5) {
+    if (brake && state.speed > 20) {
+      brakeAudio.current.setVolume((state.speed / 100))
       if (!brakeAudio.current.isPlaying) brakeAudio.current.play()
     } else brakeAudio.current.isPlaying && brakeAudio.current.stop()
   })
