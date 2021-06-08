@@ -130,8 +130,8 @@ function VehicleAudio() {
     <>
       <PositionalAudio ref={engineAudio} url="/sounds/engine.mp3" autoplay loop distance={5} />
       <PositionalAudio ref={accelerateAudio} url="/sounds/accelerate.mp3" autoplay loop distance={5} />
-      <PositionalAudio ref={honkAudio} url="/sounds/honk.mp3" loop distance={10} />
-      <PositionalAudio ref={brakeAudio} url="/sounds/tire-brake.mp3" loop distance={10} />
+      <PositionalAudio ref={honkAudio} url="/sounds/honk.mp3" distance={10} />
+      <PositionalAudio ref={brakeAudio} url="/sounds/tire-brake.mp3" distance={10} />
     </>
   )
 }
