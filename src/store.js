@@ -1,5 +1,6 @@
 import { createRef } from 'react'
 import create from 'zustand'
+import { isMobileDevice, isPortraitMode } from './lib'
 
 export const cameras = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE']
 export const levelLayer = 1
@@ -67,7 +68,8 @@ const useStore = create((set, get) => {
     debug: false,
     stats: false,
     level: createRef(),
-    map: true,
+    map: !isMobileDevice,
+    isMobilePortrait: isMobileDevice && isPortraitMode,
     raycast: {
       chassisBody: createRef(),
       wheels: [createRef(), createRef(), createRef(), createRef()],

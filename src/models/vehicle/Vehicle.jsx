@@ -7,6 +7,7 @@ import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
 import { useStore } from '../../store'
 import { Dust, Skid } from '../../effects'
+import { useOrientationChange } from '../../lib'
 
 const v = new THREE.Vector3()
 
@@ -21,6 +22,7 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
   const { force, maxBrake, steer, maxSpeed } = useStore((state) => state.vehicleConfig)
   const ready = useStore((state) => state.ready)
   const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
+  const isMobilePortrait = useOrientationChange()
 
   useLayoutEffect(() => {
     defaultCamera.current.rotation.set(0, Math.PI, 0)
@@ -54,7 +56,12 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
 
     if (!editor) {
       if (camera === 'FIRST_PERSON') v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.5, 0.01)
-      else if (camera === 'DEFAULT') v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (brake ? 1 : 0))
+      else if (camera === 'DEFAULT')
+        v.set(
+          (Math.sin(steeringValue) * speed) / 2.5,
+          1.25 + (engineValue / 1000) * -0.5 + (isMobilePortrait ? 1 : 0),
+          -5 - speed / 15 + (brake ? 1 : 0) - (isMobilePortrait ? 2 : 0),
+        )
       // left-right, up-down, near-far
       defaultCamera.current.position.lerp(v, delta)
       // left-right swivel
