@@ -23,7 +23,11 @@ export function Help() {
       <button value="reset" className="reset-btn">
         reset
       </button>
-      {!open && <button onClick={() => set({ help: true })}>i</button>}
+      {!open && (
+        <button className="popup-btn" onClick={() => set({ help: true })}>
+          i
+        </button>
+      )}
       <div className={`popup ${open ? 'open' : ''}`}>
         <button className="popup-close" onClick={() => set({ help: false })}>
           i
