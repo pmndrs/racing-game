@@ -39,7 +39,7 @@ People _love_ thorough bug reports. I'm not even kidding.
 
 ## Getting Help
 
-Join us on [discord](https://discord.gg/8PSnQYUZGA) and post your question there!
+Join us on [discord](https://discord.gg/rT5xGNjn) and post your question there!
 
 ## Any contributions you make will be under the MIT Software License
 
