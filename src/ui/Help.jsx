@@ -20,6 +20,9 @@ export function Help() {
   const open = useStore((state) => state.help)
   return (
     <div className="controls">
+      <button value="reset" className="reset-btn">
+        reset
+      </button>
       {!open && <button onClick={() => set({ help: true })}>i</button>}
       <div className={`popup ${open ? 'open' : ''}`}>
         <button className="popup-close" onClick={() => set({ help: false })}>
