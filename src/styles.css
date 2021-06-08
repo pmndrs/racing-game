@@ -222,9 +222,6 @@ button {
 }
 .mobile-controls .left-turn,
 .mobile-controls .right-turn {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 .mobile-controls .backward {
