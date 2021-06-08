@@ -5,8 +5,8 @@ import { Physics } from '@react-three/cannon'
 import { Sky, Environment, OrbitControls, Stats } from '@react-three/drei'
 import { useStore, levelLayer } from './store'
 import { Heightmap, Ramp, Track, Vehicle } from './models'
-import { Editor, Help, Minimap, Overlay, Speed } from './ui'
-import { HideMouse, KeyboardControls } from './controls'
+import { Editor, Help, Minimap, Overlay, Speed, MobileControls } from './ui'
+import { HideMouse, KeyboardControls, TouchControls } from './controls'
 
 const layers = new Layers()
 layers.enable(levelLayer)
@@ -51,7 +51,9 @@ export function App() {
       </Canvas>
       <Speed />
       <Help />
+      <MobileControls />
       <KeyboardControls />
+      <TouchControls />
       <HideMouse />
       {editor && <Editor />}
       {stats && <Stats />}

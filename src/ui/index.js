@@ -1,5 +1,6 @@
 export * from './Editor'
 export * from './Help'
 export * from './Minimap'
+export * from './MobileControls'
 export * from './Overlay'
 export * from './Speed'

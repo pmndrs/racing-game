@@ -23,9 +23,9 @@ body {
 /* --------------- SPEEDOMETER --------------- */
 
 .speed {
-  position: absolute;
-  bottom: 60px;
-  left: 60px;
+  position: fixed;
+  top: 40px;
+  left: 20px;
   font-size: 2.5em;
   font-weight: 200;
   font-variant-numeric: tabular-nums;
@@ -59,9 +59,13 @@ body {
 /* --------------- CONTROLS --------------- */
 
 .controls {
-  position: absolute;
-  bottom: 60px;
-  right: 60px;
+  position: fixed;
+  top: 40px;
+  right: 20px;
+}
+
+.controls button {
+  margin-left: 8px;
 }
 
 .controls > .popup {
@@ -126,7 +130,7 @@ body {
 }
 
 button {
-  width: 32px;
+  min-width: 32px;
   height: 32px;
   color: inherit;
   border: none;
@@ -158,6 +162,13 @@ button {
   align-items: flex-start;
   color: #606060;
 }
+.keys {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-content: center;
+  align-items: flex-start;
+  color: #606060;
+}
 
 .bg {
   background: #101010;
@@ -183,12 +194,56 @@ button {
   opacity: 0;
 }
 
+/* --------------- MOBILE CONTROLS --------------- */
+
+.mobile-controls {
+  position: fixed;
+  bottom: 30px;
+  left: 0;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobile-controls button {
+  background: none;
+  color: rgba(255, 255, 255, 0.3);
+  width: 5rem;
+  height: auto;
+  transition: transform 0.2s ease-in-out;
+}
+.mobile-controls button:active {
+  transform: scale(0.9);
+}
+.mobile-controls button svg {
+  pointer-events: none;
+  touch-action: none;
+}
+.mobile-controls .left-turn,
+.mobile-controls .right-turn {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.mobile-controls .backward {
+  width: 6rem;
+}
+
+.controls-container {
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
+}
+
+/* --------------- FOOTER --------------- */
+
 .pmndrs-menu {
   position: absolute;
-  top: 0;
+  bottom: 0;
   left: 0;
   width: 100%;
-  height: 100%;
   display: flex;
   color: #808080;
   padding: 40px;
@@ -234,4 +289,74 @@ button {
 .pmndrs-menu a:hover {
   text-decoration: underline;
   color: inherit;
+}
+
+@media (max-width: 768px) and (max-aspect-ratio: 13/9) {
+  .controls-container {
+    gap: 0;
+  }
+}
+
+@media (max-width: 960px) and (min-aspect-ratio: 13/9) {
+  .stack {
+    align-items: center;
+    padding-bottom: 4rem;
+  }
+  .keys {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1rem;
+  }
+
+  .mobile-controls {
+    padding: 0 1rem;
+  }
+
+  .controls {
+    bottom: initial;
+    top: 30px;
+    right: 30px;
+  }
+  .speed {
+    bottom: initial;
+    top: 40px;
+    left: 30px;
+  }
+}
+
+@media (max-width: 767px) {
+  .pmndrs-menu {
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+  }
+  .pmndrs-menu > div {
+    padding: 0;
+  }
+}
+
+@media (hover: hover) {
+  .mobile-controls {
+    display: none;
+  }
+  .reset-btn {
+    display: none;
+  }
+
+  .speed {
+    top: unset;
+    bottom: 40px;
+  }
+  .controls {
+    top: unset;
+    bottom: 40px;
+  }
+}
+@media (hover: hover) and (min-width: 768px) {
+  .speed {
+    bottom: 60px;
+    left: 60px;
+  }
+  .controls {
+    bottom: 60px;
+    right: 60px;
+  }
 }
