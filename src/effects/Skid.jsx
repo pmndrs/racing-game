@@ -22,8 +22,13 @@ export function Skid({ opacity = 0.5, length = 500, size = 0.4 }) {
   }
 
   useFrame(() => {
-    const { controls, speed } = useStore.getState()
-    if (controls.brake && speed > 10 && rightRearWheel.position.y < 0.29 && leftRearWheel.position.y < 0.29) {
+    const { controls, speed, raycast } = useStore.getState()
+    if (
+      controls.brake &&
+      speed > 10 &&
+      rightRearWheel.position.y < raycast.restrictWheelsGroundDistance &&
+      leftRearWheel.position.y < raycast.restrictWheelsGroundDistance
+    ) {
       setItemAt(rightRearWheel, index++)
       setItemAt(leftRearWheel, index++)
       if (index === length) index = 0

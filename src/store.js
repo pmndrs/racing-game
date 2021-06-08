@@ -74,6 +74,7 @@ const useStore = create((set, get) => {
       indexForwardAxis: 2,
       indexRightAxis: 0,
       indexUpAxis: 1,
+      restrictWheelsGroundDistance: 0.29,
     },
     controls: {
       forward: false,
