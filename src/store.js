@@ -66,6 +66,7 @@ const useStore = create((set, get) => {
     debug: false,
     stats: false,
     level: createRef(),
+    map: true,
     raycast: {
       chassisBody: createRef(),
       wheels: [createRef(), createRef(), createRef(), createRef()],
@@ -83,7 +84,6 @@ const useStore = create((set, get) => {
       honk: false,
       boost: false,
       reset: false,
-      map: true,
     },
     vehicleConfig,
     velocity: [0, 0, 0],

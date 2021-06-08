@@ -8,6 +8,9 @@
         "plugin:react/recommended",
         "eslint:recommended"
     ],
+    "overrides": [{
+        "files": ["*.jsx", "*.js"]
+    }],
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true

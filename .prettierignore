@@ -1,6 +1,6 @@
-build/*
 assets/*
-public/*
+dist/*
 node_modules/*
+public/*
 .log
 package.json

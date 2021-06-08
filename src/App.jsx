@@ -15,7 +15,7 @@ export function App() {
   const [light, setLight] = useState()
   const editor = useStore((state) => state.editor)
   const stats = useStore((state) => state.stats)
-  const map = useStore((state) => state.controls.map)
+  const map = useStore((state) => state.map)
 
   return (
     <Overlay>
