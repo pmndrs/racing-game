@@ -1,1 +1,1 @@
-export const isPortraitMode = window.matchMedia('(orientation: portrait)').matches
+export const isPortraitMode = window.matchMedia('(orientation: portrait)')

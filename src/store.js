@@ -70,7 +70,7 @@ const useStore = create((set, get) => {
     stats: false,
     level: createRef(),
     map: !isMobile,
-    isMobilePortrait: isMobile && isPortraitMode,
+    isMobilePortrait: isMobile && isPortraitMode.matches,
     raycast: {
       chassisBody: createRef(),
       wheels: [createRef(), createRef(), createRef(), createRef()],
