@@ -14,8 +14,12 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
   const defaultCamera = useRef()
   const birdEyeCamera = useRef()
 
-  const { raycast, camera, ready, set, editor, vehicleConfig } = useStore((state) => state)
-  const { force, maxBrake, steer, maxSpeed } = vehicleConfig
+  const set = useStore((state) => state.set)
+  const editor = useStore((state) => state.editor)
+  const raycast = useStore((state) => state.raycast)
+  const camera = useStore((state) => state.camera)
+  const { force, maxBrake, steer, maxSpeed } = useStore((state) => state.vehicleConfig)
+  const ready = useStore((state) => state.ready)
   const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
 
   useLayoutEffect(() => {
@@ -29,8 +33,8 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
     return () => void [vSub, sSub].forEach((sub) => sub())
   }, [editor])
 
-  let steeringValue = 0,
-    engineValue = 0
+  let steeringValue = 0
+  let engineValue = 0
 
   useFrame((state, delta) => {
     const { speed, controls } = useStore.getState()

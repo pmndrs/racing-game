@@ -90,7 +90,6 @@ const useStore = create((set, get) => {
     vehicleConfig,
     velocity: [0, 0, 0],
     speed: 0,
-    speedTrashold: 20,
   }
 })
 

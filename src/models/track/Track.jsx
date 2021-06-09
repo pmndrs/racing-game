@@ -15,7 +15,7 @@ function Train({ args = [38, 8, 10], position = [-145.84, 3.42, 54.67], rotation
   const ready = useStore((state) => state.ready)
   const sound = useStore((state) => state.sound)
   const { animations, nodes: n, materials: m } = useGLTF('/models/track-draco.glb')
-  const [api] = useBox(() => ({ mass: 10000, type: 'Kinematic', args, position, rotation }), undefined, [args, position, rotation])
+  const [, api] = useBox(() => ({ mass: 10000, type: 'Kinematic', args, position, rotation }), undefined, [args, position, rotation])
   const { actions } = useAnimations(animations, group)
   useLayoutEffect(() => void actions.train.play(), [actions])
 
