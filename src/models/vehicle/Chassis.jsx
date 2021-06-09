@@ -14,7 +14,7 @@ import { useStore, mutation } from '../../store'
 useGLTF.preload('/models/chassis-draco.glb')
 
 const c = new THREE.Color()
-const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...props }, ref) => {
+export const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...props }, ref) => {
   const glass = useRef()
   const brake = useRef()
   const wheel = useRef()
@@ -91,5 +91,3 @@ const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...pro
     </group>
   )
 })
-
-export { Chassis }
