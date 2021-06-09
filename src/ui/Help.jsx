@@ -21,7 +21,7 @@ export function Help() {
   return (
     <div className="controls">
       <button value="reset" className="reset-btn">
-        reset
+        Reset
       </button>
       {!open && (
         <button className="popup-btn" onClick={() => set({ help: true })}>
