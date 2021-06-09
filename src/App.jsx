@@ -52,7 +52,7 @@ export function App() {
             <Goal args={[0.001, 10, 18]} rotation={[0, -1.2, 0]} position={[-104, 1, -189]} />
           </DebugScene>
         </Physics>
-        <Environment preset="night" />
+        <Environment files={'textures/dikhololo_night_1k.hdr'} />
         {map && <Minimap />}
         {editor && <OrbitControls />}
       </Canvas>
