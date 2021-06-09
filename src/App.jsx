@@ -3,6 +3,7 @@ import { Layers } from 'three'
 import { Canvas } from '@react-three/fiber'
 import { Physics } from '@react-three/cannon'
 import { Sky, Environment, OrbitControls, Stats } from '@react-three/drei'
+import { isMobile } from 'react-device-detect'
 import { useStore, levelLayer } from './store'
 import { Heightmap, Ramp, Track, Vehicle } from './models'
 import { Editor, Help, Minimap, Overlay, Speed, MobileControls } from './ui'
@@ -51,9 +52,13 @@ export function App() {
       </Canvas>
       <Speed />
       <Help />
-      <MobileControls />
       <KeyboardControls />
-      <TouchControls />
+      {isMobile && (
+        <>
+          <MobileControls />
+          <TouchControls />
+        </>
+      )}
       <HideMouse />
       {editor && <Editor />}
       {stats && <Stats />}

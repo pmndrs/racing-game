@@ -1,3 +1,4 @@
+import { isMobile } from 'react-device-detect'
 import { useStore } from '../store'
 
 const controlOptions = [
@@ -19,9 +20,9 @@ export function Help() {
   const set = useStore((state) => state.set)
   const open = useStore((state) => state.help)
   return (
-    <div className="controls">
+    <div className={`controls ${isMobile ? 'is-mobile' : ''}`}>
       <button value="reset" className="reset-btn">
-        reset
+        Reset
       </button>
       {!open && (
         <button className="popup-btn" onClick={() => set({ help: true })}>

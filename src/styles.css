@@ -24,7 +24,7 @@ body {
 
 .speed {
   position: fixed;
-  top: 40px;
+  bottom: 40px;
   left: 20px;
   font-size: 2.5em;
   font-weight: 200;
@@ -60,12 +60,16 @@ body {
 
 .controls {
   position: fixed;
-  top: 40px;
+  bottom: 40px;
   right: 20px;
 }
 
 .controls button {
   margin-left: 8px;
+}
+
+.controls .reset-btn {
+  display: none;
 }
 
 .controls > .popup {
@@ -292,9 +296,6 @@ button {
   .controls-container {
     gap: 0;
   }
-  .popup-btn {
-    display: none;
-  }
 }
 
 @media (max-width: 960px) and (min-aspect-ratio: 13/9) {
@@ -337,30 +338,41 @@ button {
   }
 }
 
-@media (hover: hover) {
-  .mobile-controls {
-    display: none;
-  }
-  .reset-btn {
-    display: none;
-  }
+/* --------------- MOBILE STYLES --------------- */
 
-  .speed {
-    top: unset;
-    bottom: 40px;
-  }
-  .controls {
-    top: unset;
-    bottom: 40px;
-  }
+.speed.is-mobile {
+  bottom: unset;
+  top: 40px;
 }
-@media (hover: hover) and (min-width: 768px) {
+
+.controls.is-mobile {
+  bottom: unset;
+  top: 40px;
+}
+
+.is-mobile .reset-btn {
+  display: block;
+}
+.is-mobile .popup-btn {
+  display: none;
+}
+
+@media (min-width: 768px) {
   .speed {
     bottom: 60px;
     left: 60px;
   }
   .controls {
     bottom: 60px;
+    right: 60px;
+  }
+  .speed.is-mobile {
+    top: 60px;
+    right: 60px;
+  }
+
+  .controls.is-mobile {
+    top: 60px;
     right: 60px;
   }
 }

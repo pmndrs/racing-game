@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { isMobile } from 'react-device-detect'
 import { useStore } from '../store'
 
 export function Speed() {
@@ -19,7 +20,7 @@ export function Speed() {
     return () => clearInterval(interval)
   }, [])
   return (
-    <div className="speed">
+    <div className={`speed ${isMobile ? 'is-mobile' : ''}`}>
       <div className="speed-gauge">
         <Background className="speed-background" gaugeRef={gaugeRef} />
         <Foreground className="speed-foreground" />
