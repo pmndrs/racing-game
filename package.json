@@ -39,8 +39,8 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "lint": "eslint --cache src",
-    "lint-fix": "eslint --fix --cache src",
+    "eslint": "eslint --cache src",
+    "eslint-fix": "eslint --fix --cache src",
     "prettier": "prettier --list-different '**/*.{js,jsx,md}'",
     "prettier-fix": "prettier --write '**/*.{js,jsx,md}'",
     "prepare": "husky install"

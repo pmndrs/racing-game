@@ -22,11 +22,11 @@
         "react"
     ],
     "rules": {
-        "no-unused-vars": ["warn", { "ignoreRestSiblings": true }],
+        "no-unused-vars": ["error", { "ignoreRestSiblings": true }],
         "react/display-name": 0,
         "react/prop-types": 0,
         "react/react-in-jsx-scope": 0,
-        "semi": ["warn", "never"]
+        "semi": ["error", "never"]
     },
     "settings": {
         "react": {
