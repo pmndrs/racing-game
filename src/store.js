@@ -1,5 +1,6 @@
 import { createRef } from 'react'
 import create from 'zustand'
+import shallow from 'zustand/shallow'
 
 export const cameras = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE']
 export const levelLayer = 1
@@ -55,7 +56,7 @@ const wheelInfo4 = {
   chassisConnectionPointLocal: [vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.back],
 }
 
-const useStore = create((set, get) => {
+const useStoreImpl = create((set, get) => {
   return {
     set,
     get,
@@ -65,6 +66,7 @@ const useStore = create((set, get) => {
     help: false,
     debug: false,
     stats: false,
+    sound: true,
     level: createRef(),
     map: true,
     raycast: {
@@ -84,11 +86,23 @@ const useStore = create((set, get) => {
       honk: false,
       boost: false,
       reset: false,
+      map: true,
     },
     vehicleConfig,
-    velocity: [0, 0, 0],
-    speed: 0,
   }
 })
 
-export { useStore, vehicleConfig, wheelInfo, wheelInfo1, wheelInfo2, wheelInfo3, wheelInfo4 }
+const mutation = {
+  // Everything in here is mutated to avoid even slight overhead
+  velocity: [0, 0, 0],
+  speed: 0,
+  start: 0,
+  finish: 0,
+  sliding: false,
+}
+
+// Make the store shallow compare by default
+const useStore = (sel) => useStoreImpl(sel, shallow)
+Object.assign(useStore, useStoreImpl)
+
+export { useStore, mutation, vehicleConfig, wheelInfo, wheelInfo1, wheelInfo2, wheelInfo3, wheelInfo4 }

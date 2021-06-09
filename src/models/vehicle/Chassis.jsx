@@ -9,41 +9,40 @@ import { useGLTF, PositionalAudio } from '@react-three/drei'
 import { useBox } from '@react-three/cannon'
 import debounce from 'lodash-es/debounce'
 import clamp from 'lodash-es/clamp'
-import { useStore } from '../../store'
+import { useStore, mutation } from '../../store'
 
 useGLTF.preload('/models/chassis-draco.glb')
 
 const c = new THREE.Color()
-const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...props }, ref) => {
+export const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...props }, ref) => {
   const glass = useRef()
   const brake = useRef()
   const wheel = useRef()
   const needle = useRef()
   const crashAudio = useRef()
-
-  const ready = useStore((state) => state.ready)
+  const [ready, camera, vehicleConfig] = useStore((s) => [s.ready, s.camera, s.vehicleConfig])
   const { nodes: n, materials: m } = useGLTF('/models/chassis-draco.glb')
-
   const onCollide = useCallback(
     debounce((e) => {
+      if (e.body.userData.trigger || !useStore.getState().sound) return
       crashAudio.current?.setVolume(clamp(e.contact.impactVelocity / 10, 0.2, 1))
       if (!crashAudio.current?.isPlaying) crashAudio.current?.play()
     }, 200),
   )
   const [, api] = useBox(() => ({ mass, args, allowSleep: false, onCollide, ...props }), ref)
 
+  let speed = 0
+  let ctrl
   useFrame((_, delta) => {
-    const state = useStore.getState()
-    const isBraking = state.controls.brake
-    const isCockpit = state.camera === 'FIRST_PERSON'
-    const controls = state.controls
-    brake.current.material.color.lerp(c.set(isBraking ? '#555' : 'white'), delta * 10)
-    brake.current.material.emissive.lerp(c.set(isBraking ? 'red' : 'red'), delta * 10)
-    brake.current.material.opacity = THREE.MathUtils.lerp(brake.current.material.opacity, isBraking ? 1 : 0.3, delta * 10)
-    glass.current.material.opacity = THREE.MathUtils.lerp(glass.current.material.opacity, isCockpit ? 0.1 : 0.6, delta)
-    glass.current.material.color.lerp(c.set(isCockpit ? 'white' : 'black'), delta)
-    wheel.current.rotation.z = THREE.MathUtils.lerp(wheel.current.rotation.z, controls.left ? -Math.PI : controls.right ? Math.PI : 0, delta)
-    needle.current.rotation.y = (state.speed / state.vehicleConfig.maxSpeed) * -Math.PI * 2 - 0.9
+    speed = mutation.speed
+    ctrl = useStore.getState().controls
+    brake.current.material.color.lerp(c.set(ctrl.brake ? '#555' : 'white'), delta * 10)
+    brake.current.material.emissive.lerp(c.set(ctrl.brake ? 'red' : 'red'), delta * 10)
+    brake.current.material.opacity = THREE.MathUtils.lerp(brake.current.material.opacity, ctrl.brake ? 1 : 0.3, delta * 10)
+    glass.current.material.opacity = THREE.MathUtils.lerp(glass.current.material.opacity, camera === 'FIRST_PERSON' ? 0.1 : 0.75, delta)
+    glass.current.material.color.lerp(c.set(camera === 'FIRST_PERSON' ? 'white' : 'black'), delta)
+    wheel.current.rotation.z = THREE.MathUtils.lerp(wheel.current.rotation.z, ctrl.left ? -Math.PI : ctrl.right ? Math.PI : 0, delta)
+    needle.current.rotation.y = (speed / vehicleConfig.maxSpeed) * -Math.PI * 2 - 0.9
   })
 
   return (
@@ -92,5 +91,3 @@ const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...pro
     </group>
   )
 })
-
-export { Chassis }

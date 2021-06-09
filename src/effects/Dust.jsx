@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { useStore } from '../store'
+import { useStore, mutation } from '../store'
 
 const v = new THREE.Vector3()
 const m = new THREE.Matrix4()
@@ -12,13 +12,14 @@ export function Dust({ opacity = 0.1, length = 200, size = 1 }) {
   const { wheels } = useStore((state) => state.raycast)
   const trail = useRef()
 
+  let i = 0
   let index = 0
   let time = 0
   let intensity = 0
-
+  let ctrl
   useFrame((state, delta) => {
-    const { controls, sliding, speed } = useStore.getState()
-    intensity = THREE.MathUtils.lerp(intensity, ((sliding || controls.brake) * speed) / 40, delta * 8)
+    ctrl = useStore.getState().controls
+    intensity = THREE.MathUtils.lerp(intensity, ((mutation.sliding || ctrl.brake) * mutation.speed) / 40, delta * 8)
 
     if (state.clock.getElapsedTime() - time > 0.02) {
       time = state.clock.getElapsedTime()
@@ -28,7 +29,7 @@ export function Dust({ opacity = 0.1, length = 200, size = 1 }) {
       if (index === length) index = 0
     } else {
       // Shrink old one
-      for (let i = 0; i < length; i++) {
+      for (i = 0; i < length; i++) {
         trail.current.getMatrixAt(i, m)
         m.decompose(o.position, q, v)
         o.scale.setScalar(Math.max(0, v.x - 0.005))
@@ -47,8 +48,9 @@ export function Dust({ opacity = 0.1, length = 200, size = 1 }) {
   )
 }
 
+let n
 function setItemAt(ref, obj, i, intensity) {
-  const n = THREE.MathUtils.randFloatSpread(0.25)
+  n = THREE.MathUtils.randFloatSpread(0.25)
   o.position.set(obj.position.x + n, obj.position.y - 0.4, obj.position.z + n)
   o.scale.setScalar(Math.random() * intensity)
   o.updateMatrix()
