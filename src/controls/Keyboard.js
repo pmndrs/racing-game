@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useStore, cameras } from '../store'
+import { useStore, cameras, mutation } from '../store'
 
 function useKeys(keyConfig) {
   useEffect(() => {
@@ -10,7 +10,6 @@ function useKeys(keyConfig) {
 
     const downHandler = ({ key }) => {
       if (!keyMap[key]) return
-
       const { fn, pressed, up } = keyMap[key]
       keyMap[key].pressed = true
       if (up || !pressed) fn(true)
@@ -18,7 +17,6 @@ function useKeys(keyConfig) {
 
     const upHandler = ({ key }) => {
       if (!keyMap[key]) return
-
       const { fn, up } = keyMap[key]
       keyMap[key].pressed = false
       if (up) fn(false)
@@ -37,58 +35,26 @@ function useKeys(keyConfig) {
 export function KeyboardControls() {
   const set = useStore((state) => state.set)
   useKeys([
-    {
-      keys: ['ArrowUp', 'w', 'W'],
-      fn: (forward) => set((state) => ({ ...state, controls: { ...state.controls, forward } })),
-    },
-    {
-      keys: ['ArrowDown', 's', 'S'],
-      fn: (backward) => set((state) => ({ ...state, controls: { ...state.controls, backward } })),
-    },
-    {
-      keys: ['ArrowLeft', 'a', 'A'],
-      fn: (left) => set((state) => ({ ...state, controls: { ...state.controls, left } })),
-    },
-    {
-      keys: ['ArrowRight', 'd', 'D'],
-      fn: (right) => set((state) => ({ ...state, controls: { ...state.controls, right } })),
-    },
-    {
-      keys: [' '],
-      fn: (brake) => set((state) => ({ ...state, controls: { ...state.controls, brake } })),
-    },
-    {
-      keys: ['h', 'H'],
-      fn: (honk) => set((state) => ({ ...state, controls: { ...state.controls, honk } })),
-    },
-    {
-      keys: ['Shift'],
-      fn: (boost) => set((state) => ({ ...state, controls: { ...state.controls, boost } })),
-    },
+    { keys: ['ArrowUp', 'w', 'W'], fn: (forward) => set((state) => ({ ...state, controls: { ...state.controls, forward } })) },
+    { keys: ['ArrowDown', 's', 'S'], fn: (backward) => set((state) => ({ ...state, controls: { ...state.controls, backward } })) },
+    { keys: ['ArrowLeft', 'a', 'A'], fn: (left) => set((state) => ({ ...state, controls: { ...state.controls, left } })) },
+    { keys: ['ArrowRight', 'd', 'D'], fn: (right) => set((state) => ({ ...state, controls: { ...state.controls, right } })) },
+    { keys: [' '], fn: (brake) => set((state) => ({ ...state, controls: { ...state.controls, brake } })) },
+    { keys: ['h', 'H'], fn: (honk) => set((state) => ({ ...state, controls: { ...state.controls, honk } })) },
+    { keys: ['Shift'], fn: (boost) => set((state) => ({ ...state, controls: { ...state.controls, boost } })) },
     {
       keys: ['r', 'R'],
-      fn: (reset) => set((state) => ({ ...state, controls: { ...state.controls, reset } })),
+      fn: (reset) =>
+        set((state) => {
+          mutation.start = 0
+          mutation.finish = 0
+          return { ...state, controls: { ...state.controls, reset } }
+        }),
     },
-    {
-      keys: ['e', 'E'],
-      fn: () => set((state) => ({ ...state, editor: !state.editor })),
-      up: false,
-    },
-    {
-      keys: ['i', 'I'],
-      fn: () => set((state) => ({ ...state, help: !state.help })),
-      up: false,
-    },
-    {
-      keys: ['m', 'M'],
-      fn: () => set((state) => ({ ...state, map: !state.map })),
-      up: false,
-    },
-    {
-      keys: ['s', 'S'],
-      fn: () => set((state) => ({ ...state, sound: !state.sound })),
-      up: false,
-    },
+    { keys: ['e', 'E'], fn: () => set((state) => ({ ...state, editor: !state.editor })), up: false },
+    { keys: ['i', 'I'], fn: () => set((state) => ({ ...state, help: !state.help })), up: false },
+    { keys: ['m', 'M'], fn: () => set((state) => ({ ...state, map: !state.map })), up: false },
+    { keys: ['s', 'S'], fn: () => set((state) => ({ ...state, sound: !state.sound })), up: false },
     {
       keys: ['c', 'C'],
       fn: () =>

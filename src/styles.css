@@ -18,6 +18,16 @@ body {
   font-family: 'Inter var', sans-serif;
 }
 
+.clock {
+  position: absolute;
+  top: 60px;
+  left: 60px;
+  font-weight: 200;
+  font-size: 5em;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -5px;
+}
+
 /* --------------- SPEEDOMETER --------------- */
 
 .speed {

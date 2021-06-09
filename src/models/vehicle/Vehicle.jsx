@@ -1,51 +1,60 @@
 import * as THREE from 'three'
 import { useRef, useLayoutEffect, useEffect } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import { PerspectiveCamera, OrthographicCamera, PositionalAudio } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
 import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
-import { useStore } from '../../store'
 import { Dust, Skid } from '../../effects'
+import { useStore, mutation } from '../../store'
 
 const v = new THREE.Vector3()
 
 export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-115, 0.5, 220], rotation = [0, Math.PI / 2 + 0.5, 0] }) {
-  const defaultCamera = useRef()
-  const birdEyeCamera = useRef()
+  const defaultCamera = useThree((state) => state.camera)
 
-  const set = useStore((state) => state.set)
-  const editor = useStore((state) => state.editor)
-  const raycast = useStore((state) => state.raycast)
-  const camera = useStore((state) => state.camera)
-  const { force, maxBrake, steer, maxSpeed } = useStore((state) => state.vehicleConfig)
-  const ready = useStore((state) => state.ready)
+  const [ready, editor, raycast, camera, vehicleConfig] = useStore((s) => [s.ready, s.editor, s.raycast, s.camera, s.vehicleConfig])
+  const { force, maxBrake, steer, maxSpeed } = vehicleConfig
   const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
 
   useLayoutEffect(() => {
-    defaultCamera.current.rotation.set(0, Math.PI, 0)
-    defaultCamera.current.position.set(0, 10, -20)
-    defaultCamera.current.lookAt(raycast.chassisBody.current.position)
-    defaultCamera.current.rotation.z = Math.PI // resolves the weird spin in the beginning
-    // Subscriptions
-    const vSub = raycast.chassisBody.current.api.velocity.subscribe((velocity) => set({ velocity, speed: v.set(...velocity).length() }))
-    const sSub = api.sliding.subscribe((sliding) => set({ sliding }))
-    return () => void [vSub, sSub].forEach((sub) => sub())
+    const sub1 = raycast.chassisBody.current.api.velocity.subscribe((velocity) => {
+      mutation.velocity = velocity
+      mutation.speed = v.set(...velocity).length()
+    })
+    const sub2 = api.sliding.subscribe((sliding) => (mutation.sliding = sliding))
+    return () => void [sub1, sub2].forEach((sub) => sub())
   }, [editor])
 
+  useLayoutEffect(() => {
+    if (defaultCamera instanceof THREE.PerspectiveCamera) {
+      defaultCamera.rotation.set(0, Math.PI, 0)
+      defaultCamera.position.set(0, 10, -20)
+      defaultCamera.lookAt(raycast.chassisBody.current.position)
+      defaultCamera.rotation.z = Math.PI // resolves the weird spin in the beginning
+    }
+  }, [defaultCamera])
+
+  let i = 0
   let steeringValue = 0
   let engineValue = 0
+  let speed = 0
+  let ctrl
 
   useFrame((state, delta) => {
-    const { speed, controls } = useStore.getState()
-    const { forward, backward, left, right, brake, boost, reset } = controls
+    speed = mutation.speed
+    ctrl = useStore.getState().controls
 
-    engineValue = THREE.MathUtils.lerp(engineValue, forward || backward ? force * (forward && !backward ? (boost ? -1.5 : -1) : 1) : 0, delta * 20)
-    steeringValue = THREE.MathUtils.lerp(steeringValue, left || right ? steer * (left && !right ? 1 : -1) : 0, delta * 20)
-    for (let e = 2; e < 4; e++) api.applyEngineForce(speed < maxSpeed ? engineValue : 0, e)
-    for (let s = 0; s < 2; s++) api.setSteeringValue(steeringValue, s)
-    for (let b = 2; b < 4; b++) api.setBrake(brake ? (forward ? maxBrake / 1.5 : maxBrake) : 0, b)
-    if (reset) {
+    engineValue = THREE.MathUtils.lerp(
+      engineValue,
+      ctrl.forward || ctrl.backward ? force * (ctrl.forward && !ctrl.backward ? (ctrl.boost ? -1.5 : -1) : 1) : 0,
+      delta * 20,
+    )
+    steeringValue = THREE.MathUtils.lerp(steeringValue, ctrl.left || ctrl.right ? steer * (ctrl.left && !ctrl.right ? 1 : -1) : 0, delta * 20)
+    for (i = 2; i < 4; i++) api.applyEngineForce(speed < maxSpeed ? engineValue : 0, i)
+    for (i = 0; i < 2; i++) api.setSteeringValue(steeringValue, i)
+    for (i = 2; i < 4; i++) api.setBrake(ctrl.brake ? (ctrl.forward ? maxBrake / 1.5 : maxBrake) : 0, i)
+    if (ctrl.reset) {
       raycast.chassisBody.current.api.position.set(...position)
       raycast.chassisBody.current.api.velocity.set(0, 0, 0)
       raycast.chassisBody.current.api.angularVelocity.set(...angularVelocity)
@@ -54,15 +63,11 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
 
     if (!editor) {
       if (camera === 'FIRST_PERSON') v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.5, 0.01)
-      else if (camera === 'DEFAULT') v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (brake ? 1 : 0))
-      // left-right, up-down, near-far
-      defaultCamera.current.position.lerp(v, delta)
-      // left-right swivel
-      defaultCamera.current.rotation.z = THREE.MathUtils.lerp(
-        defaultCamera.current.rotation.z,
-        Math.PI + (-steeringValue * speed) / (camera === 'DEFAULT' ? 40 : 60),
-        delta,
-      )
+      else if (camera === 'DEFAULT') v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (ctrl.brake ? 1 : 0))
+      // ctrl.left-ctrl.right, up-down, near-far
+      defaultCamera.position.lerp(v, delta)
+      // ctrl.left-ctrl.right swivel
+      defaultCamera.rotation.z = THREE.MathUtils.lerp(defaultCamera.rotation.z, Math.PI + (-steeringValue * speed) / (camera === 'DEFAULT' ? 40 : 60), delta)
     }
 
     // lean chassis
@@ -76,14 +81,8 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
   return (
     <group ref={vehicle}>
       <Chassis ref={raycast.chassisBody} {...{ angularVelocity, position, rotation }}>
-        <PerspectiveCamera ref={defaultCamera} makeDefault={camera !== 'BIRD_EYE'} fov={75} rotation={[0, Math.PI, 0]} position={[0, 10, -20]} />
-        <OrthographicCamera
-          ref={birdEyeCamera}
-          makeDefault={camera === 'BIRD_EYE'}
-          position={[0, 100, 0]}
-          rotation={[(-1 * Math.PI) / 2, 0, Math.PI]}
-          zoom={15}
-        />
+        <PerspectiveCamera makeDefault={!editor && camera !== 'BIRD_EYE'} fov={75} rotation={[0, Math.PI, 0]} position={[0, 10, -20]} />
+        <OrthographicCamera makeDefault={!editor && camera === 'BIRD_EYE'} position={[0, 100, 0]} rotation={[(-1 * Math.PI) / 2, 0, Math.PI]} zoom={15} />
         {ready && <VehicleAudio />}
         {children}
       </Chassis>
@@ -102,19 +101,26 @@ function VehicleAudio() {
   const accelerateAudio = useRef()
   const honkAudio = useRef()
   const brakeAudio = useRef()
+
+  const [sound, vehicleConfig] = useStore((state) => [state.sound, state.vehicleConfig])
+
+  let ctrl
+  let speed = 0
+
   useFrame(() => {
-    const { controls, vehicleConfig, speed, sound } = useStore.getState()
-    const { honk, brake, boost } = controls
+    speed = mutation.speed
+    ctrl = useStore.getState().controls
     engineAudio.current.setVolume(sound ? 1 : 0)
-    accelerateAudio.current.setVolume((speed / vehicleConfig.maxSpeed) * (sound ? (boost ? 3 : 2) : 0))
-    brakeAudio.current.setVolume(sound ? (brake ? 1 : 0.5) : 0)
-    if (sound && honk) {
-      if (!honkAudio.current.isPlaying) honkAudio.current.play()
-    } else honkAudio.current.isPlaying && honkAudio.current.stop()
-    if (brake && speed > 20) {
-      brakeAudio.current.setVolume(speed / 100)
-      if (!brakeAudio.current.isPlaying) brakeAudio.current.play()
-    } else brakeAudio.current.isPlaying && brakeAudio.current.stop()
+    accelerateAudio.current.setVolume(sound ? (speed / vehicleConfig.maxSpeed) * (ctrl.boost ? 3 : 2) : 0)
+    brakeAudio.current.setVolume(sound ? (ctrl.brake ? 1 : 0.5) : 0)
+    if (sound) {
+      if (ctrl.honk) {
+        if (!honkAudio.current.isPlaying) honkAudio.current.play()
+      } else honkAudio.current.isPlaying && honkAudio.current.stop()
+      if (ctrl.brake && speed > 20) {
+        if (!brakeAudio.current.isPlaying) brakeAudio.current.play()
+      } else brakeAudio.current.isPlaying && brakeAudio.current.stop()
+    }
   })
 
   useEffect(() => {
