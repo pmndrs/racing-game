@@ -58,7 +58,7 @@ export function App() {
             <Track position={[0, -0.1, 0]} />
           </ConditionalDebug>
         </Physics>
-        <Environment preset="night" />
+        <Environment files={'textures/dikhololo_night_1k.hdr'} />
         {map && <Minimap />}
         {editor && <OrbitControls />}
       </Canvas>
