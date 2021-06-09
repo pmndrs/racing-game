@@ -36,67 +36,29 @@ function useKeys(keyConfig) {
 
 export function KeyboardControls() {
   const set = useStore((state) => state.set)
-
-  useKeys([
-    {
-      keys: ['ArrowUp', 'w', 'W'],
-      fn: (forward) => set((state) => ({ ...state, controls: { ...state.controls, forward } })),
-    },
-    {
-      keys: ['ArrowDown', 's', 'S'],
-      fn: (backward) => set((state) => ({ ...state, controls: { ...state.controls, backward } })),
-    },
-    {
-      keys: ['ArrowLeft', 'a', 'A'],
-      fn: (left) => set((state) => ({ ...state, controls: { ...state.controls, left } })),
-    },
-    {
-      keys: ['ArrowRight', 'd', 'D'],
-      fn: (right) => set((state) => ({ ...state, controls: { ...state.controls, right } })),
-    },
-    {
-      keys: [' '],
-      fn: (brake) => set((state) => ({ ...state, controls: { ...state.controls, brake } })),
-    },
-    {
-      keys: ['h', 'H'],
-      fn: (honk) => set((state) => ({ ...state, controls: { ...state.controls, honk } })),
-    },
-    {
-      keys: ['Shift'],
-      fn: (boost) => set((state) => ({ ...state, controls: { ...state.controls, boost } })),
-    },
-    {
-      keys: ['r', 'R'],
-      fn: (reset) => set((state) => ({ ...state, controls: { ...state.controls, reset } })),
-    },
-    {
-      keys: ['e', 'E'],
-      fn: () => set((state) => ({ ...state, editor: !state.editor })),
-      up: false,
-    },
-    {
-      keys: ['i', 'I'],
-      fn: () => set((state) => ({ ...state, help: !state.help })),
-      up: false,
-    },
-    {
-      keys: ['m', 'M'],
-      fn: () => set((state) => ({ ...state, map: !state.map })),
-      up: false,
-    },
-    {
-      keys: ['c', 'C'],
-      fn: () =>
-        set((state) => {
-          const current = cameras.indexOf(state.camera)
-          const next = (current + 1) % cameras.length
-          const camera = cameras[next]
-          return { ...state, camera }
-        }),
-      up: false,
-    },
-  ])
+  useKeys(['ArrowUp', 'w', 'W'], (forward) => set((state) => ({ ...state, controls: { ...state.controls, forward } })))
+  useKeys(['ArrowDown', 's', 'S'], (backward) => set((state) => ({ ...state, controls: { ...state.controls, backward } })))
+  useKeys(['ArrowLeft', 'a', 'A'], (left) => set((state) => ({ ...state, controls: { ...state.controls, left } })))
+  useKeys(['ArrowRight', 'd', 'D'], (right) => set((state) => ({ ...state, controls: { ...state.controls, right } })))
+  useKeys([' '], (brake) => set((state) => ({ ...state, controls: { ...state.controls, brake } })))
+  useKeys(['h', 'H'], (honk) => set((state) => ({ ...state, controls: { ...state.controls, honk } })))
+  useKeys(['Shift'], (boost) => set((state) => ({ ...state, controls: { ...state.controls, boost } })))
+  useKeys(['r', 'R'], (reset) => set((state) => ({ ...state, controls: { ...state.controls, reset } })))
+  useKeys(['e', 'E'], () => set((state) => ({ ...state, editor: !state.editor })), false)
+  useKeys(['i', 'I'], () => set((state) => ({ ...state, help: !state.help })), false)
+  useKeys(
+    ['c', 'C'],
+    () =>
+      set((state) => {
+        const current = cameras.indexOf(state.camera)
+        const next = (current + 1) % cameras.length
+        const camera = cameras[next]
+        return { ...state, camera }
+      }),
+    false,
+  )
+  useKeys(['m', 'M'], (toggleMap) => set((state) => ({ ...state, controls: { ...state.controls, map: toggleMap ? !state.controls.map : state.controls.map } })))
+  useKeys(['x', 'X'], (toggleSfx) => set((state) => ({ ...state, controls: { ...state.controls, sfx: toggleSfx ? !state.controls.sfx : state.controls.sfx } })))
 
   return null
 }

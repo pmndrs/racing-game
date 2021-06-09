@@ -84,10 +84,13 @@ const useStore = create((set, get) => {
       honk: false,
       boost: false,
       reset: false,
+      map: true,
+      sfx: true,
     },
     vehicleConfig,
     velocity: [0, 0, 0],
     speed: 0,
+    speedTrashold: 20,
   }
 })
 

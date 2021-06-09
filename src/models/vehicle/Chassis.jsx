@@ -24,12 +24,13 @@ const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...pro
   const ready = useStore((state) => state.ready)
   const { nodes: n, materials: m } = useGLTF('/models/chassis-draco.glb')
 
-  const onCollide = useCallback(
+  const onCollide = () => {
+    if (!useStore.getState().controls.sfx) return
     debounce((e) => {
-      crashAudio.current?.setVolume(clamp(e.contact.impactVelocity / 10, 0.2, 1))
+      crashAudio.current?.setVolume((0.4 * useStore.getState().speed) / 10)
       if (!crashAudio.current?.isPlaying) crashAudio.current?.play()
     }, 200),
-  )
+  }
   const [, api] = useBox(() => ({ mass, args, allowSleep: false, onCollide, ...props }), ref)
 
   useFrame((_, delta) => {
