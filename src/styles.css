@@ -231,7 +231,38 @@ button {
   color: inherit;
   text-decoration: none;
 }
+
 .pmndrs-menu a:hover {
   text-decoration: underline;
   color: inherit;
+}
+
+.nosound {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  height: 24px;
+  width: 24px;
+  background: url(./textures/no_sound.png) no-repeat;
+  background-size: 24px 24px;
+  opacity: 1;
+  animation: hideSoundIcon 3s forwards;
+}
+
+@keyframes hideSoundIcon {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes hideSoundIcon {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }

@@ -53,6 +53,7 @@ export function KeyboardControls() {
     false,
   )
   useKeys(['m', 'M'], (toggleMap) => set((state) => ({ ...state, controls: { ...state.controls, map: toggleMap ? !state.controls.map : state.controls.map } })))
+  useKeys(['x', 'X'], (toggleSfx) => set((state) => ({ ...state, controls: { ...state.controls, sfx: toggleSfx ? !state.controls.sfx : state.controls.sfx } })))
 
   return null
 }

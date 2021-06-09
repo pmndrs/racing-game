@@ -14,6 +14,7 @@ function Train({ args = [38, 8, 10], position = [-145.84, 3.42, 54.67], rotation
   const group = useRef()
   const debug = useStore((state) => state.debug)
   const ready = useStore((state) => state.ready)
+  const sfx = useStore((state) => state.controls.sfx)
   const { animations, nodes: n, materials: m } = useGLTF('/models/track-draco.glb')
   const [ref, api] = useBox(() => ({ mass: 10000, type: 'Kinematic', args, position, rotation }), undefined, [args, position, rotation])
   const { actions } = useAnimations(animations, group)
@@ -36,7 +37,7 @@ function Train({ args = [38, 8, 10], position = [-145.84, 3.42, 54.67], rotation
         <mesh geometry={n.train_7.geometry} material={m.steelClone} {...config} />
         <mesh geometry={n.train_8.geometry} material={m.lightRedClone} {...config} />
         <mesh geometry={n.train_9.geometry} material={m.darkClone} {...config} />
-        {ready && <PositionalAudio url="/sounds/train.mp3" loop autoplay distance={5} />}
+        {sfx && ready && <PositionalAudio url="/sounds/train.mp3" loop autoplay distance={5} />}
       </group>
       {debug && (
         <mesh ref={ref}>
@@ -52,6 +53,7 @@ export function Track(props) {
   const group = useRef()
   const ready = useStore((state) => state.ready)
   const level = useStore((state) => state.level)
+  const sfx = useStore((state) => state.controls.sfx)
   const { nodes: n, materials: m } = useGLTF('/models/track-draco.glb')
   const config = { receiveShadow: true, castShadow: true, 'material-roughness': 1 }
 
@@ -76,7 +78,7 @@ export function Track(props) {
         <mesh geometry={n.terrain.geometry} material={n.terrain.material} {...config} />
         <mesh geometry={n.water.geometry}>
           <MeshDistortMaterial speed={4} map={m.ColorPaletteWater.map} roughness={0} side={THREE.DoubleSide} />
-          {ready && <PositionalAudio url="/sounds/water.mp3" loop autoplay distance={10} />}
+          {sfx && ready && <PositionalAudio url="/sounds/water.mp3" loop autoplay distance={10} />}
         </mesh>
       </group>
       <group ref={birds}>
