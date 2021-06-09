@@ -4,7 +4,7 @@
 
 Live demo (current state): https://racing.pmnd.rs/
 
-This project is a showcase for the feasibility of React in gaming. It is 100% open source, anyone can participate. If you have a PR merged you are added to the triage team. :)
+This project is a showcase for the feasibility of React in gaming. It is 100% open source, anyone can participate. If you have a PR merged you are added to the triage team. Refer to [CONTRIBUTING.md](/CONTRIBUTING.md) for more information.
 
 ```jsx
 /assets   - the bend files
