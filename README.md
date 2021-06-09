@@ -4,9 +4,10 @@
 
 Live demo (current state): https://racing.pmnd.rs/
 
-This project is a showcase for the feasibility of react in gaming. We would like to develop it open source, anyone can participate. If you have a PR merged you gain access as a co-contributor/maintainer. :-)
+This project is a showcase for the feasibility of React in gaming. It is 100% open source, anyone can participate. If you have a PR merged you are added to the triage team. :)
 
 ```jsx
+/assets   - the bend files
 /utils    - game state store, helpers
 /models   - gltfjsx models, players, characters
 /effects  - dust, trails, skids, shaders
