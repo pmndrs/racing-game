@@ -7,7 +7,7 @@ import { isMobile } from 'react-device-detect'
 import { useStore, levelLayer } from './store'
 import { Heightmap, Ramp, Track, Vehicle } from './models'
 import { Editor, Help, Minimap, Overlay, Speed, MobileControls } from './ui'
-import { HideMouse, KeyboardControls, TouchControls } from './controls'
+import { HideMouse, KeyboardControls } from './controls'
 
 const layers = new Layers()
 layers.enable(levelLayer)
@@ -50,16 +50,11 @@ export function App() {
         {map && <Minimap />}
         {editor && <OrbitControls />}
       </Canvas>
+      <HideMouse />
       <Speed />
       <Help />
       <KeyboardControls />
-      {isMobile && (
-        <>
-          <MobileControls />
-          <TouchControls />
-        </>
-      )}
-      <HideMouse />
+      {isMobile && <MobileControls />}
       {editor && <Editor />}
       {stats && <Stats />}
     </Overlay>
