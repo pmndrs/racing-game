@@ -85,7 +85,7 @@ export function KeyboardControls() {
       up: false,
     },
     {
-      keys: ['s', 'S'],
+      keys: ['u', 'U'],
       fn: () => set((state) => ({ ...state, sound: !state.sound })),
       up: false,
     },
