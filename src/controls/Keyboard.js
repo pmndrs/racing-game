@@ -1,32 +1,37 @@
 import { useEffect } from 'react'
 import { useStore, cameras } from '../store'
 
-const pressed = []
-
-function useKeys(target, event, up = true) {
+function useKeys(keyConfig) {
   useEffect(() => {
-    const downHandler = (e) => {
-      if (target.indexOf(e.key) !== -1) {
-        const isRepeating = !!pressed[e.keyCode]
-        pressed[e.keyCode] = true
-        if (up || !isRepeating) event(true)
-      }
+    const keyMap = keyConfig.reduce((out, { keys, fn, up = true }) => {
+      keys.forEach((key) => (out[key] = { fn, pressed: false, up }))
+      return out
+    }, {})
+
+    const downHandler = ({ key }) => {
+      if (!keyMap[key]) return
+
+      const { fn, pressed, up } = keyMap[key]
+      keyMap[key].pressed = true
+      if (up || !pressed) fn(true)
     }
 
-    const upHandler = (e) => {
-      if (target.indexOf(e.key) !== -1) {
-        pressed[e.keyCode] = false
-        if (up) event(false)
-      }
+    const upHandler = ({ key }) => {
+      if (!keyMap[key]) return
+
+      const { fn, up } = keyMap[key]
+      keyMap[key].pressed = false
+      if (up) fn(false)
     }
 
     window.addEventListener('keydown', downHandler, { passive: true })
     window.addEventListener('keyup', upHandler, { passive: true })
+
     return () => {
       window.removeEventListener('keydown', downHandler)
       window.removeEventListener('keyup', upHandler)
     }
-  }, [target, event, up, pressed])
+  }, [keyConfig])
 }
 
 export function KeyboardControls() {

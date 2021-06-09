@@ -15,7 +15,7 @@ export function Speed() {
         textRef.current.innerText = computedSpeed.toFixed()
         gaugeRef.current.setAttribute('offset', Math.max(1 - computedSpeed / maxSpeed, 0))
       }
-    }, 60)
+    }, 100)
     return () => clearInterval(interval)
   }, [])
   return (

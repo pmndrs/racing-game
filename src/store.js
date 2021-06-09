@@ -66,6 +66,7 @@ const useStore = create((set, get) => {
     debug: false,
     stats: false,
     level: createRef(),
+    map: true,
     raycast: {
       chassisBody: createRef(),
       wheels: [createRef(), createRef(), createRef(), createRef()],

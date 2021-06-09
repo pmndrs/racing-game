@@ -109,6 +109,7 @@ function VehicleAudio() {
       if (!honkAudio.current.isPlaying) honkAudio.current.play()
     } else honkAudio.current.isPlaying && honkAudio.current.stop()
     if (brake && speed > speedTrashold) {
+      brakeAudio.current.setVolume(state.speed / 100)
       if (!brakeAudio.current.isPlaying) brakeAudio.current.play()
     } else brakeAudio.current.isPlaying && brakeAudio.current.stop()
   })
@@ -127,8 +128,8 @@ function VehicleAudio() {
     <>
       <PositionalAudio ref={engineAudio} url="/sounds/engine.mp3" autoplay loop distance={5} />
       <PositionalAudio ref={accelerateAudio} url="/sounds/accelerate.mp3" autoplay loop distance={5} />
-      <PositionalAudio ref={honkAudio} url="/sounds/honk.mp3" loop distance={10} />
-      <PositionalAudio ref={brakeAudio} url="/sounds/tire-brake.mp3" loop distance={10} />
+      <PositionalAudio ref={honkAudio} url="/sounds/honk.mp3" distance={10} />
+      <PositionalAudio ref={brakeAudio} url="/sounds/tire-brake.mp3" distance={10} />
     </>
   )
 }

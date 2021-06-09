@@ -11,17 +11,17 @@
   "main": "src/index.js",
   "dependencies": {
     "@pmndrs/branding": "^0.0.8",
-    "@react-three/cannon": "1.3.1",
-    "@react-three/drei": "6.0.1",
-    "@react-three/fiber": "6.2.2",
+    "@react-three/cannon": "2.1.2",
+    "@react-three/drei": "6.0.2",
+    "@react-three/fiber": "7.0.1",
     "@react-three/postprocessing": "2.0.4",
     "@types/three": "0.129.1",
-    "leva": "^0.9.10",
+    "leva": "^0.9.11",
+    "inter-ui": "^3.18.1",
     "lodash-es": "^4.17.21",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "three": "0.129.0",
-    "vite-react-jsx": "^1.1.1",
     "zustand": "^3.5.2"
   },
   "devDependencies": {
@@ -32,13 +32,15 @@
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
     "prettier": "2.3.1",
-    "vite": "^2.3.6"
+    "vite": "^2.3.7",
+    "vite-react-jsx": "^1.1.1"
   },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "lint": "eslint src",
+    "lint": "eslint --cache src",
+    "lint-fix": "eslint --fix --cache src",
     "prettier": "prettier --list-different '**/*.{js,jsx,md}'",
     "prettier-fix": "prettier --write '**/*.{js,jsx,md}'",
     "prepare": "husky install"
@@ -51,7 +53,7 @@
   ],
   "license": "MIT",
   "lint-staged": {
-    "*.js": "eslint --cache --fix",
-    "*.{js,md}": "prettier --write"
+    "*.{js,jsx}": "eslint --cache --fix",
+    "*.{js,jsx,md}": "prettier --write"
   }
 }
