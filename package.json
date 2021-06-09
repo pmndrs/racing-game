@@ -16,6 +16,7 @@
     "@react-three/fiber": "6.2.2",
     "@react-three/postprocessing": "2.0.4",
     "@types/three": "0.129.1",
+    "inter-ui": "^3.18.1",
     "leva": "^0.9.10",
     "lodash-es": "^4.17.21",
     "react": "^17.0.2",
