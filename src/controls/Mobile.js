@@ -1,23 +1,30 @@
 import { useEffect } from 'react'
+import { isIOS } from 'react-device-detect'
 import { useStore } from '../store'
 
-const pressed = []
-
-function useTouch(target, event, up = true) {
+function useTouch(touchConfig) {
   useEffect(() => {
-    const downHandler = (e) => {
-      if (target.indexOf(e.target.value) !== -1) {
-        const isRepeating = !!pressed[e.target.value]
-        pressed[e.target.value] = true
-        if (up || !isRepeating) event(true)
-      }
+    const touchMap = touchConfig.reduce((out, { buttonValue, fn, up = true }) => {
+      buttonValue.forEach((value) => (out[value] = { fn, pressed: false, up }))
+      return out
+    }, {})
+
+    const downHandler = (event) => {
+      if (isIOS) event.preventDefault()
+      if (!touchMap[event.target.value]) return
+
+      const { fn, pressed, up } = touchMap[event.target.value]
+      touchMap[event.target.value].pressed = true
+      if (up || !pressed) fn(true)
     }
 
-    const upHandler = (e) => {
-      if (target.indexOf(e.target.value) !== -1) {
-        pressed[e.target.value] = false
-        if (up) event(false)
-      }
+    const upHandler = (event) => {
+      if (isIOS) event.preventDefault()
+      if (!touchMap[event.target.value]) return
+
+      const { fn, up } = touchMap[event.target.value]
+      touchMap[event.target.value].pressed = false
+      if (up) fn(false)
     }
 
     window.addEventListener('touchstart', downHandler, { passive: true })
@@ -26,17 +33,36 @@ function useTouch(target, event, up = true) {
       window.removeEventListener('touchstart', downHandler)
       window.removeEventListener('touchend', upHandler)
     }
-  }, [target, event, up, pressed])
+  }, [touchConfig])
 }
 
 export function TouchControls() {
   const set = useStore((state) => state.set)
-  useTouch(['forward'], (forward) => set((state) => ({ ...state, controls: { ...state.controls, forward } })))
-  useTouch(['backward'], (backward) => set((state) => ({ ...state, controls: { ...state.controls, backward } })))
-  useTouch(['left'], (left) => set((state) => ({ ...state, controls: { ...state.controls, left } })))
-  useTouch(['right'], (right) => set((state) => ({ ...state, controls: { ...state.controls, right } })))
-  useTouch(['reset'], (reset) => set((state) => ({ ...state, controls: { ...state.controls, reset } })))
-  useTouch(['boost'], (boost) => set((state) => ({ ...state, controls: { ...state.controls, boost, forward: boost } })))
-
+  useTouch([
+    {
+      buttonValue: ['forward'],
+      fn: (forward) => set((state) => ({ ...state, controls: { ...state.controls, forward } })),
+    },
+    {
+      buttonValue: ['backward'],
+      fn: (backward) => set((state) => ({ ...state, controls: { ...state.controls, backward } })),
+    },
+    {
+      buttonValue: ['left'],
+      fn: (left) => set((state) => ({ ...state, controls: { ...state.controls, left } })),
+    },
+    {
+      buttonValue: ['right'],
+      fn: (right) => set((state) => ({ ...state, controls: { ...state.controls, right } })),
+    },
+    {
+      buttonValue: ['reset'],
+      fn: (reset) => set((state) => ({ ...state, controls: { ...state.controls, reset } })),
+    },
+    {
+      buttonValue: ['boost'],
+      fn: (boost) => set((state) => ({ ...state, controls: { ...state.controls, boost, forward: boost } })),
+    },
+  ])
   return null
 }
