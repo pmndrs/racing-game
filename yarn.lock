@@ -482,15 +482,18 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
 
-"@react-three/cannon@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@react-three/cannon/-/cannon-2.0.0.tgz#1193ac80fa63dc7d443301e0247dafae4b1c00d9"
-  integrity sha512-v6A4J/ijksv2aW4sMuttHQ1Iu2Os6bMk/8FKxQWyhGAQA+uGTrKcpyc/HDre+LAHoWgBKVPyxBnQ4ET9NuF3bA==
+"@react-three/cannon@2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@react-three/cannon/-/cannon-2.1.2.tgz#b4deb287940eb96088b9f0305f7035c1b461d588"
+  integrity sha512-3FjeTm72ASEJaWWU6E625TFXaNdDuQqFCG+lImggVoOb+kmcNN0aEjswMQhMyvW5mF9mGWF8bI2otITl5qWfAg==
+  dependencies:
+    cannon-es "^0.17.1"
+    cannon-es-debugger "^0.1.4"
 
-"@react-three/drei@6.0.1":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/@react-three/drei/-/drei-6.0.1.tgz#42578b9298c2d36f83c5f49c1bbc95b6b94dc216"
-  integrity sha512-A9MkGipdLN+R8yWCms4BzyNKclhPya/yymaC5F6F01nXimayO53J2QfgGo+wpH1PHPv3HoZKmOre5T0GNMHB1w==
+"@react-three/drei@6.0.2":
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/@react-three/drei/-/drei-6.0.2.tgz#1ba5396317cafe4e617a32e4359c512bec73e3de"
+  integrity sha512-H9L02FbnGPovk/i+ByIIOgZ2Q+4s2uR42lbKUVroyN2N8Xod+uPFCChH9UxrxeHum/jRVCwbhJYpsUEO9+/TWA==
   dependencies:
     "@babel/runtime" "^7.11.2"
     blob-polyfill "^5.0.20210201"
@@ -751,6 +754,16 @@ caniuse-lite@^1.0.30001219:
   version "1.0.30001235"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001235.tgz#ad5ca75bc5a1f7b12df79ad806d715a43a5ac4ed"
   integrity sha512-zWEwIVqnzPkSAXOUlQnPW2oKoYb2aLQ4Q5ejdjBcnH63rfypaW34CxaeBn1VMya2XaEU3P/R2qHpWyj+l0BT1A==
+
+cannon-es-debugger@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/cannon-es-debugger/-/cannon-es-debugger-0.1.4.tgz#22c79ae14c52de44465690988ff647c51c79c62b"
+  integrity sha512-RefSPWX6gDMQsx3UWoQpkGW3R03Wwn8p1JteexQUYxDC5DnOS3U3iKhns2vVpFp6Q3AKiSSmRf7NIXnGN8L0RA==
+
+cannon-es@^0.17.1:
+  version "0.17.1"
+  resolved "https://registry.yarnpkg.com/cannon-es/-/cannon-es-0.17.1.tgz#39d25d37e40e1a0765c96753be6c257069b214b7"
+  integrity sha512-MU2ylhpsCJJcZhKdTDpd7PXn1VK5nUQZo2QiHRu67527Q78mTE1XipeaU8RyTQQRxBiC+b9exPykg2+nVnMoRA==
 
 chalk@^2.0.0:
   version "2.4.2"

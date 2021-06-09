@@ -22,7 +22,6 @@ const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...pro
   const crashAudio = useRef()
 
   const ready = useStore((state) => state.ready)
-  const debug = useStore((state) => state.debug)
   const { nodes: n, materials: m } = useGLTF('/models/chassis-draco.glb')
 
   const onCollide = useCallback(
@@ -90,12 +89,6 @@ const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...pro
       </group>
       {children}
       {ready && <PositionalAudio ref={crashAudio} url="/sounds/crash.mp3" loop={false} distance={5} />}
-      {debug && (
-        <mesh>
-          <boxGeometry args={args} />
-          <meshBasicMaterial transparent opacity={0.25} color="green" />
-        </mesh>
-      )}
     </group>
   )
 })

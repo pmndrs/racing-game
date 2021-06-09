@@ -12,7 +12,6 @@ useGLTF.preload('/models/track-draco.glb')
 
 function Train({ args = [38, 8, 10], position = [-145.84, 3.42, 54.67], rotation = [0, -0.09, 0], config }) {
   const group = useRef()
-  const debug = useStore((state) => state.debug)
   const ready = useStore((state) => state.ready)
   const { animations, nodes: n, materials: m } = useGLTF('/models/track-draco.glb')
   const [ref, api] = useBox(() => ({ mass: 10000, type: 'Kinematic', args, position, rotation }), undefined, [args, position, rotation])
@@ -38,12 +37,6 @@ function Train({ args = [38, 8, 10], position = [-145.84, 3.42, 54.67], rotation
         <mesh geometry={n.train_9.geometry} material={m.darkClone} {...config} />
         {ready && <PositionalAudio url="/sounds/train.mp3" loop autoplay distance={5} />}
       </group>
-      {debug && (
-        <mesh ref={ref}>
-          <boxGeometry args={args} />
-          <meshBasicMaterial color="hotpink" transparent opacity={0.7} />
-        </mesh>
-      )}
     </>
   )
 }

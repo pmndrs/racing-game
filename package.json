@@ -11,8 +11,8 @@
   "main": "src/index.js",
   "dependencies": {
     "@pmndrs/branding": "^0.0.8",
-    "@react-three/cannon": "2.0.0",
-    "@react-three/drei": "6.0.1",
+    "@react-three/cannon": "2.1.2",
+    "@react-three/drei": "6.0.2",
     "@react-three/fiber": "7.0.1",
     "@react-three/postprocessing": "2.0.4",
     "@types/three": "0.129.1",
