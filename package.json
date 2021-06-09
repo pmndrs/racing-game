@@ -16,6 +16,7 @@
     "@react-three/fiber": "6.2.2",
     "@react-three/postprocessing": "2.0.4",
     "@types/three": "0.129.1",
+    "inter-ui": "^3.18.1",
     "leva": "^0.9.10",
     "lodash-es": "^4.17.21",
     "react": "^17.0.2",
@@ -38,7 +39,8 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "lint": "eslint src",
+    "lint": "eslint --cache src",
+    "lint-fix": "eslint --fix --cache src",
     "prettier": "prettier --list-different '**/*.{js,jsx,md}'",
     "prettier-fix": "prettier --write '**/*.{js,jsx,md}'",
     "prepare": "husky install"
@@ -51,7 +53,7 @@
   ],
   "license": "MIT",
   "lint-staged": {
-    "*.js": "eslint --cache --fix",
-    "*.{js,md}": "prettier --write"
+    "*.{js,jsx}": "eslint --cache --fix",
+    "*.{js,jsx,md}": "prettier --write"
   }
 }
