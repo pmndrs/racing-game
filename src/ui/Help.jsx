@@ -17,10 +17,7 @@ const controlOptions = [
 ]
 
 export function Help() {
-  const set = useStore((state) => state.set)
-  const open = useStore((state) => state.help)
-  const sound = useStore((state) => state.sound)
-
+  const [set, open, sound] = useStore((s) => [s.set, s.open, s.sound])
   return (
     <>
       <div className={`${sound ? 'sound' : 'nosound'}`}></div>

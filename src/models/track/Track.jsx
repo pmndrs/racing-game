@@ -12,8 +12,7 @@ useGLTF.preload('/models/track-draco.glb')
 
 function Train({ args = [38, 8, 10], position = [-145.84, 3.42, 54.67], rotation = [0, -0.09, 0], config }) {
   const group = useRef()
-  const ready = useStore((state) => state.ready)
-  const sound = useStore((state) => state.sound)
+  const [ready, sound] = useStore((state) => [state.ready, state.sound])
   const { animations, nodes: n, materials: m } = useGLTF('/models/track-draco.glb')
   const [, api] = useBox(() => ({ mass: 10000, type: 'Kinematic', args, position, rotation }), undefined, [args, position, rotation])
   const { actions } = useAnimations(animations, group)
@@ -44,9 +43,7 @@ function Train({ args = [38, 8, 10], position = [-145.84, 3.42, 54.67], rotation
 
 export function Track(props) {
   const group = useRef()
-  const ready = useStore((state) => state.ready)
-  const level = useStore((state) => state.level)
-  const sound = useStore((state) => state.sound)
+  const [ready, level, sound] = useStore((state) => [state.ready, state.level, state.sound])
   const { nodes: n, materials: m } = useGLTF('/models/track-draco.glb')
   const config = { receiveShadow: true, castShadow: true, 'material-roughness': 1 }
 
