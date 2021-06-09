@@ -12,18 +12,18 @@ const controlOptions = [
   { keys: ['C'], action: 'Toggle Camera' },
   { keys: ['R'], action: 'Reset' },
   { keys: ['E'], action: 'Editor' },
-  { keys: ['X'], action: 'Sfx' },
+  { keys: ['S'], action: 'Sound' },
   { keys: ['I'], action: 'Help' },
 ]
 
 export function Help() {
   const set = useStore((state) => state.set)
   const open = useStore((state) => state.help)
-  const sfx = useStore((state) => state.controls.sfx)
+  const sound = useStore((state) => state.sound)
 
   return (
     <>
-      <div className={`${sfx ? 'sound' : 'nosound'}`}></div>
+      <div className={`${sound ? 'sound' : 'nosound'}`}></div>
       <div className="controls">
         {!open && <button onClick={() => set({ help: true })}>i</button>}
         <div className={`popup ${open ? 'open' : ''}`}>

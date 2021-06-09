@@ -65,6 +65,7 @@ const useStore = create((set, get) => {
     help: false,
     debug: false,
     stats: false,
+    sound: true,
     level: createRef(),
     map: true,
     raycast: {
@@ -85,7 +86,6 @@ const useStore = create((set, get) => {
       boost: false,
       reset: false,
       map: true,
-      sfx: true,
     },
     vehicleConfig,
     velocity: [0, 0, 0],

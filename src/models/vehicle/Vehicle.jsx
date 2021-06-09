@@ -94,22 +94,21 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
 }
 
 function VehicleAudio() {
-  const { speedTrashold } = useStore.getState()
   const engineAudio = useRef()
   const accelerateAudio = useRef()
   const honkAudio = useRef()
   const brakeAudio = useRef()
   useFrame(() => {
-    const { controls, vehicleConfig, speed } = useStore.getState()
-    const { honk, brake, boost, sfx } = controls
-    engineAudio.current.setVolume(sfx ? 1 : 0)
-    accelerateAudio.current.setVolume((speed / vehicleConfig.maxSpeed) * (sfx ? (boost ? 3 : 2) : 0))
-    brakeAudio.current.setVolume(sfx ? (brake ? 1 : 0.5) : 0)
-    if (sfx && honk) {
+    const { controls, vehicleConfig, speed, sound } = useStore.getState()
+    const { honk, brake, boost } = controls
+    engineAudio.current.setVolume(sound ? 1 : 0)
+    accelerateAudio.current.setVolume((speed / vehicleConfig.maxSpeed) * (sound ? (boost ? 3 : 2) : 0))
+    brakeAudio.current.setVolume(sound ? (brake ? 1 : 0.5) : 0)
+    if (sound && honk) {
       if (!honkAudio.current.isPlaying) honkAudio.current.play()
     } else honkAudio.current.isPlaying && honkAudio.current.stop()
-    if (brake && speed > speedTrashold) {
-      brakeAudio.current.setVolume(state.speed / 100)
+    if (brake && speed > 20) {
+      brakeAudio.current.setVolume(speed / 100)
       if (!brakeAudio.current.isPlaying) brakeAudio.current.play()
     } else brakeAudio.current.isPlaying && brakeAudio.current.stop()
   })
