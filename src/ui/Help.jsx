@@ -12,7 +12,7 @@ const controlOptions = [
   { keys: ['C'], action: 'Toggle Camera' },
   { keys: ['R'], action: 'Reset' },
   { keys: ['E'], action: 'Editor' },
-  { keys: ['S'], action: 'Sound' },
+  { keys: ['U'], action: 'Toggle Mute' },
   { keys: ['I'], action: 'Help' },
 ]
 
