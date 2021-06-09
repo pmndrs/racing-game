@@ -38,11 +38,11 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "code-style": "eslint --fix --cache src",
     "lint": "eslint --cache src",
+    "lint-fix": "eslint --fix --cache src",
     "prettier": "prettier --list-different '**/*.{js,jsx,md}'",
     "prettier-fix": "prettier --write '**/*.{js,jsx,md}'",
-    "prepare": "husky install && rm -rf .git/hooks && ln -s ../.husky .git/hooks"
+    "prepare": "husky install"
   },
   "browserslist": [
     ">0.2%",
@@ -52,7 +52,7 @@
   ],
   "license": "MIT",
   "lint-staged": {
-    "*.{js,jsx}": "yarn run code-style",
-    "*.{js,jsx,md}": "yarn run prettier-fix"
+    "*.{js,jsx}": "eslint --cache --fix",
+    "*.{js,jsx,md}": "prettier --write"
   }
 }
