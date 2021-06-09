@@ -44,12 +44,7 @@ export function KeyboardControls() {
     { keys: ['Shift'], fn: (boost) => set((state) => ({ ...state, controls: { ...state.controls, boost } })) },
     {
       keys: ['r', 'R'],
-      fn: (reset) =>
-        set((state) => {
-          mutation.start = 0
-          mutation.finish = 0
-          return { ...state, controls: { ...state.controls, reset } }
-        }),
+      fn: (reset) => set((state) => ((mutation.start = 0), (mutation.finish = 0), { ...state, controls: { ...state.controls, reset } })),
     },
     { keys: ['e', 'E'], fn: () => set((state) => ({ ...state, editor: !state.editor })), up: false },
     { keys: ['i', 'I'], fn: () => set((state) => ({ ...state, help: !state.help })), up: false },
@@ -57,16 +52,9 @@ export function KeyboardControls() {
     { keys: ['u', 'U'], fn: () => set((state) => ({ ...state, sound: !state.sound })), up: false },
     {
       keys: ['c', 'C'],
-      fn: () =>
-        set((state) => {
-          const current = cameras.indexOf(state.camera)
-          const next = (current + 1) % cameras.length
-          const camera = cameras[next]
-          return { ...state, camera }
-        }),
+      fn: () => set((state) => ({ ...state, camera: cameras[(cameras.indexOf(state.camera) + 1) % cameras.length] })),
       up: false,
     },
   ])
-
   return null
 }

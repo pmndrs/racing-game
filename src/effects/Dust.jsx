@@ -17,7 +17,6 @@ export function Dust({ opacity = 0.1, length = 200, size = 1 }) {
   let time = 0
   let intensity = 0
   let ctrl
-
   useFrame((state, delta) => {
     ctrl = useStore.getState().controls
     intensity = THREE.MathUtils.lerp(intensity, ((mutation.sliding || ctrl.brake) * mutation.speed) / 40, delta * 8)
@@ -49,8 +48,9 @@ export function Dust({ opacity = 0.1, length = 200, size = 1 }) {
   )
 }
 
+let n
 function setItemAt(ref, obj, i, intensity) {
-  const n = THREE.MathUtils.randFloatSpread(0.25)
+  n = THREE.MathUtils.randFloatSpread(0.25)
   o.position.set(obj.position.x + n, obj.position.y - 0.4, obj.position.z + n)
   o.scale.setScalar(Math.random() * intensity)
   o.updateMatrix()

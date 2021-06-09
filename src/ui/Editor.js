@@ -4,7 +4,8 @@ import { useStore, vehicleConfig, wheelInfo } from '../store'
 const { directionLocal, axleLocal, chassisConnectionPointLocal, rollInfluence, ...filteredWheelInfo } = wheelInfo
 
 export function Editor() {
-  const [get, set, raycast] = useStore((s) => [s.get, s.set, s.raycast])
+  const [get, set, raycast] = useStore((state) => [state.get, state.set, state.raycast])
+  const { radius, width, height, front, back, steer, force, maxBrake, maxSpeed } = vehicleConfig
   const {
     suspensionStiffness,
     suspensionRestLength,
@@ -14,7 +15,6 @@ export function Editor() {
     frictionSlip,
     sideAcceleration,
   } = raycast.wheelInfos[0]
-  const { radius, width, height, front, back, steer, force, maxBrake, maxSpeed } = vehicleConfig
 
   const [, setVehicleEditor] = useControls(() => ({
     General: folder({

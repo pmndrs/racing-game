@@ -18,7 +18,7 @@ function createHeightfieldMatrix(image) {
   const width = image.width
   const height = image.height
   const scale = 40 // determines the vertical scale of the heightmap
-  let p, row
+  let row
 
   canvas.width = width
   canvas.height = height
@@ -28,8 +28,7 @@ function createHeightfieldMatrix(image) {
     row = []
     for (let y = 0; y < height; y++) {
       // returned pixel data is [r, g, b, alpha], since image is in b/w -> any rgb val
-      p = Math.max(0, parseFloat((imageData[4 * (y * width + x)] / 255).toPrecision(1)) * scale)
-      row.push(p)
+      row.push(Math.max(0, parseFloat((imageData[4 * (y * width + x)] / 255).toPrecision(1)) * scale))
     }
     matrix.push(row)
   }

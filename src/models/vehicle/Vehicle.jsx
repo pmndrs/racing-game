@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { useRef, useLayoutEffect, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { PerspectiveCamera, OrthographicCamera, PositionalAudio } from '@react-three/drei'
+import { PositionalAudio } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
 import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
@@ -12,16 +12,12 @@ const v = new THREE.Vector3()
 
 export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-115, 0.5, 220], rotation = [0, Math.PI / 2 + 0.5, 0] }) {
   const defaultCamera = useThree((state) => state.camera)
-
   const [ready, editor, raycast, camera, vehicleConfig] = useStore((s) => [s.ready, s.editor, s.raycast, s.camera, s.vehicleConfig])
   const { force, maxBrake, steer, maxSpeed } = vehicleConfig
   const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
 
   useLayoutEffect(() => {
-    const sub1 = raycast.chassisBody.current.api.velocity.subscribe((velocity) => {
-      mutation.velocity = velocity
-      mutation.speed = v.set(...velocity).length()
-    })
+    const sub1 = raycast.chassisBody.current.api.velocity.subscribe((velocity) => Object.assign(mutation, { velocity, speed: v.set(...velocity).length() }))
     const sub2 = api.sliding.subscribe((sliding) => (mutation.sliding = sliding))
     return () => void [sub1, sub2].forEach((sub) => sub())
   }, [editor])
@@ -81,8 +77,6 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
   return (
     <group ref={vehicle}>
       <Chassis ref={raycast.chassisBody} {...{ angularVelocity, position, rotation }}>
-        <PerspectiveCamera makeDefault={!editor && camera !== 'BIRD_EYE'} fov={75} rotation={[0, Math.PI, 0]} position={[0, 10, -20]} />
-        <OrthographicCamera makeDefault={!editor && camera === 'BIRD_EYE'} position={[0, 100, 0]} rotation={[(-1 * Math.PI) / 2, 0, Math.PI]} zoom={15} />
         {ready && <VehicleAudio />}
         {children}
       </Chassis>
@@ -101,12 +95,10 @@ function VehicleAudio() {
   const accelerateAudio = useRef()
   const honkAudio = useRef()
   const brakeAudio = useRef()
-
   const [sound, vehicleConfig] = useStore((state) => [state.sound, state.vehicleConfig])
 
   let ctrl
   let speed = 0
-
   useFrame(() => {
     speed = mutation.speed
     ctrl = useStore.getState().controls
@@ -127,10 +119,7 @@ function VehicleAudio() {
     const engine = engineAudio.current
     const honk = honkAudio.current
     const brake = brakeAudio.current
-    return () =>
-      [engine, honk, brake].forEach((sound) => {
-        if (sound.current && sound.current.isPlaying) sound.current.stop()
-      })
+    return () => [engine, honk, brake].forEach((sound) => sound.current && sound.current.isPlaying && sound.current.stop())
   }, [])
 
   return (

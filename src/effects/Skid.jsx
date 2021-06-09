@@ -6,7 +6,6 @@ import { useStore, mutation } from '../store'
 const o = new THREE.Object3D()
 
 export function Skid({ opacity = 0.5, length = 500, size = 0.4 }) {
-  let index = 0
   const ref = useRef()
   const { wheels, chassisBody } = useStore((state) => state.raycast)
 
@@ -20,7 +19,7 @@ export function Skid({ opacity = 0.5, length = 500, size = 0.4 }) {
   }
 
   let ctrl
-
+  let index = 0
   useFrame(() => {
     ctrl = useStore.getState().controls
     if (ctrl.brake && mutation.speed > 10) {
