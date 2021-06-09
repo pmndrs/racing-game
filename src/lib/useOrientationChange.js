@@ -8,9 +8,9 @@ export function useOrientationChange() {
   useEffect(() => {
     const handler = () => set({ isMobilePortrait: isPortraitMode.matches })
 
-    window.addEventListener('resize', handler, { passive: true })
+    window.addEventListener('resize', handler)
     return () => {
-      window.removeEventListener('resize', handler, { passive: true })
+      window.removeEventListener('resize', handler)
     }
   }, [])
 
