@@ -98,10 +98,14 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
 }
 
 function VehicleAudio() {
+  const { wheels, restrictWheelsGroundDistance } = useStore((state) => state.raycast)
   const engineAudio = useRef()
   const accelerateAudio = useRef()
   const honkAudio = useRef()
   const brakeAudio = useRef()
+  const rightRearWheel = wheels[2].current
+  const leftRearWheel = wheels[3].current
+
   useFrame(() => {
     const state = useStore.getState()
     const { honk, brake, boost } = state.controls
@@ -111,7 +115,7 @@ function VehicleAudio() {
     if (honk) {
       if (!honkAudio.current.isPlaying) honkAudio.current.play()
     } else honkAudio.current.isPlaying && honkAudio.current.stop()
-    if (brake && state.speed > 20) {
+    if (brake && state.speed > 20 && rightRearWheel.position.y < restrictWheelsGroundDistance && leftRearWheel.position.y < restrictWheelsGroundDistance) {
       brakeAudio.current.setVolume(state.speed / 100)
       if (!brakeAudio.current.isPlaying) brakeAudio.current.play()
     } else brakeAudio.current.isPlaying && brakeAudio.current.stop()
