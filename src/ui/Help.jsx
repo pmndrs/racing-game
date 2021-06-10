@@ -14,6 +14,7 @@ const controlOptions = [
   { keys: ['E'], action: 'Editor' },
   { keys: ['U'], action: 'Toggle Mute' },
   { keys: ['I'], action: 'Help' },
+  { keys: ['L'], action: 'Leaderboards' },
 ]
 
 export function Help() {

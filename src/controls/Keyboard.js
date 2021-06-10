@@ -48,6 +48,7 @@ export function KeyboardControls() {
     },
     { keys: ['e', 'E'], fn: () => set((state) => ({ ...state, editor: !state.editor })), up: false },
     { keys: ['i', 'I'], fn: () => set((state) => ({ ...state, help: !state.help })), up: false },
+    { keys: ['l', 'L'], fn: () => set((state) => ({ ...state, leaderboard: !state.leaderboard })), up: false },
     { keys: ['m', 'M'], fn: () => set((state) => ({ ...state, map: !state.map })), up: false },
     { keys: ['u', 'U'], fn: () => set((state) => ({ ...state, sound: !state.sound })), up: false },
     {

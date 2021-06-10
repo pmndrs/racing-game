@@ -5,9 +5,8 @@ import { Physics, Debug } from '@react-three/cannon'
 import { Sky, Environment, PerspectiveCamera, OrthographicCamera, OrbitControls, Stats } from '@react-three/drei'
 import { useStore, levelLayer } from './store'
 import { Ramp, Track, Vehicle, Goal } from './models'
-import { Editor, Help, Minimap, Overlay, Speed, Clock } from './ui'
+import { Editor, Help, Minimap, Overlay, Speed, Clock, LeaderBoard, Finished } from './ui'
 import { HideMouse, KeyboardControls } from './controls'
-import Finished from './ui/Finished'
 
 const layers = new Layers()
 layers.enable(levelLayer)
@@ -61,6 +60,7 @@ export function App() {
       <Clock />
       {finished && <Finished />}
       <Help />
+      <LeaderBoard />
       <KeyboardControls />
       <HideMouse />
       {editor && <Editor />}

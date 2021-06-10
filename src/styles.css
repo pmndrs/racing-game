@@ -95,6 +95,23 @@ body {
   content: counter(listCounter) ' - ';
 }
 
+.leaderboard-bottom {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+  counter-reset: listCounter;
+}
+
+.leaderboard-bottom li {
+  margin-bottom: 10px;
+  text-align: center;
+  counter-increment: listCounter;
+}
+
+.leaderboard-bottom li .leaderboard-name::before {
+  content: counter(listCounter) ' - ';
+}
+
 .leaderboard b {
   margin-right: 5px;
 }

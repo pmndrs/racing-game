@@ -1,10 +1,8 @@
 import { useStore, mutation } from '../store'
-import { createClient } from '@supabase/supabase-js'
 import { useState } from 'react'
+import { getLeaderBoardData, insertTime } from '../utils/data/leaderboard'
 
-export const supabase = createClient(import.meta.env['VITE_SUPABASE_URL'], import.meta.env['VITE_SUPABASE_ANON_KEY'])
-
-const Finished = () => {
+export const Finished = () => {
   const LOCAL_STORAGE_KEY = 'racing-pmndrs-name'
   const [name, setName] = useState('')
   const finished = useStore((state) => state.finished)
@@ -14,12 +12,12 @@ const Finished = () => {
   const [position, setPosition] = useState(null)
 
   const sendTime = async () => {
-    const { data: newTime } = await supabase.from('scores').insert({
+    const newTime = await insertTime({
       time: finished,
       name: savedName,
     })
 
-    const { data: leaderboardData } = await supabase.from('scores').select().limit(50).order('time')
+    const leaderboardData = await getLeaderBoardData()
     setLeaderBoard(leaderboardData)
     setPosition(leaderboardData.findIndex((l) => l.id === newTime[0].id) + 1)
   }
@@ -80,5 +78,3 @@ const Restart = () => {
     </button>
   )
 }
-
-export default Finished
