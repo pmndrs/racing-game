@@ -14,4 +14,4 @@ This project is a showcase for the feasibility of React in gaming. It is 100% op
 /ui       - intros, heads up displays, leaderboards
 ```
 
-There is a dedicated discord channel for this project here: https://discord.gg/rT5xGNjn
+There is a dedicated discord channel for this project here: https://discord.gg/dQW7fDmaAG
