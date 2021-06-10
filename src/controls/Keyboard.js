@@ -42,10 +42,19 @@ export function Keyboard() {
     { keys: [' '], fn: (brake) => set((state) => ({ ...state, controls: { ...state.controls, brake } })) },
     { keys: ['h', 'H'], fn: (honk) => set((state) => ({ ...state, controls: { ...state.controls, honk } })) },
     { keys: ['Shift'], fn: (boost) => set((state) => ({ ...state, controls: { ...state.controls, boost } })) },
+<<<<<<< HEAD
     { keys: ['r', 'R'], fn: () => reset(set), up: false },
     { keys: ['e', 'E'], fn: () => set((state) => ({ ...state, editor: !state.editor })), up: false },
     { keys: ['i', 'I'], fn: () => set((state) => ({ ...state, help: !state.help, leaderboard: false })), up: false },
     { keys: ['l', 'L'], fn: () => set((state) => ({ ...state, help: false, leaderboard: !state.leaderboard })), up: false },
+=======
+    {
+      keys: ['r', 'R'],
+      fn: (reset) => set((state) => ((mutation.start = 0), (mutation.finish = 0), { ...state, finished: false, controls: { ...state.controls, reset } })),
+    },
+    { keys: ['/'], fn: () => set((state) => ({ ...state, editor: !state.editor })), up: false },
+    { keys: ['i', 'I'], fn: () => set((state) => ({ ...state, help: !state.help })), up: false },
+>>>>>>> Switch to backslash
     { keys: ['m', 'M'], fn: () => set((state) => ({ ...state, map: !state.map })), up: false },
     { keys: ['u', 'U'], fn: () => set((state) => ({ ...state, sound: !state.sound })), up: false },
     {
