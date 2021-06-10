@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Layers } from 'three'
 import { Canvas } from '@react-three/fiber'
 import { Physics, Debug } from '@react-three/cannon'
@@ -7,6 +7,8 @@ import { useStore, levelLayer } from './store'
 import { Ramp, Track, Vehicle, Goal } from './models'
 import { Editor, Help, Minimap, Overlay, Speed, Clock } from './ui'
 import { HideMouse, KeyboardControls } from './controls'
+import { supabase } from './supabase/supabaseClient'
+import { Auth, Account } from './supabase'
 
 const layers = new Layers()
 layers.enable(levelLayer)
@@ -17,8 +19,20 @@ function DebugScene({ children }) {
 }
 
 export function App() {
-  const [light, setLight] = useState()
   const [editor, camera, stats, map] = useStore((state) => [state.editor, state.camera, state.stats, state.map])
+
+  const [light, setLight] = useState()
+  const [session, setSession] = useState(null)
+  console.log(session)
+
+  useEffect(() => {
+    setSession(supabase.auth.session())
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+  }, [])
+
   return (
     <Overlay>
       <Canvas mode="concurrent" dpr={[1, 1.5]} shadows camera={{ position: [0, 5, 15], fov: 50 }}>
@@ -63,6 +77,7 @@ export function App() {
       <HideMouse />
       {editor && <Editor />}
       {stats && <Stats />}
+      <div className="auth">{!session ? <Auth /> : <Account key={session.user.id} session={session} />}</div>
     </Overlay>
   )
 }
