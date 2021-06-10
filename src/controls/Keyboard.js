@@ -32,6 +32,5 @@ export function KeyboardControls() {
   if (isMobile) {
     useTouch()
   }
-
   return null
 }

@@ -12,7 +12,6 @@ function useLevelGeometricProperties() {
   const [center] = useState(() => new Vector3())
   const [dimensions] = useState(() => new Vector3())
   const level = useStore((state) => state.level)
-
   useLayoutEffect(() => {
     if (level.current) {
       level.current.parent.updateWorldMatrix()
@@ -21,7 +20,6 @@ function useLevelGeometricProperties() {
       box.getSize(dimensions)
     }
   }, [])
-
   return [box, center, dimensions]
 }
 

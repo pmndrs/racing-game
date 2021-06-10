@@ -13,31 +13,35 @@ const controlOptions = [
   { keys: ['C'], action: 'Toggle Camera' },
   { keys: ['R'], action: 'Reset' },
   { keys: ['E'], action: 'Editor' },
+  { keys: ['U'], action: 'Toggle Mute' },
   { keys: ['I'], action: 'Help' },
 ]
 
 export function Help() {
-  const set = useStore((state) => state.set)
-  const open = useStore((state) => state.help)
+  const [set, help, sound] = useStore((state) => [state.set, state.help, state.sound])
+
   return (
-    <div className={`controls ${isMobile ? 'is-mobile' : ''}`}>
-      <button value="reset" className="reset-btn">
-        Reset
-      </button>
-      {!open && (
-        <button className="popup-btn" onClick={() => set({ help: true })}>
-          i
+    <>
+      <div className={`${sound ? 'sound' : 'nosound'}`}></div>
+      <div className={`controls ${isMobile ? 'is-mobile' : ''}`}>
+        <button value="reset" className="reset-btn">
+         Reset
         </button>
-      )}
-      <div className={`popup ${open ? 'open' : ''}`}>
-        <button className="popup-close" onClick={() => set({ help: false })}>
-          i
-        </button>
-        <div className="popup-content">
-          <Keys />
+        {!help && (
+          <button className="popup-btn" onClick={() => set({ help: true })}>
+            i
+          </button>
+        )}
+        <div className={`popup ${open ? 'open' : ''}`}>
+          <button className="popup-close" onClick={() => set({ help: false })}>
+            i
+          </button>
+          <div className="popup-content">
+            <Keys />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 

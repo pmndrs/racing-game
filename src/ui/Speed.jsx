@@ -1,22 +1,19 @@
 import { useEffect, useRef } from 'react'
 import { isMobile } from 'react-device-detect'
-import { useStore } from '../store'
+import { useStore, mutation } from '../store'
 
 export function Speed() {
   const textRef = useRef()
   const gaugeRef = useRef()
+  const maxSpeed = useStore((state) => state.vehicleConfig.maxSpeed)
   useEffect(() => {
     const interval = setInterval(() => {
       if (textRef.current !== null) {
-        const {
-          speed,
-          vehicleConfig: { maxSpeed },
-        } = useStore.getState()
-        const computedSpeed = speed * 1.5
+        const computedSpeed = mutation.speed * 1.5
         textRef.current.innerText = computedSpeed.toFixed()
         gaugeRef.current.setAttribute('offset', Math.max(1 - computedSpeed / maxSpeed, 0))
       }
-    }, 60)
+    }, 100)
     return () => clearInterval(interval)
   }, [])
   return (
