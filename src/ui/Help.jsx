@@ -17,13 +17,14 @@ const controlOptions = [
 ]
 
 export function Help() {
-  const [set, open, sound] = useStore((state) => [state.set, state.open, state.sound])
+  const [set, help, sound] = useStore((state) => [state.set, state.help, state.sound])
+
   return (
     <>
       <div className={`${sound ? 'sound' : 'nosound'}`}></div>
       <div className="controls">
-        {!open && <button onClick={() => set({ help: true })}>i</button>}
-        <div className={`popup ${open ? 'open' : ''}`}>
+        {!help && <button onClick={() => set({ help: true })}>i</button>}
+        <div className={`popup ${help ? 'open' : ''}`}>
           <button className="popup-close" onClick={() => set({ help: false })}>
             i
           </button>
