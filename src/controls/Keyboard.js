@@ -32,7 +32,7 @@ function useKeys(keyConfig) {
   }, [keyConfig])
 }
 
-export function KeyboardControls() {
+export function Keyboard() {
   const set = useStore((state) => state.set)
   useKeys([
     { keys: ['ArrowUp', 'w', 'W'], fn: (forward) => set((state) => ({ ...state, controls: { ...state.controls, forward } })) },
