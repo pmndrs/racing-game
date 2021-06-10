@@ -7,6 +7,7 @@ import { useStore, levelLayer } from './store'
 import { Ramp, Track, Vehicle, Goal } from './models'
 import { Editor, Help, Minimap, Overlay, Speed, Clock } from './ui'
 import { HideMouse, KeyboardControls } from './controls'
+import Finished from './ui/Finished'
 
 const layers = new Layers()
 layers.enable(levelLayer)
@@ -18,7 +19,7 @@ function DebugScene({ children }) {
 
 export function App() {
   const [light, setLight] = useState()
-  const [editor, camera, stats, map] = useStore((state) => [state.editor, state.camera, state.stats, state.map])
+  const [editor, camera, stats, finished, map] = useStore((state) => [state.editor, state.camera, state.stats, state.finished, state.map])
   return (
     <Overlay>
       <Canvas mode="concurrent" dpr={[1, 1.5]} shadows camera={{ position: [0, 5, 15], fov: 50 }}>
@@ -58,6 +59,7 @@ export function App() {
       </Canvas>
       <Speed />
       <Clock />
+      {finished && <Finished />}
       <Help />
       <KeyboardControls />
       <HideMouse />

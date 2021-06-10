@@ -4,4 +4,7 @@ import reactJsx from 'vite-react-jsx'
 
 export default defineConfig({
   plugins: [reactJsx(), reactRefresh()],
+  server: {
+    port: 3002,
+  },
 })
