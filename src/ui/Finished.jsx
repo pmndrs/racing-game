@@ -2,7 +2,7 @@ import { useStore, mutation } from '../store'
 import { supabase } from '../supabase'
 import { useState } from 'react'
 
-const Finished = () => {
+export const Finished = () => {
   const LOCAL_STORAGE_KEY = 'racing-pmndrs-name'
   const finished = useStore((state) => state.finished)
   const readableTime = (finished / 1000).toFixed(2)
@@ -79,5 +79,3 @@ const Restart = () => {
     </button>
   )
 }
-
-export default Finished
