@@ -12,7 +12,7 @@ const v = new THREE.Vector3()
 
 export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-115, 0.5, 220], rotation = [0, Math.PI / 2 + 0.5, 0] }) {
   const defaultCamera = useThree((state) => state.camera)
-  const [ready, editor, raycast, camera, vehicleConfig] = useStore((s) => [s.ready, s.editor, s.raycast, s.camera, s.vehicleConfig])
+  const [ready, editor, raycast, camera, vehicleConfig, set] = useStore((s) => [s.ready, s.editor, s.raycast, s.camera, s.vehicleConfig, s.set])
   const { force, maxBrake, steer, maxSpeed } = vehicleConfig
   const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
 
@@ -55,6 +55,7 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
       raycast.chassisBody.current.api.velocity.set(0, 0, 0)
       raycast.chassisBody.current.api.angularVelocity.set(...angularVelocity)
       raycast.chassisBody.current.api.rotation.set(...rotation)
+      set((state) => ({ ...state, controls: { ...state.controls, reset: false } }))
     }
 
     if (!editor) {

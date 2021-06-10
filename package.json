@@ -15,6 +15,7 @@
     "@react-three/drei": "6.0.2",
     "@react-three/fiber": "7.0.1",
     "@react-three/postprocessing": "2.0.4",
+    "@supabase/supabase-js": "^1.13.2",
     "@types/three": "0.129.1",
     "inter-ui": "^3.18.1",
     "leva": "^0.9.11",

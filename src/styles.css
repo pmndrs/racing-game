@@ -28,6 +28,77 @@ body {
   letter-spacing: -5px;
 }
 
+/* --------------- Leaderboard --------------- */
+
+.finished {
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #101010;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.finished .add-me {
+  width: auto;
+}
+
+.name-form input {
+  display: block;
+  width: 300px;
+
+  border: none;
+  border-bottom: 2px solid white;
+  background: transparent;
+  padding: 10px;
+  color: white;
+}
+
+.name-form button {
+  width: auto;
+}
+
+.name-form > div {
+  display: flex;
+  align-items: flex-end;
+  margin: 20px 0;
+}
+
+.finished .restart {
+  position: fixed;
+  bottom: 40px;
+  width: auto;
+  background: transparent;
+  color: white;
+}
+
+.leaderboard {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+  counter-reset: listCounter;
+}
+
+.leaderboard li {
+  margin-bottom: 10px;
+  text-align: center;
+  counter-increment: listCounter;
+}
+
+.leaderboard li::before {
+  content: counter(listCounter) ' - ';
+}
+
+.leaderboard b {
+  margin-right: 5px;
+}
+
 /* --------------- SPEEDOMETER --------------- */
 
 .speed {

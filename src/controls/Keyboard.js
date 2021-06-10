@@ -44,7 +44,7 @@ export function KeyboardControls() {
     { keys: ['Shift'], fn: (boost) => set((state) => ({ ...state, controls: { ...state.controls, boost } })) },
     {
       keys: ['r', 'R'],
-      fn: (reset) => set((state) => ((mutation.start = 0), (mutation.finish = 0), { ...state, controls: { ...state.controls, reset } })),
+      fn: (reset) => set((state) => ((mutation.start = 0), (mutation.finish = 0), { ...state, finished: false, controls: { ...state.controls, reset } })),
     },
     { keys: ['e', 'E'], fn: () => set((state) => ({ ...state, editor: !state.editor })), up: false },
     { keys: ['i', 'I'], fn: () => set((state) => ({ ...state, help: !state.help })), up: false },

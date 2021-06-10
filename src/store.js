@@ -63,6 +63,7 @@ const useStoreImpl = create((set, get) => {
     camera: cameras[0],
     ready: false,
     editor: false,
+    finished: false,
     help: false,
     debug: false,
     stats: false,
