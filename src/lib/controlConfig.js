@@ -1,4 +1,4 @@
-import { cameras, useStore } from '../store'
+import { cameras, useStore, mutation } from '../store'
 
 export const controlConfig = [
   {
@@ -49,6 +49,11 @@ export const controlConfig = [
     up: false,
   },
   {
+    actionValues: ['u', 'U'],
+    actionType: 'sound',
+    up: false,
+  },
+  {
     actionValues: ['c', 'C'],
     actionType: 'camera',
     up: false,
@@ -63,10 +68,11 @@ export const controlFunctions = {
   brake: (brake) => useStore.setState((state) => ({ ...state, controls: { ...state.controls, brake } })),
   honk: (honk) => useStore.setState((state) => ({ ...state, controls: { ...state.controls, honk } })),
   boost: (boost) => useStore.setState((state) => ({ ...state, controls: { ...state.controls, boost, forward: boost } })),
-  reset: (reset) => useStore.setState((state) => ({ ...state, controls: { ...state.controls, reset } })),
+  reset: (reset) => useStore.setState((state) => ((mutation.start = 0), (mutation.finish = 0), { ...state, controls: { ...state.controls, reset } })),
   editor: () => useStore.setState((state) => ({ ...state, editor: !state.editor })),
   help: () => useStore.setState((state) => ({ ...state, help: !state.help })),
   map: () => useStore.setState((state) => ({ ...state, map: !state.map })),
+  sound: () => useStore.setState((state) => ({ ...state, map: !state.sound })),
   camera: () =>
     useStore.setState((state) => {
       const current = cameras.indexOf(state.camera)
