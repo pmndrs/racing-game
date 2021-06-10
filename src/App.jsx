@@ -2,12 +2,11 @@ import { useState } from 'react'
 import { Layers } from 'three'
 import { Canvas } from '@react-three/fiber'
 import { Physics, Debug } from '@react-three/cannon'
-import { Sky, Environment, PerspectiveCamera, OrthographicCamera, OrbitControls, Stats } from '@react-three/drei'
+import { Sky, Environment, PerspectiveCamera, OrthographicCamera, OrbitControls } from '@react-three/drei'
 import { useStore, levelLayer } from './store'
 import { Ramp, Track, Vehicle, Goal } from './models'
-import { Editor, Help, Minimap, Overlay, Speed, Clock } from './ui'
-import { HideMouse, KeyboardControls } from './controls'
-import Finished from './ui/Finished'
+import { HUD, Minimap, Overlay } from './ui'
+import { Controls } from './controls'
 
 const layers = new Layers()
 layers.enable(levelLayer)
@@ -19,7 +18,7 @@ function DebugScene({ children }) {
 
 export function App() {
   const [light, setLight] = useState()
-  const [editor, camera, stats, finished, map] = useStore((state) => [state.editor, state.camera, state.stats, state.finished, state.map])
+  const [camera, editor, map] = useStore((state) => [state.camera, state.editor, state.map])
   return (
     <Overlay>
       <Canvas mode="concurrent" dpr={[1, 1.5]} shadows camera={{ position: [0, 5, 15], fov: 50 }}>
@@ -57,14 +56,8 @@ export function App() {
         {map && <Minimap />}
         {editor && <OrbitControls />}
       </Canvas>
-      <Speed />
-      <Clock />
-      {finished && <Finished />}
-      <Help />
-      <KeyboardControls />
-      <HideMouse />
-      {editor && <Editor />}
-      {stats && <Stats />}
+      <HUD />
+      <Controls />
     </Overlay>
   )
 }

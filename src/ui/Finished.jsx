@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 export const supabase = createClient(import.meta.env['VITE_SUPABASE_URL'], import.meta.env['VITE_SUPABASE_ANON_KEY'])
 
-const Finished = () => {
+export const Finished = () => {
   const LOCAL_STORAGE_KEY = 'racing-pmndrs-name'
   const [name, setName] = useState('')
   const finished = useStore((state) => state.finished)
@@ -80,5 +80,3 @@ const Restart = () => {
     </button>
   )
 }
-
-export default Finished
