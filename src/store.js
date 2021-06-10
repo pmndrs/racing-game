@@ -86,7 +86,6 @@ const useStoreImpl = create((set, get) => {
       honk: false,
       boost: false,
       reset: false,
-      map: true,
     },
     vehicleConfig,
   }
