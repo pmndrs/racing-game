@@ -2,10 +2,7 @@ import { useStore, mutation } from '../store'
 import { createClient } from '@supabase/supabase-js'
 import { useState } from 'react'
 
-export const supabase = createClient(
-  'https://tfvnrohsjcgsekfnggks.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYyMzMyMTAxOCwiZXhwIjoxOTM4ODk3MDE4fQ.YISggSEzSk6WsMNkvN2a5MHYWBVjQ84nHwWYne9sTA0',
-)
+export const supabase = createClient(import.meta.env['VITE_SUPABASE_URL'], import.meta.env['VITE_SUPABASE_ANON_KEY'])
 
 const Finished = () => {
   const LOCAL_STORAGE_KEY = 'racing-pmndrs-name'
@@ -75,7 +72,7 @@ const Finished = () => {
 const Restart = () => {
   const set = useStore((state) => state.set)
   const cleanState = () =>
-    set((state) => ((mutation.start = 0), (mutation.finish = 0), { ...state, controls: { ...state.controls, reset: true, finished: null } }))
+    set((state) => ((mutation.start = 0), (mutation.finish = 0), { ...state, controls: { ...state.controls, reset: true, finished: false } }))
   return (
     <button className="restart" onClick={cleanState}>
       <div>Restart</div>
