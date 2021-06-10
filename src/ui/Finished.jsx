@@ -72,7 +72,7 @@ const Finished = () => {
 const Restart = () => {
   const set = useStore((state) => state.set)
   const cleanState = () =>
-    set((state) => ((mutation.start = 0), (mutation.finish = 0), { ...state, controls: { ...state.controls, reset: true, finished: false } }))
+    set((state) => ((mutation.start = 0), (mutation.finish = 0), { ...state, finished: false, controls: { ...state.controls, reset: true } }))
   return (
     <button className="restart" onClick={cleanState}>
       <div>Restart</div>
