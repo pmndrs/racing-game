@@ -4,7 +4,9 @@
 
 Live demo (current state): https://racing.pmnd.rs/
 
-This project is a showcase for the feasibility of React in gaming. It is 100% open source, using only CC0 assets, everyone is invited to participate. If you have a PR merged you are added to the triage team. Refer to [CONTRIBUTING.md](/CONTRIBUTING.md) for more information.
+This project is a showcase for the feasibility of React in gaming. Every thing is a self contained component using [react-three-fiber](https://docs.pmnd.rs/react-three-fiber) to express threejs with React semantics.
+
+This project is 100% open source, CC0 assets only, everyone is invited to participate. If you have a PR merged you are added to the triage team. Refer to [CONTRIBUTING.md](/CONTRIBUTING.md) for more information.
 
 ```jsx
 /assets   - the blend files
