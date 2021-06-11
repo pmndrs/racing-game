@@ -5,7 +5,7 @@ import { PositionalAudio } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
 import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
-import { Dust, Skid } from '../../effects'
+import { Dust, Skid, Boost } from '../../effects'
 import { useStore, mutation } from '../../store'
 
 const v = new THREE.Vector3()
@@ -61,8 +61,12 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
     if (!editor) {
       if (camera === 'FIRST_PERSON') v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.5, 0.01)
       else if (camera === 'DEFAULT') v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (ctrl.brake ? 1 : 0))
+
       // ctrl.left-ctrl.right, up-down, near-far
       defaultCamera.position.lerp(v, delta)
+      // console.log(v)
+      // defaultCamera.fov = THREE.MathUtils.lerp(defaultCamera.fov, ctrl.boost ? 120 : 75, delta);
+
       // ctrl.left-ctrl.right swivel
       defaultCamera.rotation.z = THREE.MathUtils.lerp(defaultCamera.rotation.z, Math.PI + (-steeringValue * speed) / (camera === 'DEFAULT' ? 40 : 60), delta)
     }
@@ -73,6 +77,12 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
       (-steeringValue * speed) / 200,
       delta * 4,
     )
+
+    // Camera sway
+    const swaySpeed = ctrl.boost ? 50 : 25
+    const swayAmount = ctrl.boost ? (speed / vehicleConfig.maxSpeed) * 4 : (speed / vehicleConfig.maxSpeed) * 0.5
+    defaultCamera.rotation.z += (Math.sin(state.clock.elapsedTime * swaySpeed * 0.9) / 1000) * swayAmount
+    defaultCamera.rotation.x += (Math.sin(state.clock.elapsedTime * swaySpeed) / 1000) * swayAmount
   })
 
   return (
@@ -86,6 +96,7 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
       <Wheel ref={raycast.wheels[2]} leftSide />
       <Wheel ref={raycast.wheels[3]} />
       <Dust />
+      <Boost />
       <Skid />
     </group>
   )
@@ -93,6 +104,7 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
 
 function VehicleAudio() {
   const engineAudio = useRef()
+  const boostAudio = useRef()
   const accelerateAudio = useRef()
   const honkAudio = useRef()
   const brakeAudio = useRef()
@@ -103,8 +115,9 @@ function VehicleAudio() {
   useFrame(() => {
     speed = mutation.speed
     ctrl = useStore.getState().controls
+    boostAudio.current.setVolume(sound ? (ctrl.boost ? speed / vehicleConfig.maxSpeed + 0.5 : 0) : 0)
     engineAudio.current.setVolume(sound ? 1 : 0)
-    accelerateAudio.current.setVolume(sound ? (speed / vehicleConfig.maxSpeed) * (ctrl.boost ? 3 : 2) : 0)
+    accelerateAudio.current.setVolume(sound ? (speed / vehicleConfig.maxSpeed) * 2 : 0)
     brakeAudio.current.setVolume(sound ? (ctrl.brake ? 1 : 0.5) : 0)
     if (sound) {
       if (ctrl.honk) {
@@ -126,6 +139,7 @@ function VehicleAudio() {
   return (
     <>
       <PositionalAudio ref={engineAudio} url="/sounds/engine.mp3" autoplay loop distance={5} />
+      <PositionalAudio ref={boostAudio} url="/sounds/boost.mp3" autoplay loop distance={5} />
       <PositionalAudio ref={accelerateAudio} url="/sounds/accelerate.mp3" autoplay loop distance={5} />
       <PositionalAudio ref={honkAudio} url="/sounds/honk.mp3" distance={10} />
       <PositionalAudio ref={brakeAudio} url="/sounds/tire-brake.mp3" distance={10} />
