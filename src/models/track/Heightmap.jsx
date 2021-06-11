@@ -17,7 +17,7 @@ function createHeightfieldMatrix(image) {
   let matrix = []
   const width = image.width
   const height = image.height
-  const scale = 40 // determines the vertical scale of the heightmap
+  const scale = 20 // determines the vertical scale of the heightmap
   let row
 
   canvas.width = width
@@ -28,7 +28,8 @@ function createHeightfieldMatrix(image) {
     row = []
     for (let y = 0; y < height; y++) {
       // returned pixel data is [r, g, b, alpha], since image is in b/w -> any rgb val
-      row.push(Math.max(0, parseFloat((imageData[4 * (y * width + x)] / 255).toPrecision(1)) * scale))
+      const p = Math.max(0, parseFloat((imageData[4 * (y * width + x)] / 255) * (scale * 2)).toPrecision(2))
+      row.push(p / 4)
     }
     matrix.push(row)
   }
@@ -40,6 +41,6 @@ export function Heightmap(props) {
   const { elementSize, position, rotation } = props
   const heightmap = useTexture('/textures/heightmap_1024.png')
   const heights = useAsset(async () => createHeightfieldMatrix(heightmap.image), heightmap)
-  useHeightfield(() => ({ args: [heights, { elementSize }], position, rotation }))
+  useHeightfield(() => ({ args: [heights, { elementSize }], position, rotation }), undefined, [elementSize, position, rotation])
   return null
 }

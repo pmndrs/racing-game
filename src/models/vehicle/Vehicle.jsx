@@ -10,7 +10,7 @@ import { useStore, mutation } from '../../store'
 
 const v = new THREE.Vector3()
 
-export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-115, 0.5, 220], rotation = [0, Math.PI / 2 + 0.5, 0] }) {
+export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-110, 0.5, 220], rotation = [0, Math.PI / 2 + 0.35, 0] }) {
   const defaultCamera = useThree((state) => state.camera)
   const [ready, editor, raycast, camera, vehicleConfig, set] = useStore((s) => [s.ready, s.editor, s.raycast, s.camera, s.vehicleConfig, s.set])
   const { force, maxBrake, steer, maxSpeed } = vehicleConfig

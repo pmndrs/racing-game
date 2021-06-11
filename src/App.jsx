@@ -47,7 +47,7 @@ export function App() {
               <OrthographicCamera makeDefault={!editor && camera === 'BIRD_EYE'} position={[0, 100, 0]} rotation={[(-1 * Math.PI) / 2, 0, Math.PI]} zoom={15} />
             </Vehicle>
             <Ramp args={[30, 6, 6]} position={[5, -1, 165]} rotation={[0, 0.45, Math.PI / 15]} />
-            <Track position={[0, -0.1, 0]} />
+            <Track position={[0, 0, 0]} />
             <Goal start args={[0.001, 10, 18]} rotation={[0, 0.55, 0]} position={[-27, 1, 180]} />
             <Goal args={[0.001, 10, 18]} rotation={[0, -1.2, 0]} position={[-104, 1, -189]} />
           </DebugScene>

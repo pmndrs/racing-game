@@ -58,7 +58,7 @@ export function Track(props) {
 
   return (
     <>
-      <Heightmap elementSize={1 / 2} position={[327.2 - 80, -20.1, -473.5 + 210]} rotation={[-Math.PI / 2, 0, -Math.PI]} />
+      <Heightmap elementSize={0.5085} position={[327 - 66.5, -3.3, -473 + 213]} rotation={[-Math.PI / 2, 0, -Math.PI]} />
       <group ref={group} {...props} dispose={null}>
         <Train config={config} />
         <mesh geometry={n.track_2.geometry} material={m['Material.001']} {...config} />
