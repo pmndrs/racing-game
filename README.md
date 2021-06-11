@@ -7,7 +7,7 @@ Live demo (current state): https://racing.pmnd.rs/
 This project is a showcase for the feasibility of React in gaming. It is 100% open source, using only CC0 assets, everyone is invited to participate. If you have a PR merged you are added to the triage team. Refer to [CONTRIBUTING.md](/CONTRIBUTING.md) for more information.
 
 ```jsx
-/assets   - the bend files
+/assets   - the blend files
 /utils    - game state store, helpers
 /models   - gltfjsx models, players, characters
 /effects  - dust, trails, skids, shaders
