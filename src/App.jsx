@@ -18,10 +18,10 @@ function DebugScene({ children }) {
 
 export function App() {
   const [light, setLight] = useState()
-  const [camera, editor, map] = useStore((state) => [state.camera, state.editor, state.map])
+  const [shadows, dpr, camera, editor, map] = useStore((s) => [s.shadows, s.dpr, s.camera, s.editor, s.map])
   return (
     <Overlay>
-      <Canvas mode="concurrent" dpr={[1, 1.5]} shadows camera={{ position: [0, 5, 15], fov: 50 }}>
+      <Canvas key={shadows + dpr} mode="concurrent" dpr={[1, dpr]} shadows={shadows} camera={{ position: [0, 5, 15], fov: 50 }}>
         <fog attach="fog" args={['white', 0, 500]} />
         <Sky sunPosition={[100, 10, 100]} scale={1000} />
         <ambientLight layers={layers} intensity={0.1} />

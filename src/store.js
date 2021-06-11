@@ -60,6 +60,8 @@ const useStoreImpl = create((set, get) => {
   return {
     set,
     get,
+    dpr: 1.5,
+    shadows: true,
     camera: cameras[0],
     ready: false,
     editor: false,
