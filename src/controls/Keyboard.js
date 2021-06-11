@@ -8,15 +8,15 @@ function useKeys(keyConfig) {
       return out
     }, {})
 
-    const downHandler = ({ key }) => {
-      if (!keyMap[key]) return
+    const downHandler = ({ key, target }) => {
+      if (!keyMap[key] || target.nodeName === 'INPUT') return
       const { fn, pressed, up } = keyMap[key]
       keyMap[key].pressed = true
       if (up || !pressed) fn(true)
     }
 
-    const upHandler = ({ key }) => {
-      if (!keyMap[key]) return
+    const upHandler = ({ key, target }) => {
+      if (!keyMap[key] || target.nodeName === 'INPUT') return
       const { fn, up } = keyMap[key]
       keyMap[key].pressed = false
       if (up) fn(false)
@@ -32,7 +32,7 @@ function useKeys(keyConfig) {
   }, [keyConfig])
 }
 
-export function KeyboardControls() {
+export function Keyboard() {
   const set = useStore((state) => state.set)
   useKeys([
     { keys: ['ArrowUp', 'w', 'W'], fn: (forward) => set((state) => ({ ...state, controls: { ...state.controls, forward } })) },
