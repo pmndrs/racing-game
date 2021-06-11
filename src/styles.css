@@ -83,16 +83,19 @@ body {
   padding: 0;
   margin-top: 20px;
   counter-reset: listCounter;
+  max-height: 70vh;
+  overflow: scroll;
 }
 
 .leaderboard li {
   margin-bottom: 10px;
   text-align: center;
   counter-increment: listCounter;
+  justify-content: space-between;
 }
 
 .leaderboard li::before {
-  content: counter(listCounter) ' - ';
+  content: counter(listCounter);
 }
 
 .leaderboard-bottom {
@@ -100,6 +103,8 @@ body {
   padding: 0;
   margin-top: 20px;
   counter-reset: listCounter;
+  max-height: auto;
+  overflow: auto;
 }
 
 .leaderboard-bottom li {

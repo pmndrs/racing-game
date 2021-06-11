@@ -1,6 +1,7 @@
 import { useStore, mutation } from '../store'
 import { useState } from 'react'
 import { getLeaderBoardData, insertTime } from '../utils/data/leaderboard'
+import { Item } from './LeaderBoard'
 
 export const Finished = () => {
   const LOCAL_STORAGE_KEY = 'racing-pmndrs-name'
@@ -35,9 +36,7 @@ export const Finished = () => {
         <h1> You are number #{position}</h1>
         <ul className="leaderboard">
           {leaderBoard.map((score) => (
-            <li key={score.id}>
-              <b>{(score.time / 1000).toFixed(2)}</b>by {score.name}
-            </li>
+            <Item {...score} key={score.id} />
           ))}
         </ul>
         <Restart />

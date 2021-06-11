@@ -21,13 +21,8 @@ export function LeaderBoard() {
             L
           </button>
           <ul className="popup-content leaderboard-bottom">
-            {leaderBoard.map(({ name, id, time }) => (
-              <li className="popup-item" key={id}>
-                <span className="leaderboard-name">{name}</span>
-                <span className="popup-item-key">
-                  <span>{time}</span>
-                </span>
-              </li>
+            {leaderBoard.map((item) => (
+              <Item {...item} key={item.id} />
             ))}
           </ul>
         </div>
@@ -35,3 +30,12 @@ export function LeaderBoard() {
     </>
   )
 }
+
+export const Item = ({ name, time }) => (
+  <li className="popup-item">
+    <span className="leaderboard-name">{name}</span>
+    <span className="popup-item-key">
+      <span>{time}</span>
+    </span>
+  </li>
+)
