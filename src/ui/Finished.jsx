@@ -1,8 +1,7 @@
 import { useStore, mutation } from '../store'
-import { createClient } from '@supabase/supabase-js'
 import { useState } from 'react'
-
-export const supabase = createClient(import.meta.env['VITE_SUPABASE_URL'], import.meta.env['VITE_SUPABASE_ANON_KEY'])
+import { getLeaderBoardData, insertTime } from '../utils/data/leaderboard'
+import { Item } from './LeaderBoard'
 
 export const Finished = () => {
   const LOCAL_STORAGE_KEY = 'racing-pmndrs-name'
@@ -14,12 +13,12 @@ export const Finished = () => {
   const [position, setPosition] = useState(null)
 
   const sendTime = async () => {
-    const { data: newTime } = await supabase.from('scores').insert({
+    const newTime = await insertTime({
       time: finished,
       name: savedName,
     })
 
-    const { data: leaderboardData } = await supabase.from('scores').select().limit(50).order('time')
+    const leaderboardData = await getLeaderBoardData()
     setLeaderBoard(leaderboardData)
     setPosition(leaderboardData.findIndex((l) => l.id === newTime[0].id) + 1)
   }
@@ -37,9 +36,7 @@ export const Finished = () => {
         <h1> You are number #{position}</h1>
         <ul className="leaderboard">
           {leaderBoard.map((score) => (
-            <li key={score.id}>
-              <b>{(score.time / 1000).toFixed(2)}</b>by {score.name}
-            </li>
+            <Item {...score} key={score.id} />
           ))}
         </ul>
         <Restart />

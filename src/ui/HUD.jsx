@@ -5,6 +5,7 @@ import { Finished } from './Finished'
 import { Help } from './Help'
 import { Speed } from './Speed'
 import { useStore } from '../store'
+import { LeaderBoard } from './LeaderBoard'
 
 export const HUD = () => {
   const { editor, finished, stats } = useStore(({ editor, finished, stats }) => ({ editor, finished, stats }))
@@ -17,6 +18,7 @@ export const HUD = () => {
       <Help />
       <Speed />
       {stats && <Stats />}
+      <LeaderBoard />
     </>
   )
 }

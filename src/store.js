@@ -65,6 +65,7 @@ const useStoreImpl = create((set, get) => {
     editor: false,
     finished: false,
     help: false,
+    leaderboard: false,
     debug: false,
     stats: false,
     sound: true,
