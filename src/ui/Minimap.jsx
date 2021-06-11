@@ -90,7 +90,7 @@ export function Minimap({ size = 200 }) {
         </>,
         virtualScene,
       )}
-      <OrthographicCamera ref={miniMapCamera} makeDefault={false} position={[0, 0, 0.1]} />
+      <OrthographicCamera ref={miniMapCamera} position={[0, 0, 0.1]} />
       <MinimapTexture buffer={buffer} />
     </>
   )

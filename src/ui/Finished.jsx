@@ -13,11 +13,7 @@ export const Finished = () => {
   const [position, setPosition] = useState(null)
 
   const sendTime = async () => {
-    const newTime = await insertTime({
-      time: finished,
-      name: savedName,
-    })
-
+    const newTime = await insertTime({ time: finished, name: savedName })
     const leaderboardData = await getLeaderBoardData()
     setLeaderBoard(leaderboardData)
     setPosition(leaderboardData.findIndex((l) => l.id === newTime[0].id) + 1)
@@ -25,7 +21,6 @@ export const Finished = () => {
 
   const setUsername = (e) => {
     e.preventDefault()
-
     window.localStorage.setItem(LOCAL_STORAGE_KEY, name)
     setSavedName(name)
   }
@@ -70,7 +65,6 @@ const Restart = () => {
   const set = useStore((state) => state.set)
   const cleanState = () =>
     set((state) => ((mutation.start = 0), (mutation.finish = 0), { ...state, finished: false, controls: { ...state.controls, reset: true } }))
-
   return (
     <button className="restart" onClick={cleanState}>
       <div>Restart</div>

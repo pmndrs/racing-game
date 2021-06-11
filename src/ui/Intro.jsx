@@ -14,7 +14,7 @@ function Loader() {
   return <div>loading {progress.toFixed()} %</div>
 }
 
-export function Overlay({ children }) {
+export function Intro({ children }) {
   const [ready, setReady] = useState(false)
   const [clicked, setClicked] = useState(false)
   const set = useStore((state) => state.set)

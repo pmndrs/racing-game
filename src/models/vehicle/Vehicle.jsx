@@ -67,14 +67,13 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
       // ctrl.left-ctrl.right swivel
       defaultCamera.rotation.z = THREE.MathUtils.lerp(defaultCamera.rotation.z, Math.PI + (-steeringValue * speed) / (camera === 'DEFAULT' ? 40 : 60), delta)
     }
-
     // lean chassis
     raycast.chassisBody.current.children[0].rotation.z = THREE.MathUtils.lerp(
       raycast.chassisBody.current.children[0].rotation.z,
       (-steeringValue * speed) / 200,
       delta * 4,
     )
-
+    // Vibrations
     raycast.chassisBody.current.children[0].rotation.x = (Math.sin(state.clock.getElapsedTime() * 20) * speed) / vehicleConfig.maxSpeed / 100
     raycast.chassisBody.current.children[0].rotation.z = (Math.cos(state.clock.getElapsedTime() * 20) * speed) / vehicleConfig.maxSpeed / 100
   })

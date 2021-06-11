@@ -19,7 +19,6 @@ const controlOptions = [
 
 export function Help() {
   const [set, help, sound] = useStore((state) => [state.set, state.help, state.sound])
-
   return (
     <>
       <div className={`${sound ? 'sound' : 'nosound'}`}></div>
