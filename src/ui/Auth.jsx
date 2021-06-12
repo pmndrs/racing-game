@@ -1,4 +1,4 @@
-import { authenticateUser } from '../utils/data/auth'
+import { authenticateUser } from '../data'
 import googleLogo from '../icons/google-logo.png'
 import githubLogo from '../icons/github-logo.png'
 
