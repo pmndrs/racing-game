@@ -11,7 +11,7 @@ const controlOptions = [
   { keys: ['M'], action: 'Map' },
   { keys: ['C'], action: 'Toggle Camera' },
   { keys: ['R'], action: 'Reset' },
-  { keys: ['/'], action: 'Editor' },
+  { keys: ['.'], action: 'Editor' },
   { keys: ['U'], action: 'Toggle Mute' },
   { keys: ['I'], action: 'Help' },
   { keys: ['L'], action: 'Leaderboards' },

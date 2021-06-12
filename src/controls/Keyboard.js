@@ -52,7 +52,7 @@ export function Keyboard() {
       keys: ['r', 'R'],
       fn: (reset) => set((state) => ((mutation.start = 0), (mutation.finish = 0), { ...state, finished: false, controls: { ...state.controls, reset } })),
     },
-    { keys: ['/'], fn: () => set((state) => ({ ...state, editor: !state.editor })), up: false },
+    { keys: ['.'], fn: () => set((state) => ({ ...state, editor: !state.editor })), up: false },
     { keys: ['i', 'I'], fn: () => set((state) => ({ ...state, help: !state.help })), up: false },
 >>>>>>> Switch to backslash
     { keys: ['m', 'M'], fn: () => set((state) => ({ ...state, map: !state.map })), up: false },
