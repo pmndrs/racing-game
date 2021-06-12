@@ -16,7 +16,7 @@ export const Finished = () => {
 
   const sendTime = async () => {
     window.localStorage.setItem(LOCAL_STORAGE_KEY, name)
-    const newTime = await insertTime({ time: finished, name: name })
+    const newTime = await insertTime({ time: finished, name })
     const leaderboardData = await getLeaderBoardData()
     setLeaderBoard(leaderboardData)
     setPosition(leaderboardData.findIndex((l) => l.id === newTime[0].id) + 1)
