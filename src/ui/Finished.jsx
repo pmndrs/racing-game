@@ -31,7 +31,7 @@ export const Finished = () => {
         <h1> You are number #{position}</h1>
         <ul className="leaderboard">
           {scores.map((score, key) => (
-            <Score {...score} key={key} />
+            <Score {...score} standing={key} key={key} />
           ))}
         </ul>
         <Restart />

@@ -94,10 +94,6 @@ body {
   justify-content: space-between;
 }
 
-.leaderboard li::before {
-  content: counter(listCounter);
-}
-
 .leaderboard-bottom {
   list-style: none;
   padding: 0;
@@ -113,8 +109,10 @@ body {
   counter-increment: listCounter;
 }
 
-.leaderboard-bottom li .leaderboard-name::before {
-  content: counter(listCounter) ' - ';
+.leaderboard-name img {
+  position: relative;
+  right: 2px;
+  margin-right: 2px;
 }
 
 .leaderboard b {
