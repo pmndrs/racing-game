@@ -125,16 +125,22 @@ function VehicleAudio() {
   let rpmTarget = 0
   let controls
   let speed = 0
+  const gears = 10
   useFrame((state, delta) => {
     speed = mutation.speed
     controls = useStore.getState().controls
 
     boostAudio.current.setVolume(sound ? (controls.boost ? Math.pow(speed / maxSpeed, 1.5) + 0.5 : 0) * 5 : 0)
     boostAudio.current.setPlaybackRate(Math.pow(speed / maxSpeed, 1.5) + 0.5)
-    engineAudio.current.setVolume(sound ? 1 - (speed / maxSpeed) * 2 : 0)
+    engineAudio.current.setVolume(sound ? 1 - speed / maxSpeed : 0)
     accelerateAudio.current.setVolume(sound ? (speed / maxSpeed) * 2 : 0)
-    rpmTarget = Math.pow(speed / maxSpeed, 1.5) + (controls.boost ? 0.55 : 0.5)
-    accelerateAudio.current.setPlaybackRate(MathUtils.lerp(accelerateAudio.current.playbackRate, rpmTarget, delta * 20))
+
+    var gearPosition = speed / (maxSpeed / gears)
+    rpmTarget = ((gearPosition % 1) + Math.log(gearPosition)) / 6
+    if (rpmTarget < 0) rpmTarget = 0
+    if (controls.boost) rpmTarget += 0.1
+    engineAudio.current.setPlaybackRate(MathUtils.lerp(engineAudio.current.playbackRate, rpmTarget + 1, delta * 10))
+    accelerateAudio.current.setPlaybackRate(MathUtils.lerp(accelerateAudio.current.playbackRate, rpmTarget + 0.5, delta * 10))
     brakeAudio.current.setVolume(sound ? (controls.brake ? 1 : 0.5) : 0)
 
     if (sound) {
