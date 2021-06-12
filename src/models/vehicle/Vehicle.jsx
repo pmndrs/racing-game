@@ -14,7 +14,14 @@ const v = new Vector3()
 
 export function Vehicle({ angularVelocity, children, position, rotation }) {
   const defaultCamera = useThree((state) => state.camera)
-  const [camera, editor, raycast, ready, { force, maxBrake, steer, maxSpeed }] = useStore((s) => [s.camera, s.editor, s.raycast, s.ready, s.vehicleConfig])
+  const [set, camera, editor, raycast, ready, { force, maxBrake, steer, maxSpeed }] = useStore((s) => [
+    s.set,
+    s.camera,
+    s.editor,
+    s.raycast,
+    s.ready,
+    s.vehicleConfig,
+  ])
   const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
 
   useLayoutEffect(() => {
@@ -44,6 +51,9 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
   useFrame((state, delta) => {
     speed = mutation.speed
     controls = useStore.getState().controls
+    if (!ready) {
+      set((state) => ({ ...state, controls: { forward: false, backward: false, left: false, right: false } }))
+    }
 
     engineValue = lerp(
       engineValue,
@@ -74,7 +84,6 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
       delta * 4,
     )
 
-    controls = useStore.getState().controls
     // Camera sway
     const swaySpeed = controls.boost ? 60 : 30
     const startedBoosting = controls.boost && !boostValue
