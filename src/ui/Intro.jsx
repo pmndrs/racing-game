@@ -2,7 +2,9 @@ import { Suspense, useEffect, useState } from 'react'
 import { Footer } from '@pmndrs/branding'
 import { useProgress } from '@react-three/drei'
 import { Keys } from './Help'
+import { Auth } from './Auth'
 import { useStore } from '../store'
+import { supabase } from '../utils/initSupabase'
 
 function Ready({ setReady }) {
   useEffect(() => () => void setReady(true), [])
@@ -17,11 +19,19 @@ function Loader() {
 export function Intro({ children }) {
   const [ready, setReady] = useState(false)
   const [clicked, setClicked] = useState(false)
-  const set = useStore((state) => state.set)
+  const [session, set] = useStore((state) => [state.session, state.set])
 
   useEffect(() => {
     if (clicked && ready) set({ ready: true })
   }, [ready, clicked])
+
+  useEffect(() => {
+    set({ session: supabase().auth.session() })
+
+    supabase().auth.onAuthStateChange((_event, session) => {
+      set({ session: session })
+    })
+  }, [])
 
   return (
     <>
@@ -32,6 +42,7 @@ export function Intro({ children }) {
           <a href="#" onClick={() => ready && setClicked(true)}>
             {!ready ? <Loader /> : 'Click to continue'}
           </a>
+          {session?.user.aud !== 'authenticated' && <Auth />}
         </div>
         <Footer
           date="2. June"
