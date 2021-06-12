@@ -1,26 +1,26 @@
 import { useEffect, useState } from 'react'
+import { getScores } from '../data'
 import { useStore } from '../store'
-import { getLeaderBoardData } from '../utils/data/leaderboard'
 
 export function LeaderBoard() {
-  const [leaderBoard, setLeaderBoard] = useState([])
+  const [scores, setScores] = useState([])
+  const [last, setLast] = useState(0)
   const [set, leaderboard] = useStore((state) => [state.set, state.leaderboard])
   useEffect(() => {
-    async function loadLeaderBoard() {
-      const leaderboardData = await getLeaderBoardData(10)
-      setLeaderBoard(leaderboardData)
-    }
-    loadLeaderBoard()
-  }, [])
+    if (!leaderboard || Date.now() - last < 3000) return
+    getScores(10).then(setScores)
+    setLast(Date.now())
+  }, [leaderboard])
+  const close = () => set((state) => ({ ...state, leaderboard: false }))
   return (
     <div className="controls">
       <div className={`popup ${leaderboard ? 'open' : ''}`}>
-        <button className="popup-close" onClick={() => set({ leaderboard: false })}>
+        <button className="popup-close" onClick={close}>
           L
         </button>
         <ul className="popup-content leaderboard-bottom">
-          {leaderBoard.map((item) => (
-            <Item {...item} key={item.id} />
+          {scores.map((score, key) => (
+            <Score {...score} key={key} />
           ))}
         </ul>
       </div>
@@ -28,7 +28,7 @@ export function LeaderBoard() {
   )
 }
 
-export const Item = ({ name, time }) => (
+export const Score = ({ name, time }) => (
   <li className="popup-item">
     <span className="leaderboard-name">{name}</span>
     <span className="popup-item-key">

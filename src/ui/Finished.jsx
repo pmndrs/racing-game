@@ -1,7 +1,7 @@
-import { useStore, mutation } from '../store'
 import { useState } from 'react'
-import { getLeaderBoardData, insertTime } from '../utils/data/leaderboard'
-import { Item } from './LeaderBoard'
+import { reset, useStore } from '../store'
+import { getScores, insertScore } from '../data'
+import { Score } from './LeaderBoard'
 import { Auth } from './Auth'
 
 export const Finished = () => {
@@ -11,15 +11,15 @@ export const Finished = () => {
   const readableTime = (finished / 1000).toFixed(2)
 
   const [name, setName] = useState(window.localStorage.getItem(LOCAL_STORAGE_KEY))
-  const [leaderBoard, setLeaderBoard] = useState(null)
+  const [scores, setScores] = useState(null)
   const [position, setPosition] = useState(null)
 
-  const sendTime = async () => {
+  const sendScore = async () => {
     window.localStorage.setItem(LOCAL_STORAGE_KEY, name)
-    const newTime = await insertTime({ time: finished, name })
-    const leaderboardData = await getLeaderBoardData()
-    setLeaderBoard(leaderboardData)
-    setPosition(leaderboardData.findIndex((l) => l.id === newTime[0].id) + 1)
+    const [{ id }] = await insertScore({ time: finished, name })
+    const scores = await getScores()
+    setScores(scores)
+    setPosition(scores.findIndex((score) => score.id === id) + 1)
   }
 
   return (
@@ -28,8 +28,8 @@ export const Finished = () => {
         <>
           <h1> You are number #{position}</h1>
           <ul className="leaderboard">
-            {leaderBoard.map((score) => (
-              <Item {...score} key={score.id} />
+            {scores.map((score, key) => (
+              <Score {...score} key={key} />
             ))}
           </ul>
         </>
@@ -40,7 +40,7 @@ export const Finished = () => {
             <Auth />
           ) : (
             <>
-              <form className="name-form" onSubmit={sendTime}>
+              <form className="name-form" onSubmit={sendScore}>
                 <h2>You belong on our leaderboard! </h2>
                 <label htmlFor="name">Enter your username</label>
                 <div>
@@ -52,7 +52,6 @@ export const Finished = () => {
           )}
         </>
       )}
-
       <Restart />
     </div>
   )
@@ -60,10 +59,8 @@ export const Finished = () => {
 
 const Restart = () => {
   const set = useStore((state) => state.set)
-  const cleanState = () =>
-    set((state) => ((mutation.start = 0), (mutation.finish = 0), { ...state, finished: false, controls: { ...state.controls, reset: true } }))
   return (
-    <button className="restart" onClick={cleanState}>
+    <button className="restart" onClick={() => reset(set)}>
       <div>Restart</div>
     </button>
   )

@@ -3,7 +3,7 @@ import { Layers } from 'three'
 import { Canvas } from '@react-three/fiber'
 import { Physics, Debug } from '@react-three/cannon'
 import { Sky, Environment, PerspectiveCamera, OrthographicCamera, OrbitControls, Stats } from '@react-three/drei'
-import { useStore, levelLayer } from './store'
+import { angularVelocity, levelLayer, position, rotation, useStore } from './store'
 import { Ramp, Track, Vehicle, Goal, Train, Heightmap } from './models'
 import { Clock, Speed, Minimap, Intro, Help, Editor, LeaderBoard, Finished } from './ui'
 import { HideMouse, Keyboard } from './controls'
@@ -42,7 +42,7 @@ export function App() {
         <PerspectiveCamera makeDefault={editor} fov={75} position={[0, 20, 20]} />
         <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
           <DebugScene>
-            <Vehicle>
+            <Vehicle {...{ angularVelocity, position, rotation }}>
               {light && <primitive object={light.target} />}
               <PerspectiveCamera makeDefault={!editor && camera !== 'BIRD_EYE'} fov={75} rotation={[0, Math.PI, 0]} position={[0, 10, -20]} />
               <OrthographicCamera makeDefault={!editor && camera === 'BIRD_EYE'} position={[0, 100, 0]} rotation={[(-1 * Math.PI) / 2, 0, Math.PI]} zoom={15} />
