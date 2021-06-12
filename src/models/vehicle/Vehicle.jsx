@@ -10,7 +10,7 @@ import { useStore, mutation } from '../../store'
 
 const v = new THREE.Vector3()
 
-export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-115, 0.5, 220], rotation = [0, Math.PI / 2 + 0.5, 0] }) {
+export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-110, 0.75, 220], rotation = [0, Math.PI / 2 + 0.35, 0] }) {
   const defaultCamera = useThree((state) => state.camera)
   const [ready, editor, raycast, camera, vehicleConfig, set] = useStore((s) => [s.ready, s.editor, s.raycast, s.camera, s.vehicleConfig, s.set])
   const { force, maxBrake, steer, maxSpeed } = vehicleConfig
@@ -27,6 +27,7 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
       defaultCamera.rotation.set(0, Math.PI, 0)
       defaultCamera.position.set(0, 10, -20)
       defaultCamera.lookAt(raycast.chassisBody.current.position)
+      defaultCamera.rotation.x -= 0.3
       defaultCamera.rotation.z = Math.PI // resolves the weird spin in the beginning
     }
   }, [defaultCamera])
@@ -59,7 +60,7 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
     }
 
     if (!editor) {
-      if (camera === 'FIRST_PERSON') v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.5, 0.01)
+      if (camera === 'FIRST_PERSON') v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.4, -0.1)
       else if (camera === 'DEFAULT') v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (ctrl.brake ? 1 : 0))
 
       // ctrl.left-ctrl.right, up-down, near-far
@@ -68,7 +69,6 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
       // ctrl.left-ctrl.right swivel
       defaultCamera.rotation.z = THREE.MathUtils.lerp(defaultCamera.rotation.z, Math.PI + (-steeringValue * speed) / (camera === 'DEFAULT' ? 40 : 60), delta)
     }
-
     // lean chassis
     raycast.chassisBody.current.children[0].rotation.z = THREE.MathUtils.lerp(
       raycast.chassisBody.current.children[0].rotation.z,
@@ -76,11 +76,17 @@ export function Vehicle({ angularVelocity = [0, 0.5, 0], children, position = [-
       delta * 4,
     )
 
+
     // Camera sway
     const swaySpeed = ctrl.boost ? 50 : 25
     const swayAmount = ctrl.boost ? (speed / vehicleConfig.maxSpeed) * 4 : (speed / vehicleConfig.maxSpeed) * 0.5
     defaultCamera.rotation.z += (Math.sin(state.clock.elapsedTime * swaySpeed * 0.9) / 1000) * swayAmount
     defaultCamera.rotation.x += (Math.sin(state.clock.elapsedTime * swaySpeed) / 1000) * swayAmount
+
+    // Vibrations
+    raycast.chassisBody.current.children[0].rotation.x = (Math.sin(state.clock.getElapsedTime() * 20) * speed) / vehicleConfig.maxSpeed / 100
+    raycast.chassisBody.current.children[0].rotation.z = (Math.cos(state.clock.getElapsedTime() * 20) * speed) / vehicleConfig.maxSpeed / 100
+
   })
 
   return (

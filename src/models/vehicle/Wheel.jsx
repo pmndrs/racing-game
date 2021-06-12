@@ -3,8 +3,6 @@ import { useGLTF } from '@react-three/drei'
 import { useCylinder } from '@react-three/cannon'
 import { useStore } from '../../store'
 
-useGLTF.preload('/models/wheel-draco.glb')
-
 export const Wheel = forwardRef(({ leftSide, ...props }, ref) => {
   const { radius } = useStore((state) => state.vehicleConfig)
   const { nodes, materials } = useGLTF('/models/wheel-draco.glb')

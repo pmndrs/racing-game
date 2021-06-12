@@ -11,8 +11,6 @@ import debounce from 'lodash-es/debounce'
 import clamp from 'lodash-es/clamp'
 import { useStore, mutation } from '../../store'
 
-useGLTF.preload('/models/chassis-draco.glb')
-
 const c = new THREE.Color()
 export const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...props }, ref) => {
   const glass = useRef()

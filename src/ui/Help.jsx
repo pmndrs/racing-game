@@ -14,11 +14,11 @@ const controlOptions = [
   { keys: ['E'], action: 'Editor' },
   { keys: ['U'], action: 'Toggle Mute' },
   { keys: ['I'], action: 'Help' },
+  { keys: ['L'], action: 'Leaderboards' },
 ]
 
 export function Help() {
   const [set, help, sound] = useStore((state) => [state.set, state.help, state.sound])
-
   return (
     <>
       <div className={`${sound ? 'sound' : 'nosound'}`}></div>

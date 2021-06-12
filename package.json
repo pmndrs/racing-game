@@ -8,7 +8,7 @@
     "vehicle",
     "use-cannon"
   ],
-  "main": "src/index.js",
+  "main": "src/main.jsx",
   "dependencies": {
     "@pmndrs/branding": "^0.0.8",
     "@react-three/cannon": "2.1.2",
