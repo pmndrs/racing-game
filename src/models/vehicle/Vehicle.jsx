@@ -14,7 +14,7 @@ const v = new Vector3()
 
 export function Vehicle({ angularVelocity, children, position, rotation }) {
   const defaultCamera = useThree((state) => state.camera)
-  const { editor, ready, raycast } = useSnapshot(gameState)
+  const { editor, raycast, ready } = useSnapshot(gameState)
   const [vehicle, api] = useRaycastVehicle(() => gameState.raycast, null, [gameState.raycast])
 
   useLayoutEffect(() => {
@@ -47,6 +47,12 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
     speed = mutation.speed
     controls = gameState.controls
     const { force, maxBrake, steer, maxSpeed } = gameState.vehicleConfig
+    if (!gameState.ready) {
+      gameState.controls.forward = false
+      gameState.controls.backward = false
+      gameState.controls.left = false
+      gameState.controls.right = false
+    }
 
     engineValue = lerp(
       engineValue,
@@ -77,13 +83,12 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
       delta * 4,
     )
 
-    controls = gameState.controls
     // Camera sway
     const swaySpeed = controls.boost ? 60 : 30
     const startedBoosting = controls.boost && !boostValue
     boostValue = controls.boost
     const swayTarget = controls.boost ? (speed / maxSpeed) * 8 : (speed / maxSpeed) * 2
-    swayValue = startedBoosting ? (speed / maxSpeed + 0.25) * 30 : MathUtils.lerp(swayValue, swayTarget, delta * (controls.boost ? 5 : 10))
+    swayValue = startedBoosting ? (speed / maxSpeed + 0.25) * 30 : MathUtils.lerp(swayValue, swayTarget, delta * (controls.boost ? 10 : 20))
     defaultCamera.rotation.z += (Math.sin(state.clock.elapsedTime * swaySpeed * 0.9) / 1000) * swayValue
     defaultCamera.rotation.x += (Math.sin(state.clock.elapsedTime * swaySpeed) / 1000) * swayValue
 
@@ -99,10 +104,10 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
         <Boost />
         {children}
       </Chassis>
-      <Wheel ref={gameState.raycast.wheels[0]} leftSide />
-      <Wheel ref={gameState.raycast.wheels[1]} />
-      <Wheel ref={gameState.raycast.wheels[2]} leftSide />
-      <Wheel ref={gameState.raycast.wheels[3]} />
+      <Wheel ref={raycast.wheels[0]} leftSide />
+      <Wheel ref={raycast.wheels[1]} />
+      <Wheel ref={raycast.wheels[2]} leftSide />
+      <Wheel ref={raycast.wheels[3]} />
       <Dust />
       <Skid />
     </group>
@@ -116,16 +121,19 @@ function VehicleAudio() {
   const honkAudio = useRef()
   const brakeAudio = useRef()
 
+  let rpmTarget = 0
   let controls
   let speed = 0
-  useFrame(() => {
+  useFrame((state, delta) => {
     speed = mutation.speed
     controls = gameState.controls
 
     boostAudio.current.setVolume(gameState.sound ? (controls.boost ? Math.pow(speed / gameState.vehicleConfig.maxSpeed, 1.5) + 0.5 : 0) * 5 : 0)
     boostAudio.current.setPlaybackRate(Math.pow(speed / gameState.vehicleConfig.maxSpeed, 1.5) + 0.5)
-    engineAudio.current.setVolume(gameState.sound ? 1 : 0)
+    engineAudio.current.setVolume(gameState.sound ? 1 - (speed / gameState.vehicleConfig.maxSpeed) * 2 : 0)
     accelerateAudio.current.setVolume(gameState.sound ? (speed / gameState.vehicleConfig.maxSpeed) * 2 : 0)
+    rpmTarget = Math.pow(speed / gameState.vehicleConfig.maxSpeed, 1.5) + (controls.boost ? 0.55 : 0.5)
+    accelerateAudio.current.setPlaybackRate(MathUtils.lerp(accelerateAudio.current.playbackRate, rpmTarget, delta * 20))
     brakeAudio.current.setVolume(gameState.sound ? (controls.brake ? 1 : 0.5) : 0)
 
     if (gameState.sound) {

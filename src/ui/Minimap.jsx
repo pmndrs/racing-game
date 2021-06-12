@@ -57,7 +57,7 @@ export function Minimap({ size = 200 }) {
   const buffer = useFBO(size * 2, size * 2)
   const { gl, camera, scene, size: screenSize } = useThree()
   const [, levelCenter, levelDimensions] = useLevelGeometricProperties()
-  const screenPosition = useMemo(() => new Vector3(screenSize.width / 2 - size / 2 - 30, screenSize.height / 2 - size / 2 - 30, 0), [screenSize])
+  const screenPosition = useMemo(() => new Vector3(screenSize.width / -2 - size / -2 + 30, screenSize.height / -2 - size / -2 + 30, 0), [screenSize])
 
   useFrame(() => {
     if (gameState.raycast.chassisBody.current) {
