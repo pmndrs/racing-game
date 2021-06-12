@@ -24,7 +24,7 @@ export const Finished = () => {
 
   return (
     <div className="finished">
-      {leaderBoard ? (
+      {scores ? (
         <>
           <h1> You are number #{position}</h1>
           <ul className="leaderboard">
