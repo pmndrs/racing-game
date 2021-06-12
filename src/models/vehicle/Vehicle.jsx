@@ -1,4 +1,3 @@
-import * as THREE from 'three'
 import { MathUtils, PerspectiveCamera, Vector3 } from 'three'
 import { useRef, useLayoutEffect, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
@@ -72,7 +71,7 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
     }
 
     // lean chassis
-    gameState.raycast.chassisBody.current.children[0].rotation.z = THREE.MathUtils.lerp(
+    gameState.raycast.chassisBody.current.children[0].rotation.z = MathUtils.lerp(
       gameState.raycast.chassisBody.current.children[0].rotation.z,
       (-steeringValue * speed) / 200,
       delta * 4,
@@ -84,7 +83,7 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
     const startedBoosting = controls.boost && !boostValue
     boostValue = controls.boost
     const swayTarget = controls.boost ? (speed / maxSpeed) * 8 : (speed / maxSpeed) * 2
-    swayValue = startedBoosting ? (speed / maxSpeed + 0.25) * 30 : THREE.MathUtils.lerp(swayValue, swayTarget, delta * (controls.boost ? 5 : 10))
+    swayValue = startedBoosting ? (speed / maxSpeed + 0.25) * 30 : MathUtils.lerp(swayValue, swayTarget, delta * (controls.boost ? 5 : 10))
     defaultCamera.rotation.z += (Math.sin(state.clock.elapsedTime * swaySpeed * 0.9) / 1000) * swayValue
     defaultCamera.rotation.x += (Math.sin(state.clock.elapsedTime * swaySpeed) / 1000) * swayValue
 

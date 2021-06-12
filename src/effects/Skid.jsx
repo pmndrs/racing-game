@@ -1,9 +1,9 @@
-import * as THREE from 'three'
+import { Object3D } from 'three'
 import { useRef, useLayoutEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { gameState, mutation } from '../store'
 
-const o = new THREE.Object3D()
+const o = new Object3D()
 
 export function Skid({ opacity = 0.5, length = 500, size = 0.4 }) {
   const ref = useRef()

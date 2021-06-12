@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import { DoubleSide } from 'three'
 import { useLayoutEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { MeshDistortMaterial, useGLTF, PositionalAudio } from '@react-three/drei'
@@ -36,7 +36,7 @@ export function Track(props) {
         <mesh geometry={n.mountains.geometry} material={n.mountains.material} {...config} />
         <mesh geometry={n.terrain.geometry} material={n.terrain.material} {...config} />
         <mesh geometry={n.water.geometry}>
-          <MeshDistortMaterial speed={4} map={m.ColorPaletteWater.map} roughness={0} side={THREE.DoubleSide} />
+          <MeshDistortMaterial speed={4} map={m.ColorPaletteWater.map} roughness={0} side={DoubleSide} />
           {sound && ready && <PositionalAudio url="/sounds/water.mp3" loop autoplay distance={10} />}
         </mesh>
       </group>

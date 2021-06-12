@@ -1,12 +1,12 @@
-import * as THREE from 'three'
+import { Object3D, Vector3, MathUtils } from 'three'
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { gameState } from '../store'
 
-const o = new THREE.Object3D()
+const o = new Object3D()
 let ctrl
 
-const boostPositions = [new THREE.Vector3(-0.4, -0.5, -1.8), new THREE.Vector3(0.4, -0.5, -1.8)]
+const boostPositions = [new Vector3(-0.4, -0.5, -1.8), new Vector3(0.4, -0.5, -1.8)]
 
 export function Boost({ opacity = 0.5, length = 12, size = 0.1 }) {
   const ref = useRef()
@@ -14,7 +14,7 @@ export function Boost({ opacity = 0.5, length = 12, size = 0.1 }) {
   let progress
   useFrame((state) => {
     for (let i = 0; i < length; i += boostPositions.length) {
-      n = THREE.MathUtils.randFloatSpread(0.05)
+      n = MathUtils.randFloatSpread(0.05)
       ctrl = gameState.controls
       for (let j = 0; j < boostPositions.length; j++) {
         progress = (state.clock.getElapsedTime() + (i + j) * 0.2) % 1
