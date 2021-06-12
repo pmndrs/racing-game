@@ -4,7 +4,7 @@ import githubLogo from '../icons/github-logo.png'
 
 const providers = [
   {
-    provider: 'goggle',
+    provider: 'google',
     label: 'Sign in with Google',
     logo: googleLogo,
   },
