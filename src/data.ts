@@ -5,20 +5,24 @@ const config = {
   url: 'https://tfvnrohsjcgsekfnggks.supabase.co',
 }
 
-const key = import.meta.env['VITE_SUPABASE_ANON_KEY'] || config.key
-const url = import.meta.env['VITE_SUPABASE_URL'] || config.url
+const key = (import.meta as any).env['VITE_SUPABASE_ANON_KEY'] || config.key
+const url = (import.meta as any).env['VITE_SUPABASE_URL'] || config.url
 
 const client = createClient(url, key)
 
+export interface Score {
+  time: number;
+  name: string;
+}
 export const getScores = (limit = 50) =>
   client
     .from('scores')
     .select()
     .limit(limit)
     .order('time')
-    .then(({ data }) => data)
+    .then<Score[]>(({ data }) => data as Score[])
 
-export const insertScore = ({ time, name }) =>
+export const insertScore = ({ time, name }: Score) =>
   client
     .from('scores')
     .insert({ time, name })

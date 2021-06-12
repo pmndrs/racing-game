@@ -2,11 +2,12 @@ import { useState } from 'react'
 import { reset, useStore } from '../store'
 import { getScores, insertScore } from '../data'
 import { Score } from './LeaderBoard'
+import React from 'react'
 
 export const Finished = () => {
   const LOCAL_STORAGE_KEY = 'racing-pmndrs-name'
   const [name, setName] = useState('')
-  const finished = useStore((state) => state.finished)
+  const finished: number = useStore((state) => state.finished)
   const readableTime = (finished / 1000).toFixed(2)
   const [savedName, setSavedName] = useState(window.localStorage.getItem(LOCAL_STORAGE_KEY))
   const [scores, setScores] = useState(null)

@@ -1,7 +1,8 @@
-import { Vector3, Matrix4, Object3D, Quaternion, MathUtils } from 'three'
+import { Vector3, Matrix4, Object3D, Quaternion, MathUtils, InstancedMesh, Material, BufferGeometry } from 'three'
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { useStore, mutation } from '../store'
+import { useStore, mutation, StateInterface } from '../store'
+import React from 'react'
 
 const v = new Vector3()
 const m = new Matrix4()
@@ -9,8 +10,8 @@ const o = new Object3D()
 const q = new Quaternion()
 
 export function Dust({ opacity = 0.1, length = 200, size = 1 }) {
-  const { wheels } = useStore((state) => state.raycast)
-  const trail = useRef()
+  const { wheels } = useStore((state) => state.raycast) as StateInterface['raycast']
+  const trail = useRef<InstancedMesh>() as React.MutableRefObject<InstancedMesh<BufferGeometry, Material | Material[]>>
 
   let i = 0
   let index = 0
@@ -18,7 +19,7 @@ export function Dust({ opacity = 0.1, length = 200, size = 1 }) {
   let intensity = 0
   let ctrl
   useFrame((state, delta) => {
-    ctrl = useStore.getState().controls
+    ctrl = useStore((state) => state.controls)
     intensity = MathUtils.lerp(intensity, ((mutation.sliding || ctrl.brake) * mutation.speed) / 40, delta * 8)
 
     if (state.clock.getElapsedTime() - time > 0.02) {
@@ -49,7 +50,7 @@ export function Dust({ opacity = 0.1, length = 200, size = 1 }) {
 }
 
 let n
-function setItemAt(ref, obj, i, intensity) {
+function setItemAt(ref: React.MutableRefObject<InstancedMesh<BufferGeometry, Material | Material[]>>, obj: { position: { x: number; y: number; z: number } }, i: number, intensity: number) {
   n = MathUtils.randFloatSpread(0.25)
   o.position.set(obj.position.x + n, obj.position.y - 0.4, obj.position.z + n)
   o.scale.setScalar(Math.random() * intensity)

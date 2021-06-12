@@ -1,17 +1,17 @@
 import { MathUtils, PerspectiveCamera, Vector3 } from 'three'
-import { useRef, useLayoutEffect, useEffect } from 'react'
+import React, { useRef, useLayoutEffect, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { PositionalAudio } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
 import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
 import { Dust, Skid, Boost } from '../../effects'
-import { useStore, mutation } from '../../store'
+import { useStore, mutation, StateInterface, setState } from '../../store'
 
 const { lerp } = MathUtils
 const v = new Vector3()
 
-export function Vehicle({ angularVelocity, children, position, rotation }) {
+export function Vehicle({ angularVelocity, children, position, rotation }: {angularVelocity: number[], children: React.ReactNode, position: number[], rotation: number[]}) {
   const defaultCamera = useThree((state) => state.camera)
   const [set, camera, editor, raycast, ready, { force, maxBrake, steer, maxSpeed }] = useStore((s) => [
     s.set,
@@ -20,8 +20,8 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
     s.raycast,
     s.ready,
     s.vehicleConfig,
-  ])
-  const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
+  ]) as [setState, StateInterface['camera'], StateInterface['editor'], StateInterface['raycast'], StateInterface['ready'], StateInterface['vehicleConfig']]
+  const [vehicle, api] = useRaycastVehicle(() => raycast, null as unknown as any, [raycast])
 
   useLayoutEffect(() => {
     const sub1 = raycast.chassisBody.current.api.velocity.subscribe((velocity) => Object.assign(mutation, { velocity, speed: v.set(...velocity).length() }))

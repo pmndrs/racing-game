@@ -1,22 +1,32 @@
 import { useEffect } from 'react'
-import { cameras, reset, useStore } from '../store'
+import { cameras, reset, setState, useStore } from '../store'
 
-function useKeys(keyConfig) {
+interface KeyConfig extends KeyMap {
+  keys?: string[];
+}
+
+interface KeyMap {
+  fn: (paramater?: any) => void;
+  up?: boolean;
+  pressed?: boolean;
+}
+
+function useKeys(keyConfig: KeyConfig[]) {
   useEffect(() => {
-    const keyMap = keyConfig.reduce((out, { keys, fn, up = true }) => {
-      keys.forEach((key) => (out[key] = { fn, pressed: false, up }))
+    const keyMap = keyConfig.reduce<{[key: string]: KeyMap}>((out, { keys, fn, up = true }) => {
+      keys && keys.forEach((key) => (out[key] = { fn, pressed: false, up }))
       return out
     }, {})
 
-    const downHandler = ({ key, target }) => {
-      if (!keyMap[key] || target.nodeName === 'INPUT') return
+    const downHandler = ({ key, target }: KeyboardEvent) => {
+      if (!keyMap[key] || (target as HTMLElement).nodeName === 'INPUT') return
       const { fn, pressed, up } = keyMap[key]
       keyMap[key].pressed = true
       if (up || !pressed) fn(true)
     }
 
-    const upHandler = ({ key, target }) => {
-      if (!keyMap[key] || target.nodeName === 'INPUT') return
+    const upHandler = ({ key, target }: KeyboardEvent) => {
+      if (!keyMap[key] || (target as HTMLElement).nodeName === 'INPUT') return
       const { fn, up } = keyMap[key]
       keyMap[key].pressed = false
       if (up) fn(false)
@@ -33,7 +43,7 @@ function useKeys(keyConfig) {
 }
 
 export function Keyboard() {
-  const set = useStore((state) => state.set)
+  const set: setState = useStore((state) => state.set)
   useKeys([
     { keys: ['ArrowUp', 'w', 'W'], fn: (forward) => set((state) => ({ ...state, controls: { ...state.controls, forward } })) },
     { keys: ['ArrowDown', 's', 'S'], fn: (backward) => set((state) => ({ ...state, controls: { ...state.controls, backward } })) },

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Layers } from 'three'
+import { DirectionalLight, Layers } from 'three'
 import { Canvas } from '@react-three/fiber'
 import { Physics, Debug } from '@react-three/cannon'
 import { Sky, Environment, PerspectiveCamera, OrthographicCamera, OrbitControls, Stats } from '@react-three/drei'
@@ -7,23 +7,30 @@ import { angularVelocity, levelLayer, position, rotation, useStore } from './sto
 import { Ramp, Track, Vehicle, Goal, Train, Heightmap } from './models'
 import { Clock, Speed, Minimap, Intro, Help, Editor, LeaderBoard, Finished } from './ui'
 import { HideMouse, Keyboard } from './controls'
+import React from 'react'
+import { ProviderProps } from '@react-three/cannon/dist/Provider'
 
 const layers = new Layers()
 layers.enable(levelLayer)
 
-function DebugScene({ children }) {
-  const debug = useStore((state) => state.debug)
-  return debug ? <Debug scale={1.0001} color="white" children={children} /> : children
+function DebugScene({ children }: {children: React.ReactNode}): JSX.Element  {
+  const debug: boolean = useStore((state) => state.debug)
+  return debug ? <Debug scale={1.0001} color="white" children={children} /> : <>children</>
+}
+
+const defaultContactMaterial: ProviderProps['defaultContactMaterial'] = {
+  contactEquationRelaxation: 4,
+  friction: 1e-3,
 }
 
 export function App() {
-  const [light, setLight] = useState()
+  const [light, setLight] = useState<DirectionalLight>()
   const [shadows, dpr, camera, editor, map, finished, stats] = useStore((s) => [s.shadows, s.dpr, s.camera, s.editor, s.map, s.finished, s.stats])
   return (
     <Intro>
       <Canvas key={shadows + dpr} mode="concurrent" dpr={[1, dpr]} shadows={shadows} camera={{ position: [0, 5, 15], fov: 50 }}>
         <fog attach="fog" args={['white', 0, 500]} />
-        <Sky sunPosition={[100, 10, 100]} scale={1000} />
+        <Sky sunPosition={[100, 10, 100]} />
         <ambientLight layers={layers} intensity={0.1} />
         <directionalLight
           ref={setLight}
@@ -39,7 +46,7 @@ export function App() {
           castShadow
         />
         <PerspectiveCamera makeDefault={editor} fov={75} position={[0, 20, 20]} />
-        <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
+        <Physics broadphase="SAP" defaultContactMaterial={defaultContactMaterial} allowSleep>
           <DebugScene>
             <Vehicle {...{ angularVelocity, position, rotation }}>
               {light && <primitive object={light.target} />}

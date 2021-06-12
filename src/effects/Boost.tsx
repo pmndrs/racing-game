@@ -1,19 +1,21 @@
-import { Object3D, Vector3, MathUtils } from 'three'
+import { Object3D, Vector3, MathUtils, InstancedMesh } from 'three'
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useStore } from '../store'
+import React from 'react'
+import { BufferGeometry, Material } from 'three'
 
 const o = new Object3D()
 const boostPositions = [new Vector3(-0.4, -0.5, -1.8), new Vector3(0.4, -0.5, -1.8)]
 
 export function Boost({ opacity = 0.5, length = 12, size = 0.1 }) {
-  const ref = useRef()
+  const ref = useRef<InstancedMesh>() as React.MutableRefObject<InstancedMesh<BufferGeometry, Material | Material[]>>
   let n
   let j
   let ctrl
   let progress
   useFrame((state) => {
-    ctrl = useStore.getState().controls
+    ctrl = useStore((state) => state.controls)
     for (let i = 0; i < length; i += boostPositions.length) {
       n = MathUtils.randFloatSpread(0.05)
       for (j = 0; j < boostPositions.length; j++) {
@@ -30,7 +32,7 @@ export function Boost({ opacity = 0.5, length = 12, size = 0.1 }) {
   })
 
   return (
-    <instancedMesh ref={ref} args={[null, null, length]}>
+    <instancedMesh ref={ref} args={[null as unknown as BufferGeometry, null as unknown as Material, length]}>
       <boxGeometry args={[size, size, size]} />
       <meshBasicMaterial color="#5ecfff" transparent opacity={opacity} depthWrite={true} />
     </instancedMesh>

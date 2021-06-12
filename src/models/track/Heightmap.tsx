@@ -2,18 +2,19 @@ import { useTexture } from '@react-three/drei'
 import { useHeightfield } from '@react-three/cannon'
 import { useAsset } from 'use-asset'
 
-let canvas = document.createElement('canvas')
-let context = canvas.getContext('2d')
-context.imageSmoothingEnabled = false
+const canvas = document.createElement('canvas')
+const context = canvas.getContext('2d')
+if (context) context.imageSmoothingEnabled = false
 
 /**
  * Returns matrix data to be passed to heightfield.
  * set elementSize as `size` / matrix[0].length (image width)
  * and rotate heightfield to match (rotation.x = -Math.PI/2)
- * @param {Image} image black & white, square heightmap texture
- * @returns {[[Number]]} height data extracted from image
  */
-function createHeightfieldMatrix(image) {
+function createHeightfieldMatrix(image: HTMLImageElement): Number[][] {
+  if (!context) {
+    throw new Error("Heightmap couldn't be loaded")
+  }
   let matrix = []
   const width = image.width
   const height = image.height
@@ -28,7 +29,7 @@ function createHeightfieldMatrix(image) {
     row = []
     for (let y = 0; y < height; y++) {
       // returned pixel data is [r, g, b, alpha], since image is in b/w -> any rgb val
-      const p = Math.max(0, parseFloat((imageData[4 * (y * width + x)] / 255) * (scale * 2)).toPrecision(2))
+      const p = Math.max(0, (imageData[4 * (y * width + x)] / 255) * (scale * 2))
       row.push(p / 4)
     }
     matrix.push(row)
@@ -37,10 +38,10 @@ function createHeightfieldMatrix(image) {
   return matrix
 }
 
-export function Heightmap(props) {
+export function Heightmap(props: {elementSize: number, position: number[], rotation: number[]}) {
   const { elementSize, position, rotation } = props
   const heightmap = useTexture('/textures/heightmap_1024.png')
-  const heights = useAsset(async () => createHeightfieldMatrix(heightmap.image), heightmap)
+  const heights = useAsset(async () => createHeightfieldMatrix(heightmap.image))
   useHeightfield(() => ({ args: [heights, { elementSize }], position, rotation }), undefined, [elementSize, position, rotation])
   return null
 }
