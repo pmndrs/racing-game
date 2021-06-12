@@ -75,12 +75,13 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
     )
 
     controls = useStore.getState().controls
+
     // Camera sway
     const swaySpeed = controls.boost ? 60 : 30
     const startedBoosting = controls.boost && !boostValue
     boostValue = controls.boost
     const swayTarget = controls.boost ? (speed / maxSpeed) * 8 : (speed / maxSpeed) * 2
-    swayValue = startedBoosting ? (speed / maxSpeed + 0.25) * 30 : THREE.MathUtils.lerp(swayValue, swayTarget, delta * (controls.boost ? 5 : 10))
+    swayValue = startedBoosting ? (speed / maxSpeed + 0.25) * 30 : THREE.MathUtils.lerp(swayValue, swayTarget, delta * (controls.boost ? 10 : 20))
     defaultCamera.rotation.z += (Math.sin(state.clock.elapsedTime * swaySpeed * 0.9) / 1000) * swayValue
     defaultCamera.rotation.x += (Math.sin(state.clock.elapsedTime * swaySpeed) / 1000) * swayValue
 
@@ -114,16 +115,19 @@ function VehicleAudio() {
   const brakeAudio = useRef()
   const [sound, maxSpeed] = useStore((state) => [state.sound, state.vehicleConfig.maxSpeed])
 
+  let rpmTarget = 0
   let controls
   let speed = 0
-  useFrame(() => {
+  useFrame((state, delta) => {
     speed = mutation.speed
     controls = useStore.getState().controls
 
     boostAudio.current.setVolume(sound ? (controls.boost ? Math.pow(speed / maxSpeed, 1.5) + 0.5 : 0) * 5 : 0)
     boostAudio.current.setPlaybackRate(Math.pow(speed / maxSpeed, 1.5) + 0.5)
-    engineAudio.current.setVolume(sound ? 1 : 0)
+    engineAudio.current.setVolume(sound ? 1 - (speed / maxSpeed) * 2 : 0)
     accelerateAudio.current.setVolume(sound ? (speed / maxSpeed) * 2 : 0)
+    rpmTarget = Math.pow(speed / maxSpeed, 1.5) + (controls.boost ? 0.55 : 0.5)
+    accelerateAudio.current.setPlaybackRate(THREE.MathUtils.lerp(accelerateAudio.current.playbackRate, rpmTarget, delta * 20))
     brakeAudio.current.setVolume(sound ? (controls.brake ? 1 : 0.5) : 0)
 
     if (sound) {
