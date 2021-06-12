@@ -1,3 +1,4 @@
+import * as THREE from 'three'
 import { MathUtils, PerspectiveCamera, Vector3 } from 'three'
 import { useRef, useLayoutEffect, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
@@ -37,6 +38,8 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
   let engineValue = 0
   let speed = 0
   let controls
+  let boostValue = false
+  let swayValue = 0
 
   useFrame((state, delta) => {
     speed = mutation.speed
@@ -63,7 +66,7 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
       // ctrl.left-ctrl.right swivel
       defaultCamera.rotation.z = lerp(defaultCamera.rotation.z, Math.PI + (-steeringValue * speed) / (camera === 'DEFAULT' ? 40 : 60), delta)
     }
-    
+
     // lean chassis
     raycast.chassisBody.current.children[0].rotation.z = THREE.MathUtils.lerp(
       raycast.chassisBody.current.children[0].rotation.z,
@@ -71,16 +74,19 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
       delta * 4,
     )
 
+    controls = useStore.getState().controls
     // Camera sway
-    const swaySpeed = ctrl.boost ? 50 : 25
-    const swayAmount = ctrl.boost ? (speed / vehicleConfig.maxSpeed) * 4 : (speed / vehicleConfig.maxSpeed) * 0.5
-    defaultCamera.rotation.z += (Math.sin(state.clock.elapsedTime * swaySpeed * 0.9) / 1000) * swayAmount
-    defaultCamera.rotation.x += (Math.sin(state.clock.elapsedTime * swaySpeed) / 1000) * swayAmount
+    const swaySpeed = controls.boost ? 60 : 30
+    const startedBoosting = controls.boost && !boostValue
+    boostValue = controls.boost
+    const swayTarget = controls.boost ? (speed / maxSpeed) * 8 : (speed / maxSpeed) * 2
+    swayValue = startedBoosting ? (speed / maxSpeed + 0.25) * 30 : THREE.MathUtils.lerp(swayValue, swayTarget, delta * (controls.boost ? 5 : 10))
+    defaultCamera.rotation.z += (Math.sin(state.clock.elapsedTime * swaySpeed * 0.9) / 1000) * swayValue
+    defaultCamera.rotation.x += (Math.sin(state.clock.elapsedTime * swaySpeed) / 1000) * swayValue
 
     // Vibrations
     raycast.chassisBody.current.children[0].rotation.x = (Math.sin(state.clock.getElapsedTime() * 20) * speed) / maxSpeed / 100
     raycast.chassisBody.current.children[0].rotation.z = (Math.cos(state.clock.getElapsedTime() * 20) * speed) / maxSpeed / 100
-
   })
 
   return (
@@ -114,9 +120,10 @@ function VehicleAudio() {
     speed = mutation.speed
     controls = useStore.getState().controls
 
-    boostAudio.current.setVolume(sound ? (controls.boost ? speed / vehicleConfig.maxSpeed + 0.5 : 0) : 0)
+    boostAudio.current.setVolume(sound ? (controls.boost ? Math.pow(speed / maxSpeed, 1.5) + 0.5 : 0) * 5 : 0)
+    boostAudio.current.setPlaybackRate(Math.pow(speed / maxSpeed, 1.5) + 0.5)
     engineAudio.current.setVolume(sound ? 1 : 0)
-    accelerateAudio.current.setVolume(sound ? (speed / maxSpeed) *  2 : 0)
+    accelerateAudio.current.setVolume(sound ? (speed / maxSpeed) * 2 : 0)
     brakeAudio.current.setVolume(sound ? (controls.brake ? 1 : 0.5) : 0)
 
     if (sound) {
