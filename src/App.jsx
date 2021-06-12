@@ -3,7 +3,8 @@ import { Layers } from 'three'
 import { Canvas } from '@react-three/fiber'
 import { Physics, Debug } from '@react-three/cannon'
 import { Sky, Environment, PerspectiveCamera, OrthographicCamera, OrbitControls, Stats } from '@react-three/drei'
-import { angularVelocity, levelLayer, position, rotation, useStore } from './store'
+import { useSnapshot } from 'valtio'
+import { angularVelocity, levelLayer, position, rotation, gameState } from './store'
 import { Ramp, Track, Vehicle, Goal, Train, Heightmap } from './models'
 import { Clock, Speed, Minimap, Intro, Help, Editor, LeaderBoard, Finished } from './ui'
 import { HideMouse, Keyboard } from './controls'
@@ -12,13 +13,13 @@ const layers = new Layers()
 layers.enable(levelLayer)
 
 function DebugScene({ children }) {
-  const debug = useStore((state) => state.debug)
+  const { debug } = useSnapshot(gameState)
   return debug ? <Debug scale={1.0001} color="white" children={children} /> : children
 }
 
 export function App() {
   const [light, setLight] = useState()
-  const [shadows, dpr, camera, editor, map, finished, stats] = useStore((s) => [s.shadows, s.dpr, s.camera, s.editor, s.map, s.finished, s.stats])
+  const { shadows, dpr, camera, editor, map, finished, stats } = useSnapshot(gameState)
   return (
     <Intro>
       <Canvas key={shadows + dpr} mode="concurrent" dpr={[1, dpr]} shadows={shadows} camera={{ position: [0, 5, 15], fov: 50 }}>

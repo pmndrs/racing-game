@@ -1,4 +1,5 @@
-import { useStore } from '../store'
+import { useSnapshot } from 'valtio'
+import { gameState } from '../store'
 
 const controlOptions = [
   { keys: ['↑', 'W'], action: 'Forward' },
@@ -18,14 +19,14 @@ const controlOptions = [
 ]
 
 export function Help() {
-  const [set, help, sound] = useStore((state) => [state.set, state.help, state.sound])
+  const { help, sound } = useSnapshot(gameState)
   return (
     <>
       <div className={`${sound ? 'sound' : 'nosound'}`}></div>
       <div className="controls">
-        {!help && <button onClick={() => set({ help: true })}>i</button>}
+        {!help && <button onClick={() => void (gameState.help = true)}>i</button>}
         <div className={`popup ${help ? 'open' : ''}`}>
-          <button className="popup-close" onClick={() => set({ help: false })}>
+          <button className="popup-close" onClick={() => void (gameState.help = false)}>
             i
           </button>
           <div className="popup-content">

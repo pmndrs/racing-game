@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { cameras, reset, useStore } from '../store'
+import { cameras, reset, gameState } from '../store'
 
 function useKeys(keyConfig) {
   useEffect(() => {
@@ -33,24 +33,39 @@ function useKeys(keyConfig) {
 }
 
 export function Keyboard() {
-  const set = useStore((state) => state.set)
   useKeys([
-    { keys: ['ArrowUp', 'w', 'W'], fn: (forward) => set((state) => ({ ...state, controls: { ...state.controls, forward } })) },
-    { keys: ['ArrowDown', 's', 'S'], fn: (backward) => set((state) => ({ ...state, controls: { ...state.controls, backward } })) },
-    { keys: ['ArrowLeft', 'a', 'A'], fn: (left) => set((state) => ({ ...state, controls: { ...state.controls, left } })) },
-    { keys: ['ArrowRight', 'd', 'D'], fn: (right) => set((state) => ({ ...state, controls: { ...state.controls, right } })) },
-    { keys: [' '], fn: (brake) => set((state) => ({ ...state, controls: { ...state.controls, brake } })) },
-    { keys: ['h', 'H'], fn: (honk) => set((state) => ({ ...state, controls: { ...state.controls, honk } })) },
-    { keys: ['Shift'], fn: (boost) => set((state) => ({ ...state, controls: { ...state.controls, boost } })) },
-    { keys: ['r', 'R'], fn: () => reset(set), up: false },
-    { keys: ['e', 'E'], fn: () => set((state) => ({ ...state, editor: !state.editor })), up: false },
-    { keys: ['i', 'I'], fn: () => set((state) => ({ ...state, help: !state.help, leaderboard: false })), up: false },
-    { keys: ['l', 'L'], fn: () => set((state) => ({ ...state, help: false, leaderboard: !state.leaderboard })), up: false },
-    { keys: ['m', 'M'], fn: () => set((state) => ({ ...state, map: !state.map })), up: false },
-    { keys: ['u', 'U'], fn: () => set((state) => ({ ...state, sound: !state.sound })), up: false },
+    { keys: ['ArrowUp', 'w', 'W'], fn: (forward) => void (gameState.controls.forward = forward) },
+    { keys: ['ArrowDown', 's', 'S'], fn: (backward) => void (gameState.controls.backward = backward) },
+    { keys: ['ArrowLeft', 'a', 'A'], fn: (left) => void (gameState.controls.left = left) },
+    { keys: ['ArrowRight', 'd', 'D'], fn: (right) => void (gameState.controls.right = right) },
+    { keys: [' '], fn: (brake) => void (gameState.controls.brake = brake) },
+    { keys: ['h', 'H'], fn: (honk) => void (gameState.controls.honk = honk) },
+    { keys: ['Shift'], fn: (boost) => void (gameState.controls.boost = boost) },
+    { keys: ['r', 'R'], fn: () => reset(), up: false },
+    { keys: ['e', 'E'], fn: () => void (gameState.editor = !gameState.editor), up: false },
+    {
+      keys: ['i', 'I'],
+      fn: () => {
+        gameState.help = !gameState.help
+        gameState.leaderboard = false
+      },
+      up: false,
+    },
+    {
+      keys: ['l', 'L'],
+      fn: () => {
+        gameState.help = false
+        gameState.leaderboard = !gameState.leaderboard
+      },
+      up: false,
+    },
+    { keys: ['m', 'M'], fn: () => void (gameState.map = !gameState.map), up: false },
+    { keys: ['u', 'U'], fn: () => void (gameState.sound = !gameState.sound), up: false },
     {
       keys: ['c', 'C'],
-      fn: () => set((state) => ({ ...state, camera: cameras[(cameras.indexOf(state.camera) + 1) % cameras.length] })),
+      fn: () => {
+        gameState.camera = cameras[(cameras.indexOf(gameState.camera) + 1) % cameras.length]
+      },
       up: false,
     },
   ])

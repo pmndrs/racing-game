@@ -3,21 +3,24 @@ import { useRef, useLayoutEffect, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { PositionalAudio } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
+import { useSnapshot } from 'valtio'
 import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
 import { Dust, Skid } from '../../effects'
-import { mutation, useStore } from '../../store'
+import { mutation, gameState } from '../../store'
 
 const { lerp } = MathUtils
 const v = new Vector3()
 
 export function Vehicle({ angularVelocity, children, position, rotation }) {
   const defaultCamera = useThree((state) => state.camera)
-  const [camera, editor, raycast, ready, { force, maxBrake, steer, maxSpeed }] = useStore((s) => [s.camera, s.editor, s.raycast, s.ready, s.vehicleConfig])
-  const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
+  const { editor, ready, raycast } = useSnapshot(gameState)
+  const [vehicle, api] = useRaycastVehicle(() => gameState.raycast, null, [gameState.raycast])
 
   useLayoutEffect(() => {
-    const sub1 = raycast.chassisBody.current.api.velocity.subscribe((velocity) => Object.assign(mutation, { velocity, speed: v.set(...velocity).length() }))
+    const sub1 = gameState.raycast.chassisBody.current.api.velocity.subscribe((velocity) =>
+      Object.assign(mutation, { velocity, speed: v.set(...velocity).length() }),
+    )
     const sub2 = api.sliding.subscribe((sliding) => (mutation.sliding = sliding))
     return () => void [sub1, sub2].forEach((sub) => sub())
   }, [editor])
@@ -26,7 +29,7 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
     if (defaultCamera instanceof PerspectiveCamera) {
       defaultCamera.rotation.set(0, Math.PI, 0)
       defaultCamera.position.set(0, 10, -20)
-      defaultCamera.lookAt(raycast.chassisBody.current.position)
+      defaultCamera.lookAt(gameState.raycast.chassisBody.current.position)
       defaultCamera.rotation.x -= 0.3
       defaultCamera.rotation.z = Math.PI // resolves the weird spin in the beginning
     }
@@ -40,7 +43,8 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
 
   useFrame((state, delta) => {
     speed = mutation.speed
-    controls = useStore.getState().controls
+    controls = gameState.controls
+    const { force, maxBrake, steer, maxSpeed } = gameState.vehicleConfig
 
     engineValue = lerp(
       engineValue,
@@ -52,20 +56,24 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
     for (i = 0; i < 2; i++) api.setSteeringValue(steeringValue, i)
     for (i = 2; i < 4; i++) api.setBrake(controls.brake ? (controls.forward ? maxBrake / 1.5 : maxBrake) : 0, i)
 
-    if (!editor) {
-      if (camera === 'FIRST_PERSON') v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.4, -0.1)
-      else if (camera === 'DEFAULT')
+    if (!gameState.editor) {
+      if (gameState.camera === 'FIRST_PERSON') v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.4, -0.1)
+      else if (gameState.camera === 'DEFAULT')
         v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (controls.brake ? 1 : 0))
       // ctrl.left-ctrl.right, up-down, near-far
       defaultCamera.position.lerp(v, delta)
       // ctrl.left-ctrl.right swivel
-      defaultCamera.rotation.z = lerp(defaultCamera.rotation.z, Math.PI + (-steeringValue * speed) / (camera === 'DEFAULT' ? 40 : 60), delta)
+      defaultCamera.rotation.z = lerp(defaultCamera.rotation.z, Math.PI + (-steeringValue * speed) / (gameState.camera === 'DEFAULT' ? 40 : 60), delta)
     }
     // lean chassis
-    raycast.chassisBody.current.children[0].rotation.z = lerp(raycast.chassisBody.current.children[0].rotation.z, (-steeringValue * speed) / 200, delta * 4)
+    gameState.raycast.chassisBody.current.children[0].rotation.z = lerp(
+      gameState.raycast.chassisBody.current.children[0].rotation.z,
+      (-steeringValue * speed) / 200,
+      delta * 4,
+    )
     // Vibrations
-    raycast.chassisBody.current.children[0].rotation.x = (Math.sin(state.clock.getElapsedTime() * 20) * speed) / maxSpeed / 100
-    raycast.chassisBody.current.children[0].rotation.z = (Math.cos(state.clock.getElapsedTime() * 20) * speed) / maxSpeed / 100
+    gameState.raycast.chassisBody.current.children[0].rotation.x = (Math.sin(state.clock.getElapsedTime() * 20) * speed) / maxSpeed / 100
+    gameState.raycast.chassisBody.current.children[0].rotation.z = (Math.cos(state.clock.getElapsedTime() * 20) * speed) / maxSpeed / 100
   })
 
   return (
@@ -74,10 +82,10 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
         {ready && <VehicleAudio />}
         {children}
       </Chassis>
-      <Wheel ref={raycast.wheels[0]} leftSide />
-      <Wheel ref={raycast.wheels[1]} />
-      <Wheel ref={raycast.wheels[2]} leftSide />
-      <Wheel ref={raycast.wheels[3]} />
+      <Wheel ref={gameState.raycast.wheels[0]} leftSide />
+      <Wheel ref={gameState.raycast.wheels[1]} />
+      <Wheel ref={gameState.raycast.wheels[2]} leftSide />
+      <Wheel ref={gameState.raycast.wheels[3]} />
       <Dust />
       <Skid />
     </group>
@@ -89,17 +97,16 @@ function VehicleAudio() {
   const accelerateAudio = useRef()
   const honkAudio = useRef()
   const brakeAudio = useRef()
-  const [sound, maxSpeed] = useStore((state) => [state.sound, state.vehicleConfig.maxSpeed])
 
   let controls
   let speed = 0
   useFrame(() => {
     speed = mutation.speed
-    controls = useStore.getState().controls
-    engineAudio.current.setVolume(sound ? 1 : 0)
-    accelerateAudio.current.setVolume(sound ? (speed / maxSpeed) * (controls.boost ? 3 : 2) : 0)
-    brakeAudio.current.setVolume(sound ? (controls.brake ? 1 : 0.5) : 0)
-    if (sound) {
+    controls = gameState.controls
+    engineAudio.current.setVolume(gameState.sound ? 1 : 0)
+    accelerateAudio.current.setVolume(gameState.sound ? (speed / gameState.vehicleConfig.maxSpeed) * (controls.boost ? 3 : 2) : 0)
+    brakeAudio.current.setVolume(gameState.sound ? (controls.brake ? 1 : 0.5) : 0)
+    if (gameState.sound) {
       if (controls.honk) {
         if (!honkAudio.current.isPlaying) honkAudio.current.play()
       } else honkAudio.current.isPlaying && honkAudio.current.stop()
