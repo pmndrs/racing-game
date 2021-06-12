@@ -126,7 +126,7 @@ body {
 .speed {
   position: absolute;
   bottom: 60px;
-  left: 60px;
+  right: 60px;
   font-size: 2.5em;
   font-weight: 200;
   font-variant-numeric: tabular-nums;
@@ -141,16 +141,17 @@ body {
 
 .speed-gauge {
   position: relative;
+  width: 200px;
 }
 
 .speed-foreground {
   position: absolute;
-  width: 200px;
+  width: 100%;
 }
 
 .speed-background {
   position: absolute;
-  width: 200px;
+  width: 100%;
 }
 
 .speed-text {
@@ -161,20 +162,20 @@ body {
 
 .controls {
   position: absolute;
-  bottom: 60px;
+  top: 60px;
   right: 60px;
 }
 
 .controls > .popup {
   position: fixed;
   right: 0;
-  bottom: 0;
+  top: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
   transition: all 0.3s ease-in-out;
-  transform: translateY(600px);
+  transform: translateY(-100%);
 }
 
 .controls > .popup.open {
