@@ -4,19 +4,19 @@ import { useFrame } from '@react-three/fiber'
 import { useStore } from '../store'
 
 const o = new Object3D()
-let ctrl
-
 const boostPositions = [new Vector3(-0.4, -0.5, -1.8), new Vector3(0.4, -0.5, -1.8)]
 
 export function Boost({ opacity = 0.5, length = 12, size = 0.1 }) {
   const ref = useRef()
   let n
+  let j
+  let ctrl
   let progress
   useFrame((state) => {
+    ctrl = useStore.getState().controls
     for (let i = 0; i < length; i += boostPositions.length) {
       n = MathUtils.randFloatSpread(0.05)
-      ctrl = useStore.getState().controls
-      for (let j = 0; j < boostPositions.length; j++) {
+      for (j = 0; j < boostPositions.length; j++) {
         progress = (state.clock.getElapsedTime() + (i + j) * 0.2) % 1
         o.position.set(boostPositions[j].x + n, boostPositions[j].y, boostPositions[j].z - progress * 0.75)
         o.rotation.z += progress / 2

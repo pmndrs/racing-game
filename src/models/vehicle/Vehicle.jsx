@@ -73,8 +73,6 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
       delta * 4,
     )
 
-    controls = useStore.getState().controls
-
     // Camera sway
     const swaySpeed = controls.boost ? 60 : 30
     const startedBoosting = controls.boost && !boostValue
