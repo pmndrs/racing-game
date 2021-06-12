@@ -127,7 +127,7 @@ function VehicleAudio() {
     engineAudio.current.setVolume(sound ? 1 - (speed / maxSpeed) * 2 : 0)
     accelerateAudio.current.setVolume(sound ? (speed / maxSpeed) * 2 : 0)
     rpmTarget = Math.pow(speed / maxSpeed, 1.5) + (controls.boost ? 0.55 : 0.5)
-    accelerateAudio.current.setPlaybackRate(THREE.MathUtils.lerp(accelerateAudio.current.playbackRate, rpmTarget, delta * 20))
+    accelerateAudio.current.setPlaybackRate(MathUtils.lerp(accelerateAudio.current.playbackRate, rpmTarget, delta * 20))
     brakeAudio.current.setVolume(sound ? (controls.brake ? 1 : 0.5) : 0)
 
     if (sound) {
