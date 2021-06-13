@@ -1,22 +1,23 @@
 import { authenticateUser } from '../data'
 import googleLogo from '../icons/google-logo.png'
 import githubLogo from '../icons/github-logo.png'
+import { Provider } from '@supabase/supabase-js'
 
 const providers = [
   {
-    provider: 'google',
+    provider: 'google' as Provider,
     label: 'Sign in with Google',
     logo: googleLogo,
   },
   {
-    provider: 'github',
+    provider: 'github' as Provider,
     label: 'Sign in with Github',
     logo: githubLogo,
   },
 ]
 
 export function Auth() {
-  const signIn = async (provider) => {
+  const signIn = async (provider: Provider) => {
     try {
       await authenticateUser(provider)
     } catch (error) {
