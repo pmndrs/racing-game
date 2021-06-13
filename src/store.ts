@@ -3,8 +3,9 @@ import create from 'zustand'
 import shallow from 'zustand/shallow'
 import type { MutableRefObject } from 'react'
 import type { WorkerApi } from '@react-three/cannon'
-import type { GetState, SetState, StateSelector } from 'zustand'
 import type { Session } from '@supabase/supabase-js'
+import type { Mesh } from 'three'
+import type { GetState, SetState, StateSelector } from 'zustand'
 
 export const angularVelocity = [0, 0.5, 0] as const
 export const cameras = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE'] as const
@@ -74,9 +75,9 @@ const wheelInfos = [
 ] as const
 
 type Camera = typeof cameras[number]
-type Controls = typeof controls
+export type Controls = typeof controls
 
-interface CannonApi {
+export interface CannonApi extends Mesh {
   api: WorkerApi
 }
 
