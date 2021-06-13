@@ -5,7 +5,7 @@ import { getState } from '../store'
 import type { InstancedMesh } from 'three'
 
 const o = new Object3D()
-const boostPositions = [new Vector3(-0.4, -0.5, -1.8), new Vector3(0.4, -0.5, -1.8)]
+const boostPositions = [new Vector3(-0.4, -0.5, -1.8), new Vector3(0.4, -0.5, -1.8)] as const
 
 interface BoostProps {
   count?: number
@@ -13,7 +13,7 @@ interface BoostProps {
   size?: number
 }
 
-export function Boost({ opacity = 0.5, count = 12, size = 0.1 }: BoostProps): JSX.Element {
+export function Boost({ count = 12, opacity = 0.5, size = 0.1 }: BoostProps): JSX.Element {
   const ref = useRef<InstancedMesh>(null!)
   let n: number
   let j: number
@@ -21,7 +21,7 @@ export function Boost({ opacity = 0.5, count = 12, size = 0.1 }: BoostProps): JS
   let progress: number
   useFrame((state) => {
     controls = getState().controls
-    for (let i = 0; i < length; i += boostPositions.length) {
+    for (let i = 0; i < count; i += boostPositions.length) {
       n = MathUtils.randFloatSpread(0.05)
       for (j = 0; j < boostPositions.length; j++) {
         progress = (state.clock.getElapsedTime() + (i + j) * 0.2) % 1
