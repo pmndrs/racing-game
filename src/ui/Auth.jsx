@@ -6,10 +6,10 @@ const providers = [
     label: 'Sign in with Google',
     Logo: () => (
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 70 72">
-        <path fill="#4285F4" d="m70 37-1-7H36v14h19c-1 4-3 8-7 10v9h11c7-6 11-15 11-26z"/>
-        <path fill="#34A853" d="M36 72c9 0 17-3 23-9l-11-9a21 21 0 0 1-32-11H4v9c6 12 18 20 32 20z"/>
-        <path fill="#FBBC05" d="M16 43a21 21 0 0 1 0-13V20H4a36 36 0 0 0 0 32l12-9z"/>
-        <path fill="#EA4335" d="M36 15c5 0 10 2 13 5l11-10A36.6 36.6 0 0 0 4 20l12 10c3-9 10-15 20-15z"/>
+        <path fill="#4285F4" d="m70 37-1-7H36v14h19c-1 4-3 8-7 10v9h11c7-6 11-15 11-26z" />
+        <path fill="#34A853" d="M36 72c9 0 17-3 23-9l-11-9a21 21 0 0 1-32-11H4v9c6 12 18 20 32 20z" />
+        <path fill="#FBBC05" d="M16 43a21 21 0 0 1 0-13V20H4a36 36 0 0 0 0 32l12-9z" />
+        <path fill="#EA4335" d="M36 15c5 0 10 2 13 5l11-10A36.6 36.6 0 0 0 4 20l12 10c3-9 10-15 20-15z" />
       </svg>
     ),
   },
