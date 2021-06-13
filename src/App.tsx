@@ -26,11 +26,11 @@ function DebugScene({ children }: { children: ReactNode }) {
 
 export function App() {
   const [light, setLight] = useState<DirectionalLight>()
-  const [shadows, dpr, camera, editor, map, finished, stats] = useStore((s) => [s.shadows, s.dpr, s.camera, s.editor, s.map, s.finished, s.stats])
+  const [camera, dpr, editor, finished, map, shadows, stats] = useStore((s) => [s.camera, s.dpr, s.editor, s.finished, s.map, s.shadows, s.stats])
 
   return (
     <Intro>
-      <Canvas mode="concurrent" dpr={[1, dpr]} shadows={shadows} camera={{ position: [0, 5, 15], fov: 50 }}>
+      <Canvas key={`${dpr}${shadows}`} mode="concurrent" dpr={[1, dpr]} shadows={shadows} camera={{ position: [0, 5, 15], fov: 50 }}>
         <fog attach="fog" args={['white', 0, 500]} />
         <Sky sunPosition={[100, 10, 100]} distance={1000} />
         <ambientLight layers={layers} intensity={0.1} />

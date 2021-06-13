@@ -20,9 +20,13 @@ const controls = {
   right: false,
 }
 
+export const debug = false as const
+export const dpr = 1.5 as const
 export const levelLayer = 1 as const
 export const position = [-110, 0.75, 220] as const
 export const rotation = [0, Math.PI / 2 + 0.35, 0] as const
+export const shadows = true as const
+export const stats = false as const
 
 export const vehicleConfig = {
   radius: 0.38,
@@ -43,6 +47,7 @@ export const wheelInfo = {
   suspensionRestLength: 0.35,
   axleLocal: [-1, 0, 0],
   chassisConnectionPointLocal: [1, 0, 1],
+  isFrontWheel: false,
   useCustomSlidingRotationalSpeed: true,
   customSlidingRotationalSpeed: -0.01,
   rollInfluence: 0,
@@ -54,22 +59,20 @@ export const wheelInfo = {
 const wheelInfos: WheelInfos = [
   {
     ...wheelInfo,
-    isFrontWheel: true,
     chassisConnectionPointLocal: [-vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.front],
-  },
-  {
-    ...wheelInfo,
     isFrontWheel: true,
-    chassisConnectionPointLocal: [vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.front],
   },
   {
     ...wheelInfo,
-    isFrontWheel: false,
+    chassisConnectionPointLocal: [vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.front],
+    isFrontWheel: true,
+  },
+  {
+    ...wheelInfo,
     chassisConnectionPointLocal: [-vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.back],
   },
   {
     ...wheelInfo,
-    isFrontWheel: false,
     chassisConnectionPointLocal: [vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.back],
   },
 ]
@@ -80,27 +83,29 @@ export type Controls = typeof controls
 export interface CannonApi extends Mesh {
   api: WorkerApi
 }
+
+type Getter = GetState<IState>
+
 interface Raycast {
   chassisBody: MutableRefObject<CannonApi | null>
   wheels: [MutableRefObject<CannonApi | null>, MutableRefObject<CannonApi | null>, MutableRefObject<CannonApi | null>, MutableRefObject<CannonApi | null>]
   wheelInfos: WheelInfos
 }
 
-type IWheelInfos = typeof wheelInfo & { isFrontWheel: boolean }
-export type WheelInfos = IWheelInfos[]
-
 export type Setter = SetState<IState>
-export type Getter = GetState<IState>
 
-export interface IState {
-  set: Setter
-  get: Getter
+type VehicleConfig = typeof vehicleConfig
+type WheelInfo = typeof wheelInfo
+export type WheelInfos = WheelInfo[]
+
+interface IState {
   camera: Camera
   controls: Controls
   debug: boolean
   dpr: number
   editor: boolean
   finished: number
+  get: Getter
   help: boolean
   leaderboard: boolean
   level: MutableRefObject<unknown>
@@ -108,22 +113,22 @@ export interface IState {
   raycast: Raycast
   ready: boolean
   session: Session | null
+  set: Setter
   shadows: boolean
   sound: boolean
   stats: boolean
-  vehicleConfig: typeof vehicleConfig
+  vehicleConfig: VehicleConfig
 }
 
 const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState>) => {
   return {
-    set,
-    get,
     camera: cameras[0],
     controls,
-    debug: false,
-    dpr: 1.5,
+    debug,
+    dpr,
     editor: false,
     finished: 0,
+    get,
     help: false,
     leaderboard: false,
     level: createRef(),
@@ -138,9 +143,10 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
     },
     ready: false,
     session: null,
-    shadows: true,
+    set,
+    shadows,
     sound: true,
-    stats: false,
+    stats,
     vehicleConfig,
   }
 })
