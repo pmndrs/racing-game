@@ -43,6 +43,6 @@ export const setupSession = (set: Setter) => {
   })
 }
 
-export const authenticateUser = async (provider: Provider) => client.auth.signIn({ provider })
+export const authenticateUser = (provider: Provider) => client.auth.signIn({ provider })
 
-export const unAuthenticateUser = async () => client.auth.signOut()
+export const unAuthenticateUser = () => client.auth.signOut()
