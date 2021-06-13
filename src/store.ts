@@ -1,12 +1,27 @@
 import { createRef } from 'react'
 import create from 'zustand'
 import shallow from 'zustand/shallow'
+import type { MutableRefObject } from 'react'
+import type { WorkerApi } from '@react-three/cannon'
+import type { GetState, SetState, StateSelector } from 'zustand'
+import type { Session } from '@supabase/supabase-js'
 
-export const angularVelocity = [0, 0.5, 0]
-export const cameras = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE']
-export const levelLayer = 1
-export const position = [-110, 0.75, 220]
-export const rotation = [0, Math.PI / 2 + 0.35, 0]
+export const angularVelocity = [0, 0.5, 0] as const
+export const cameras = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE'] as const
+
+const controls = {
+  backward: false,
+  boost: false,
+  brake: false,
+  forward: false,
+  honk: false,
+  left: false,
+  right: false,
+}
+
+export const levelLayer = 1 as const
+export const position = [-110, 0.75, 220] as const
+export const rotation = [0, Math.PI / 2 + 0.35, 0] as const
 
 export const vehicleConfig = {
   radius: 0.38,
@@ -18,7 +33,7 @@ export const vehicleConfig = {
   force: 1800,
   maxBrake: 65,
   maxSpeed: 128,
-}
+} as const
 
 export const wheelInfo = {
   radius: vehicleConfig.radius,
@@ -33,7 +48,7 @@ export const wheelInfo = {
   suspensionForce: 100,
   frictionSlip: 1.5,
   sideAcceleration: 3,
-}
+} as const
 
 const wheelInfos = [
   {
@@ -56,23 +71,56 @@ const wheelInfos = [
     isFrontWheel: false,
     chassisConnectionPointLocal: [vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.back],
   },
-]
+] as const
 
-const useStoreImpl = create((set, get) => {
+type Camera = typeof cameras[number]
+type Controls = typeof controls
+
+interface CannonApi { api: WorkerApi };
+
+interface Raycast {
+  chassisBody: MutableRefObject<CannonApi | null>;
+  wheels: [
+    MutableRefObject<CannonApi | null>,
+    MutableRefObject<CannonApi | null>,
+    MutableRefObject<CannonApi | null>,
+    MutableRefObject<CannonApi | null>,
+  ];
+}
+
+export type Setter = SetState<Store>;
+
+interface Store {
+  camera: Camera;
+  controls: Controls;
+  debug: boolean;
+  dpr: number;
+  editor: boolean;
+  finished: boolean;
+  help: boolean;
+  leaderboard: boolean;
+  level: MutableRefObject<unknown>;
+  map: boolean;
+  raycast: Raycast;
+  ready: boolean;
+  session: Session | null;
+  shadows: boolean;
+  sound: boolean;
+  stats: boolean;
+}
+
+const useStoreImpl = create<Store>((set: SetState<Store>, get: GetState<Store>) => {
   return {
     set,
     get,
-    dpr: 1.5,
-    shadows: true,
     camera: cameras[0],
-    ready: false,
+    controls,
+    debug: false,
+    dpr: 1.5,
     editor: false,
     finished: false,
     help: false,
     leaderboard: false,
-    debug: false,
-    stats: false,
-    sound: true,
     level: createRef(),
     map: true,
     raycast: {
@@ -83,17 +131,12 @@ const useStoreImpl = create((set, get) => {
       indexRightAxis: 0,
       indexUpAxis: 1,
     },
-    controls: {
-      forward: false,
-      backward: false,
-      left: false,
-      right: false,
-      brake: false,
-      honk: false,
-      boost: false,
-    },
-    vehicleConfig,
+    ready: false,
     session: null,
+    shadows: true,
+    sound: true,
+    stats: false,
+    vehicleConfig,
   }
 })
 
@@ -106,21 +149,21 @@ export const mutation = {
   sliding: false,
 }
 
-export const reset = (set) =>
+export const reset = (set: SetState<Store>) =>
   set((state) => {
     mutation.start = 0
     mutation.finish = 0
 
-    state.raycast.chassisBody.current.api.position.set(...position)
-    state.raycast.chassisBody.current.api.velocity.set(0, 0, 0)
-    state.raycast.chassisBody.current.api.angularVelocity.set(...angularVelocity)
-    state.raycast.chassisBody.current.api.rotation.set(...rotation)
+    state.raycast.chassisBody.current?.api.position.set(...position)
+    state.raycast.chassisBody.current?.api.velocity.set(0, 0, 0)
+    state.raycast.chassisBody.current?.api.angularVelocity.set(...angularVelocity)
+    state.raycast.chassisBody.current?.api.rotation.set(...rotation)
 
     return { ...state, finished: false }
   })
 
 // Make the store shallow compare by default
-const useStore = (sel) => useStoreImpl(sel, shallow)
+const useStore = <T>(sel: StateSelector<Store, T>) => useStoreImpl(sel, shallow)
 Object.assign(useStore, useStoreImpl)
 
 export { useStore }
