@@ -1,23 +1,24 @@
 import { useState } from 'react'
 import { reset, useStore } from '../store'
-import { getScores, insertScore } from '../data'
+import { getScores, insertScore, ScoreInterface } from '../data'
 import { Score } from './LeaderBoard'
 import { Auth } from './Auth'
+import { Session } from '@supabase/supabase-js'
 
 export const Finished = () => {
   const LOCAL_STORAGE_KEY = 'racing-pmndrs-name'
 
-  const [finished, session] = useStore((state) => [state.finished, state.session])
+  const [finished, session] = useStore((state) => [state.finished, state.session]) as  [number, Session | null]
   const readableTime = (finished / 1000).toFixed(2)
 
-  const [name, setName] = useState(window.localStorage.getItem(LOCAL_STORAGE_KEY))
-  const [scores, setScores] = useState(null)
-  const [position, setPosition] = useState(null)
+  const [name, setName] = useState(window.localStorage.getItem(LOCAL_STORAGE_KEY)) as [string, React.Dispatch<React.SetStateAction<string>>]
+  const [scores, setScores] = useState<Score[]>(null!)
+  const [position, setPosition] = useState<number>(null!)
 
   const sendScore = async () => {
-    window.localStorage.setItem(LOCAL_STORAGE_KEY, name)
-    const [{ id }] = await insertScore({ time: finished, name })
-    const scores = await getScores()
+    window.localStorage.setItem(LOCAL_STORAGE_KEY, name as string)
+    const [{ id }] = await insertScore({ time: finished as number, name }) as ScoreInterface[]
+    const scores: Score[] = await (getScores() as PromiseLike<Score[]>)
     setScores(scores)
     setPosition(scores.findIndex((score) => score.id === id) + 1)
   }
@@ -36,7 +37,7 @@ export const Finished = () => {
       ) : (
         <>
           <h1>Good job! Your time was {readableTime}</h1>
-          {session?.user.aud !== 'authenticated' ? (
+          {session?.user?.aud !== 'authenticated' ? (
             <Auth />
           ) : (
             <>

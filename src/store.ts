@@ -100,7 +100,7 @@ interface Store {
   debug: boolean;
   dpr: number;
   editor: boolean;
-  finished: boolean;
+  finished: boolean | number;
   help: boolean;
   leaderboard: boolean;
   level: MutableRefObject<unknown>;
