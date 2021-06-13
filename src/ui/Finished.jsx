@@ -18,7 +18,6 @@ export const Finished = () => {
     window.localStorage.setItem(LOCAL_STORAGE_KEY, name)
     const [{ id }] = await insertScore({ time: finished, name })
     const scores = await getScores()
-    console.log(scores)
     setScores(scores)
     setPosition(scores.findIndex((score) => score.id === id) + 1)
   }
