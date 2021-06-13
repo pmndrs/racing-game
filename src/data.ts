@@ -3,8 +3,8 @@ import type { Provider } from '@supabase/supabase-js'
 import type { Setter } from './store'
 
 export interface Score {
-  name: string;
-  time: number;
+  name: string
+  time: number
 }
 
 const { VITE_SUPABASE_ANON_KEY, VITE_SUPABASE_URL } = import.meta.env
