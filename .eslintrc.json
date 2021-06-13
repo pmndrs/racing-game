@@ -61,5 +61,8 @@
             "@typescript-eslint/switch-exhaustiveness-check": "error",
             "@typescript-eslint/consistent-type-imports": "error"
         }
+    },
+    {
+        "files": ["*.jsx", "*.js"]
     }]
 }
