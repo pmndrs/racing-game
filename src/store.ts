@@ -90,7 +90,7 @@ interface Raycast {
 
 export type Setter = SetState<Store>;
 
-interface Store {
+export interface Store {
   camera: Camera;
   controls: Controls;
   debug: boolean;
@@ -166,4 +166,6 @@ export const reset = (set: SetState<Store>) =>
 const useStore = <T>(sel: StateSelector<Store, T>) => useStoreImpl(sel, shallow)
 Object.assign(useStore, useStoreImpl)
 
-export { useStore }
+const { getState } = useStoreImpl
+
+export { getState, useStore }
