@@ -5,7 +5,10 @@ import type { MutableRefObject } from 'react'
 import type { WorkerApi } from '@react-three/cannon'
 import type { Session } from '@supabase/supabase-js'
 import type { Mesh } from 'three'
+<<<<<<< typescript
 import type { GetState, SetState, StateSelector } from 'zustand'
+=======
+>>>>>>> Convert ui files to typescript
 
 export const angularVelocity = [0, 0.5, 0] as const
 export const cameras = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE'] as const
@@ -34,7 +37,7 @@ export const vehicleConfig = {
   force: 1800,
   maxBrake: 65,
   maxSpeed: 128,
-} as const
+}
 
 export const wheelInfo = {
   radius: vehicleConfig.radius,
@@ -49,9 +52,9 @@ export const wheelInfo = {
   suspensionForce: 100,
   frictionSlip: 1.5,
   sideAcceleration: 3,
-} as const
+}
 
-const wheelInfos = [
+const wheelInfos: WheelInfos = [
   {
     ...wheelInfo,
     isFrontWheel: true,
@@ -72,7 +75,7 @@ const wheelInfos = [
     isFrontWheel: false,
     chassisConnectionPointLocal: [vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.back],
   },
-] as const
+]
 
 type Camera = typeof cameras[number]
 export type Controls = typeof controls
@@ -80,21 +83,27 @@ export type Controls = typeof controls
 export interface CannonApi extends Mesh {
   api: WorkerApi
 }
-
 interface Raycast {
   chassisBody: MutableRefObject<CannonApi | null>
   wheels: [MutableRefObject<CannonApi | null>, MutableRefObject<CannonApi | null>, MutableRefObject<CannonApi | null>, MutableRefObject<CannonApi | null>]
+  wheelInfos: WheelInfos
 }
 
+type WheelInfosInterface = typeof wheelInfo & { isFrontWheel: boolean }
+export type WheelInfos = [WheelInfosInterface, WheelInfosInterface, WheelInfosInterface, WheelInfosInterface]
+
 export type Setter = SetState<Store>
+export type Getter = GetState<Store>
 
 export interface Store {
+  set: Setter
+  get: Getter
   camera: Camera
   controls: Controls
   debug: boolean
   dpr: number
   editor: boolean
-  finished: boolean
+  finished: number
   help: boolean
   leaderboard: boolean
   level: MutableRefObject<unknown>
@@ -105,6 +114,7 @@ export interface Store {
   shadows: boolean
   sound: boolean
   stats: boolean
+  vehicleConfig: typeof vehicleConfig
 }
 
 const useStoreImpl = create<Store>((set: SetState<Store>, get: GetState<Store>) => {
@@ -116,7 +126,7 @@ const useStoreImpl = create<Store>((set: SetState<Store>, get: GetState<Store>) 
     debug: false,
     dpr: 1.5,
     editor: false,
-    finished: false,
+    finished: 0,
     help: false,
     leaderboard: false,
     level: createRef(),
@@ -157,7 +167,7 @@ export const reset = (set: SetState<Store>) =>
     state.raycast.chassisBody.current?.api.angularVelocity.set(...angularVelocity)
     state.raycast.chassisBody.current?.api.rotation.set(...rotation)
 
-    return { ...state, finished: false }
+    return { ...state, finished: 0 }
   })
 
 // Make the store shallow compare by default
