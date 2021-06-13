@@ -14,7 +14,7 @@ export const Finished = () => {
 
   const sendScore = async () => {
     const user = session?.user?.user_metadata
-    const [{ id }] = await insertScore({ time: finished, name: user?.full_name, thumbnail: user?.avatar_url }) || [{}]
+    const [{ id }] = (await insertScore({ time: finished, name: user?.full_name, thumbnail: user?.avatar_url })) || [{}]
     if (!id) {
       return
     }
