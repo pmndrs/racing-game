@@ -5,12 +5,11 @@ const providers = [
     provider: 'google',
     label: 'Sign in with Google',
     Logo: () => (
-      <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <title>Google</title>
-        <path
-          fill="#fff"
-          d="M12.5 11v3.2h7.8a7 7 0 0 1-1.8 4.1 8 8 0 0 1-6 2.4c-4.8 0-8.6-3.9-8.6-8.7a8.6 8.6 0 0 1 14.5-6.4l2.3-2.3C18.7 1.4 16 0 12.5 0 5.9 0 .3 5.4.3 12S6 24 12.5 24a11 11 0 0 0 8.4-3.4c2.1-2.1 2.8-5.2 2.8-7.6 0-.8 0-1.5-.2-2h-11z"
-        />
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 70 72">
+        <path fill="#4285F4" fillRule="evenodd" d="M70 37l-1-7H36v14h19c-1 4-3 8-7 10v9h11c7-6 11-15 11-26z" clipRule="evenodd" />
+        <path fill="#34A853" fillRule="evenodd" d="M36 72c9 0 17-3 23-9l-11-9a21 21 0 01-32-11H4v9c6 12 18 20 32 20z" clipRule="evenodd" />
+        <path fill="#FBBC05" fillRule="evenodd" d="M16 43a21 21 0 010-13V20H4a36 36 0 000 32l12-9z" clipRule="evenodd" />
+        <path fill="#EA4335" fillRule="evenodd" d="M36 15c5 0 10 2 13 5l11-10c-7-6-15-9-24-9C22 1 10 9 4 20l12 10c3-9 10-15 20-15z" clipRule="evenodd" />
       </svg>
     ),
   },
