@@ -4,7 +4,7 @@ import { useProgress } from '@react-three/drei'
 import { Keys } from './Help'
 import { Auth } from './Auth'
 import { useStore } from '../store'
-import { setupSession, signOut } from '../data'
+import { setupSession, unAuthenticateUser } from '../data'
 
 function Ready({ setReady }) {
   useEffect(() => () => void setReady(true), [])
@@ -45,7 +45,7 @@ export function Intro({ children }) {
           ) : (
             <div>
               Hello {session.user.user_metadata.full_name}
-              <button className="logout" onClick={signOut}>
+              <button className="logout" onClick={unAuthenticateUser}>
                 Logout
               </button>{' '}
             </div>
