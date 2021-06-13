@@ -2,7 +2,7 @@ import { OrthographicCamera, useFBO, useTexture } from '@react-three/drei'
 import { createPortal, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { Mesh, WebGLRenderTarget } from 'three'
-import { Box3, Matrix4, Object3D, Scene, Vector3 } from 'three'
+import { Box3, Matrix4, Scene, Vector3 } from 'three'
 import { useStore, levelLayer } from '../store'
 
 const m = new Matrix4()

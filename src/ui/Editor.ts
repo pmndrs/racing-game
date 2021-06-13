@@ -1,8 +1,7 @@
 import { useControls, folder } from 'leva'
-import type { WheelInfos } from '../store'
-import { Setter, useStore, vehicleConfig, wheelInfo } from '../store'
-
-const { directionLocal, axleLocal, chassisConnectionPointLocal, rollInfluence, ...filteredWheelInfo } = wheelInfo
+import type { IState, WheelInfos } from '../store'
+import { reset } from '../store'
+import { useStore, vehicleConfig } from '../store'
 
 export function Editor() {
   const [get, set, raycast] = useStore((state) => [state.get, state.set, state.raycast])
@@ -17,7 +16,7 @@ export function Editor() {
     sideAcceleration,
   } = raycast.wheelInfos[0]
 
-  const [, setVehicleEditor] = useControls(() => ({
+  useControls(() => ({
     Performance: folder({
       shadows: { value: true, onChange: (shadows) => set({ shadows }) },
       dpr: { value: 1.5, min: 1, max: 2, step: 0.5, onChange: (dpr) => set({ dpr }) },
@@ -243,13 +242,13 @@ export function Editor() {
       {
         reset: {
           value: false,
-          onChange: () => (setVehicleEditor as any)({ debug: false, reset: false, ...vehicleConfig, ...filteredWheelInfo }),
+          onChange: () => reset(set),
         },
         stats: { value: false, onChange: (stats) => set({ stats }) },
         debug: { value: false, onChange: (debug) => set({ debug }) },
       },
       { collapsed: true },
     ),
-  }))
+  })) as [undefined, (value: Partial<IState>) => void]
   return null
 }

@@ -92,10 +92,10 @@ interface Raycast {
 type WheelInfosInterface = typeof wheelInfo & { isFrontWheel: boolean }
 export type WheelInfos = [WheelInfosInterface, WheelInfosInterface, WheelInfosInterface, WheelInfosInterface]
 
-export type Setter = SetState<Store>
-export type Getter = GetState<Store>
+export type Setter = SetState<IState>
+export type Getter = GetState<IState>
 
-export interface Store {
+export interface IState {
   set: Setter
   get: Getter
   camera: Camera
@@ -117,7 +117,7 @@ export interface Store {
   vehicleConfig: typeof vehicleConfig
 }
 
-const useStoreImpl = create<Store>((set: SetState<Store>, get: GetState<Store>) => {
+const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState>) => {
   return {
     set,
     get,
@@ -157,7 +157,7 @@ export const mutation = {
   sliding: false,
 }
 
-export const reset = (set: SetState<Store>) =>
+export const reset = (set: SetState<IState>) =>
   set((state) => {
     mutation.start = 0
     mutation.finish = 0
@@ -171,7 +171,7 @@ export const reset = (set: SetState<Store>) =>
   })
 
 // Make the store shallow compare by default
-const useStore = <T>(sel: StateSelector<Store, T>) => useStoreImpl(sel, shallow)
+const useStore = <T>(sel: StateSelector<IState, T>) => useStoreImpl(sel, shallow)
 Object.assign(useStore, useStoreImpl)
 
 const { getState } = useStoreImpl
