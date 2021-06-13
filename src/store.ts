@@ -88,22 +88,22 @@ interface Raycast {
 export type Setter = SetState<Store>
 
 export interface Store {
-  camera: Camera;
-  controls: Controls;
-  debug: boolean;
-  dpr: number;
-  editor: boolean;
-  finished: boolean;
-  help: boolean;
-  leaderboard: boolean;
-  level: MutableRefObject<unknown>;
-  map: boolean;
-  raycast: Raycast;
-  ready: boolean;
-  session: Session | null;
-  shadows: boolean;
-  sound: boolean;
-  stats: boolean;
+  camera: Camera
+  controls: Controls
+  debug: boolean
+  dpr: number
+  editor: boolean
+  finished: boolean
+  help: boolean
+  leaderboard: boolean
+  level: MutableRefObject<unknown>
+  map: boolean
+  raycast: Raycast
+  ready: boolean
+  session: Session | null
+  shadows: boolean
+  sound: boolean
+  stats: boolean
 }
 
 const useStoreImpl = create<Store>((set: SetState<Store>, get: GetState<Store>) => {
