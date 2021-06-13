@@ -1,7 +1,7 @@
 import { Vector3, Matrix4, Object3D, Quaternion, MathUtils } from 'three'
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { useStore, mutation } from '../store'
+import { gameState, mutation } from '../store'
 
 const v = new Vector3()
 const m = new Matrix4()
@@ -9,7 +9,6 @@ const o = new Object3D()
 const q = new Quaternion()
 
 export function Dust({ opacity = 0.1, length = 200, size = 1 }) {
-  const { wheels } = useStore((state) => state.raycast)
   const trail = useRef()
 
   let i = 0
@@ -18,14 +17,14 @@ export function Dust({ opacity = 0.1, length = 200, size = 1 }) {
   let intensity = 0
   let ctrl
   useFrame((state, delta) => {
-    ctrl = useStore.getState().controls
+    ctrl = gameState.controls
     intensity = MathUtils.lerp(intensity, ((mutation.sliding || ctrl.brake) * mutation.speed) / 40, delta * 8)
 
     if (state.clock.getElapsedTime() - time > 0.02) {
       time = state.clock.getElapsedTime()
       // Set new trail
-      setItemAt(trail, wheels[2].current, index++, intensity)
-      setItemAt(trail, wheels[3].current, index++, intensity)
+      setItemAt(trail, gameState.raycast.wheels[2].current, index++, intensity)
+      setItemAt(trail, gameState.raycast.wheels[3].current, index++, intensity)
       if (index === length) index = 0
     } else {
       // Shrink old one

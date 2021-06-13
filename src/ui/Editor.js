@@ -1,10 +1,9 @@
 import { useControls, folder } from 'leva'
-import { useStore, vehicleConfig, wheelInfo } from '../store'
+import { gameState, vehicleConfig, wheelInfo } from '../store'
 
 const { directionLocal, axleLocal, chassisConnectionPointLocal, rollInfluence, ...filteredWheelInfo } = wheelInfo
 
 export function Editor() {
-  const [get, set, raycast] = useStore((state) => [state.get, state.set, state.raycast])
   const { radius, width, height, front, back, steer, force, maxBrake, maxSpeed } = vehicleConfig
   const {
     suspensionStiffness,
@@ -14,12 +13,12 @@ export function Editor() {
     suspensionForce,
     frictionSlip,
     sideAcceleration,
-  } = raycast.wheelInfos[0]
+  } = gameState.raycast.wheelInfos[0] // this is not reactive
 
   const [, setVehicleEditor] = useControls(() => ({
     Performance: folder({
-      shadows: { value: true, onChange: (shadows) => set({ shadows }) },
-      dpr: { value: 1.5, min: 1, max: 2, step: 0.5, onChange: (dpr) => set({ dpr }) },
+      shadows: { value: true, onChange: (shadows) => void (gameState.shadows = shadows) },
+      dpr: { value: 1.5, min: 1, max: 2, step: 0.5, onChange: (dpr) => void (gameState.dpr = dpr) },
     }),
     Vehicle: folder(
       {
@@ -28,119 +27,97 @@ export function Editor() {
           min: 0.1,
           max: 2,
           step: 0.01,
-          onChange: (value) =>
-            set({
-              vehicleConfig: { ...get().vehicleConfig, radius: value },
-              raycast: { ...get().raycast, wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, radius: value })) },
-            }),
+          onChange: (value) => {
+            gameState.vehicleConfig.radius = value
+            gameState.raycast.wheelInfos[0].radius = value
+            gameState.raycast.wheelInfos[1].radius = value
+            gameState.raycast.wheelInfos[2].radius = value
+            gameState.raycast.wheelInfos[3].radius = value
+          },
         },
         width: {
           value: width,
           min: 0.1,
           max: 10,
           step: 0.01,
-          onChange: (value) =>
-            set({
-              vehicleConfig: { ...get().vehicleConfig, width: value },
-              raycast: {
-                ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info) => ({
-                  ...info,
-                  chassisConnectionPointLocal: [
-                    info.chassisConnectionPointLocal[0] < 0 ? -value / 2 : value / 2,
-                    info.chassisConnectionPointLocal[1],
-                    info.chassisConnectionPointLocal[2],
-                  ],
-                })),
-              },
-            }),
+          onChange: (value) => {
+            gameState.vehicleConfig.width = value
+            for (let i = 0; i < 4; ++i) {
+              gameState.raycast.wheelInfos[i].chassisConnectionPointLocal[0] =
+                gameState.raycast.wheelInfos[0].chassisConnectionPointLocal[0] < 0 ? -value / 2 : value / 2
+            }
+          },
         },
         height: {
           value: height,
           min: -5,
           max: 5,
           step: 0.01,
-          onChange: (value) =>
-            set({
-              vehicleConfig: { ...get().vehicleConfig, height: value },
-              raycast: {
-                ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info) => ({
-                  ...info,
-                  chassisConnectionPointLocal: [info.chassisConnectionPointLocal[0], value, info.chassisConnectionPointLocal[2]],
-                })),
-              },
-            }),
+          onChange: (value) => {
+            gameState.vehicleConfig.height = value
+            gameState.raycast.wheelInfos[0].chassisConnectionPointLocal[1] = value
+            gameState.raycast.wheelInfos[1].chassisConnectionPointLocal[1] = value
+            gameState.raycast.wheelInfos[2].chassisConnectionPointLocal[1] = value
+            gameState.raycast.wheelInfos[3].chassisConnectionPointLocal[1] = value
+          },
         },
         front: {
           value: front,
           min: -10,
           max: 10,
           step: 0.05,
-          onChange: (value) =>
-            set({
-              vehicleConfig: { ...get().vehicleConfig, front: value },
-              raycast: {
-                ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info, index) => ({
-                  ...info,
-                  chassisConnectionPointLocal: [
-                    info.chassisConnectionPointLocal[0],
-                    info.chassisConnectionPointLocal[1],
-                    index < 2 ? value : info.chassisConnectionPointLocal[2],
-                  ],
-                })),
-              },
-            }),
+          onChange: (value) => {
+            gameState.vehicleConfig.front = value
+            gameState.raycast.wheelInfos[0].chassisConnectionPointLocal[2] = value
+            gameState.raycast.wheelInfos[1].chassisConnectionPointLocal[2] = value
+          },
         },
         back: {
           value: back,
           min: -10,
           max: 10,
           step: 0.05,
-          onChange: (value) =>
-            set({
-              vehicleConfig: { ...get().vehicleConfig, back: value },
-              raycast: {
-                ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info, index) => ({
-                  ...info,
-                  chassisConnectionPointLocal: [
-                    info.chassisConnectionPointLocal[0],
-                    info.chassisConnectionPointLocal[1],
-                    index < 2 ? info.chassisConnectionPointLocal[2] : value,
-                  ],
-                })),
-              },
-            }),
+          onChange: (value) => {
+            gameState.vehicleConfig.back = value
+            gameState.raycast.wheelInfos[0].chassisConnectionPointLocal[2] = value
+            gameState.raycast.wheelInfos[1].chassisConnectionPointLocal[2] = value
+          },
         },
         steer: {
           value: steer,
           min: 0.1,
           max: 1,
           step: 0.01,
-          onChange: (value) => set({ vehicleConfig: { ...get().vehicleConfig, steer: value } }),
+          onChange: (value) => {
+            gameState.vehicleConfig.steer = value
+          },
         },
         force: {
           value: force,
           min: 0,
           max: 3000,
           step: 1,
-          onChange: (value) => set({ vehicleConfig: { ...get().vehicleConfig, force: value } }),
+          onChange: (value) => {
+            gameState.vehicleConfig.force = value
+          },
         },
         maxBrake: {
           value: maxBrake,
           min: 0.1,
           max: 100,
           step: 0.01,
-          onChange: (value) => set({ vehicleConfig: { ...get().vehicleConfig, maxBrake: value } }),
+          onChange: (value) => {
+            gameState.vehicleConfig.maxBrake = value
+          },
         },
         maxSpeed: {
           value: maxSpeed,
           min: 1,
           max: 150,
           step: 1,
-          onChange: (value) => set({ vehicleConfig: { ...get().vehicleConfig, maxSpeed: value } }),
+          onChange: (value) => {
+            gameState.vehicleConfig.maxSpeed = value
+          },
         },
       },
       { collapsed: true },
@@ -152,88 +129,81 @@ export function Editor() {
           min: 0,
           max: 500,
           step: 1,
-          onChange: (value) =>
-            set({
-              raycast: {
-                ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, suspensionStiffness: value })),
-              },
-            }),
+          onChange: (value) => {
+            gameState.raycast.wheelInfos[0].suspensionStiffness = value
+            gameState.raycast.wheelInfos[1].suspensionStiffness = value
+            gameState.raycast.wheelInfos[2].suspensionStiffness = value
+            gameState.raycast.wheelInfos[3].suspensionStiffness = value
+          },
         },
         suspensionRestLength: {
           value: suspensionRestLength,
           min: -10,
           max: 10,
           step: 0.01,
-          onChange: (value) =>
-            set({
-              raycast: {
-                ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, suspensionRestLength: value })),
-              },
-            }),
+          onChange: (value) => {
+            gameState.raycast.wheelInfos[0].suspensionRestLength = value
+            gameState.raycast.wheelInfos[1].suspensionRestLength = value
+            gameState.raycast.wheelInfos[2].suspensionRestLength = value
+            gameState.raycast.wheelInfos[3].suspensionRestLength = value
+          },
         },
         useCustomSlidingRotationalSpeed: {
           value: useCustomSlidingRotationalSpeed,
-          onChange: (value) =>
-            set({
-              raycast: {
-                ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, useCustomSlidingRotationalSpeed: value })),
-              },
-            }),
+          onChange: (value) => {
+            gameState.raycast.wheelInfos[0].useCustomSlidingRotationalSpeed = value
+            gameState.raycast.wheelInfos[1].useCustomSlidingRotationalSpeed = value
+            gameState.raycast.wheelInfos[2].useCustomSlidingRotationalSpeed = value
+            gameState.raycast.wheelInfos[3].useCustomSlidingRotationalSpeed = value
+          },
         },
         customSlidingRotationalSpeed: {
           value: customSlidingRotationalSpeed,
           min: -10,
           max: 10,
           step: 0.01,
-          onChange: (value) =>
-            set({
-              raycast: {
-                ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, customSlidingRotationalSpeed: value })),
-              },
-            }),
+          onChange: (value) => {
+            gameState.raycast.wheelInfos[0].customSlidingRotationalSpeed = value
+            gameState.raycast.wheelInfos[1].customSlidingRotationalSpeed = value
+            gameState.raycast.wheelInfos[2].customSlidingRotationalSpeed = value
+            gameState.raycast.wheelInfos[3].customSlidingRotationalSpeed = value
+          },
         },
         suspensionForce: {
           value: suspensionForce,
           min: 0,
           max: 500,
           step: 0.01,
-          onChange: (value) =>
-            set({
-              raycast: {
-                ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, suspensionForce: value })),
-              },
-            }),
+          onChange: (value) => {
+            gameState.raycast.wheelInfos[0].suspensionForce = value
+            gameState.raycast.wheelInfos[1].suspensionForce = value
+            gameState.raycast.wheelInfos[2].suspensionForce = value
+            gameState.raycast.wheelInfos[3].suspensionForce = value
+          },
         },
         frictionSlip: {
           value: frictionSlip,
           min: -10,
           max: 10,
           step: 0.01,
-          onChange: (value) =>
-            set({
-              raycast: {
-                ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, frictionSlip: value })),
-              },
-            }),
+          onChange: (value) => {
+            gameState.raycast.wheelInfos[0].frictionSlip = value
+            gameState.raycast.wheelInfos[1].frictionSlip = value
+            gameState.raycast.wheelInfos[2].frictionSlip = value
+            gameState.raycast.wheelInfos[3].frictionSlip = value
+          },
         },
         sideAcceleration: {
           value: sideAcceleration,
           min: -10,
           max: 10,
           step: 0.01,
-          onChange: (value) =>
-            set({
-              raycast: {
-                ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, sideAcceleration: value })),
-              },
-            }),
+          onChange: (value) => {
+            gameState.raycast.wheelInfos[0].sideAcceleration = value
+            gameState.raycast.wheelInfos[1].sideAcceleration = value
+            gameState.raycast.wheelInfos[2].sideAcceleration = value
+            gameState.raycast.wheelInfos[3].sideAcceleration = value
+          },
         },
       },
       { collapsed: true },
@@ -244,8 +214,8 @@ export function Editor() {
           value: false,
           onChange: () => setVehicleEditor({ debug: false, reset: false, ...vehicleConfig, ...filteredWheelInfo }),
         },
-        stats: { value: false, onChange: (stats) => set({ stats }) },
-        debug: { value: false, onChange: (debug) => set({ debug }) },
+        stats: { value: false, onChange: (stats) => void (gameState.stats = stats) },
+        debug: { value: false, onChange: (debug) => void (gameState.debug = debug) },
       },
       { collapsed: true },
     ),

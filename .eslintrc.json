@@ -6,7 +6,8 @@
     "extends": [
         "prettier",
         "plugin:react/recommended",
-        "eslint:recommended"
+        "eslint:recommended",
+        "plugin:valtio/recommended"
     ],
     "overrides": [{
         "files": ["*.jsx", "*.js"]

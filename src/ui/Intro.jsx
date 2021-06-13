@@ -1,9 +1,10 @@
 import { Suspense, useEffect, useState } from 'react'
 import { Footer } from '@pmndrs/branding'
 import { useProgress } from '@react-three/drei'
+import { useSnapshot } from 'valtio'
 import { Keys } from './Help'
 import { Auth } from './Auth'
-import { useStore } from '../store'
+import { gameState } from '../store'
 import { setupSession } from '../data'
 
 function Ready({ setReady }) {
@@ -19,14 +20,18 @@ function Loader() {
 export function Intro({ children }) {
   const [ready, setReady] = useState(false)
   const [clicked, setClicked] = useState(false)
-  const [session, set] = useStore((state) => [state.session, state.set])
+  const { session } = useSnapshot(gameState)
 
   useEffect(() => {
-    if (clicked && ready) set({ ready: true })
+    if (clicked && ready) {
+      gameState.ready = true
+    }
   }, [ready, clicked])
 
   useEffect(() => {
-    setupSession(set)
+    setupSession((nextSession) => {
+      gameState.session = nextSession
+    })
   }, [])
 
   return (

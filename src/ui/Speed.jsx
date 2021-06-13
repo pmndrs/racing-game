@@ -1,16 +1,15 @@
 import { useEffect, useRef } from 'react'
-import { useStore, mutation } from '../store'
+import { gameState, mutation } from '../store'
 
 export function Speed() {
   const textRef = useRef()
   const gaugeRef = useRef()
-  const maxSpeed = useStore((state) => state.vehicleConfig.maxSpeed)
   useEffect(() => {
     const interval = setInterval(() => {
       if (textRef.current !== null) {
         const computedSpeed = mutation.speed * 1.5
         textRef.current.innerText = computedSpeed.toFixed()
-        gaugeRef.current.setAttribute('offset', Math.max(1 - computedSpeed / maxSpeed, 0))
+        gaugeRef.current.setAttribute('offset', Math.max(1 - computedSpeed / gameState.vehicleConfig.maxSpeed, 0))
       }
     }, 100)
     return () => clearInterval(interval)

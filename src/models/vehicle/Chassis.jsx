@@ -5,7 +5,7 @@ import { useGLTF, PositionalAudio } from '@react-three/drei'
 import { useBox } from '@react-three/cannon'
 import debounce from 'lodash-es/debounce'
 import clamp from 'lodash-es/clamp'
-import { useStore, mutation } from '../../store'
+import { gameState, mutation } from '../../store'
 
 const c = new Color()
 
@@ -23,11 +23,10 @@ export const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children,
   const wheel = useRef()
   const needle = useRef()
   const crashAudio = useRef()
-  const [ready, camera, vehicleConfig] = useStore((s) => [s.ready, s.camera, s.vehicleConfig])
   const { nodes: n, materials: m } = useGLTF('/models/chassis-draco.glb')
   const onCollide = useCallback(
     debounce((e) => {
-      if (e.body.userData.trigger || !useStore.getState().sound) return
+      if (e.body.userData.trigger || !gameState.sound) return
       crashAudio.current?.setVolume(clamp(e.contact.impactVelocity / 10, 0.2, 1))
       if (!crashAudio.current?.isPlaying) crashAudio.current?.play()
     }, 200),
@@ -38,14 +37,14 @@ export const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children,
   let ctrl
   useFrame((_, delta) => {
     speed = mutation.speed
-    ctrl = useStore.getState().controls
+    ctrl = gameState.controls
     brake.current.material.color.lerp(c.set(ctrl.brake ? '#555' : 'white'), delta * 10)
     brake.current.material.emissive.lerp(c.set(ctrl.brake ? 'red' : 'red'), delta * 10)
     brake.current.material.opacity = MathUtils.lerp(brake.current.material.opacity, ctrl.brake ? 1 : 0.3, delta * 10)
-    glass.current.material.opacity = MathUtils.lerp(glass.current.material.opacity, camera === 'FIRST_PERSON' ? 0.1 : 0.75, delta)
-    glass.current.material.color.lerp(c.set(camera === 'FIRST_PERSON' ? 'white' : 'black'), delta)
+    glass.current.material.opacity = MathUtils.lerp(glass.current.material.opacity, gameState.camera === 'FIRST_PERSON' ? 0.1 : 0.75, delta)
+    glass.current.material.color.lerp(c.set(gameState.camera === 'FIRST_PERSON' ? 'white' : 'black'), delta)
     wheel.current.rotation.z = MathUtils.lerp(wheel.current.rotation.z, ctrl.left ? -Math.PI : ctrl.right ? Math.PI : 0, delta)
-    needle.current.rotation.y = (speed / vehicleConfig.maxSpeed) * -Math.PI * 2 - 0.9
+    needle.current.rotation.y = (speed / gameState.vehicleConfig.maxSpeed) * -Math.PI * 2 - 0.9
   })
 
   return (
@@ -90,7 +89,7 @@ export const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children,
         />
       </group>
       {children}
-      {ready && <PositionalAudio ref={crashAudio} url="/sounds/crash.mp3" loop={false} distance={5} />}
+      {gameState.ready && <PositionalAudio ref={crashAudio} url="/sounds/crash.mp3" loop={false} distance={5} />}
     </group>
   )
 })

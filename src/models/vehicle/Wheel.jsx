@@ -1,11 +1,14 @@
 import { forwardRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 import { useCylinder } from '@react-three/cannon'
-import { useStore } from '../../store'
+import { useSnapshot } from 'valtio'
+import { gameState } from '../../store'
 
+// eslint-plugin-valtio doesn't support forwardRef.
+/* eslint-disable valtio/state-snapshot-rule */
 export const Wheel = forwardRef(({ leftSide, ...props }, ref) => {
-  const { radius } = useStore((state) => state.vehicleConfig)
   const { nodes, materials } = useGLTF('/models/wheel-draco.glb')
+  const { radius } = useSnapshot(gameState)
   const scale = radius / 0.34
   useCylinder(
     () => ({
@@ -14,7 +17,7 @@ export const Wheel = forwardRef(({ leftSide, ...props }, ref) => {
       material: 'wheel',
       collisionFilterGroup: 0,
       rotation: [Math.PI / 2, 0, Math.PI / 3],
-      args: [radius, radius, 0.5, 16],
+      args: [gameState.radius, gameState.radius, 0.5, 16],
       ...props,
     }),
     ref,

@@ -1,17 +1,22 @@
 import { useEffect, useState } from 'react'
+import { useSnapshot } from 'valtio'
 import { getScores } from '../data'
-import { useStore } from '../store'
+import { gameState } from '../store'
 
 export function LeaderBoard() {
   const [scores, setScores] = useState([])
   const [last, setLast] = useState(0)
-  const [set, leaderboard] = useStore((state) => [state.set, state.leaderboard])
+  const { leaderboard } = useSnapshot(gameState)
   useEffect(() => {
+    // this is false positive (no problem because leaderboard is boolean)
+    // eslint-disable-next-line valtio/state-snapshot-rule
     if (!leaderboard || Date.now() - last < 3000) return
     getScores(10).then(setScores)
     setLast(Date.now())
   }, [leaderboard])
-  const close = () => set((state) => ({ ...state, leaderboard: false }))
+  const close = () => {
+    gameState.leaderboard = false
+  }
   return (
     <div className="controls">
       <div className={`popup ${leaderboard ? 'open' : ''}`}>

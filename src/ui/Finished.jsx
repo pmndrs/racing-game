@@ -1,13 +1,14 @@
 import { useState } from 'react'
-import { reset, useStore } from '../store'
+import { useSnapshot } from 'valtio'
+import { reset, gameState } from '../store'
 import { getScores, insertScore } from '../data'
 import { Score } from './LeaderBoard'
 import { Auth } from './Auth'
 
 export const Finished = () => {
   const LOCAL_STORAGE_KEY = 'racing-pmndrs-name'
+  const { finished, session } = useSnapshot(gameState)
 
-  const [finished, session] = useStore((state) => [state.finished, state.session])
   const readableTime = (finished / 1000).toFixed(2)
 
   const [name, setName] = useState(window.localStorage.getItem(LOCAL_STORAGE_KEY))
@@ -58,9 +59,8 @@ export const Finished = () => {
 }
 
 const Restart = () => {
-  const set = useStore((state) => state.set)
   return (
-    <button className="restart" onClick={() => reset(set)}>
+    <button className="restart" onClick={() => reset()}>
       <div>Restart</div>
     </button>
   )

@@ -2,7 +2,7 @@ import { OrthographicCamera, useFBO, useTexture } from '@react-three/drei'
 import { createPortal, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Box3, Matrix4, Scene, Vector3 } from 'three'
-import { useStore, levelLayer } from '../store'
+import { gameState, levelLayer } from '../store'
 
 const m = new Matrix4()
 const v = new Vector3()
@@ -11,11 +11,10 @@ function useLevelGeometricProperties() {
   const [box] = useState(() => new Box3())
   const [center] = useState(() => new Vector3())
   const [dimensions] = useState(() => new Vector3())
-  const level = useStore((state) => state.level)
   useLayoutEffect(() => {
-    if (level.current) {
-      level.current.parent.updateWorldMatrix()
-      box.setFromObject(level.current)
+    if (gameState.level.current) {
+      gameState.level.current.parent.updateWorldMatrix()
+      box.setFromObject(gameState.level.current)
       box.getCenter(center)
       box.getSize(dimensions)
     }
@@ -58,11 +57,10 @@ export function Minimap({ size = 200 }) {
   const buffer = useFBO(size * 2, size * 2)
   const { gl, camera, scene, size: screenSize } = useThree()
   const [, levelCenter, levelDimensions] = useLevelGeometricProperties()
-  const chassisBody = useStore((state) => state.raycast.chassisBody)
   const screenPosition = useMemo(() => new Vector3(screenSize.width / -2 - size / -2 + 30, screenSize.height / -2 - size / -2 + 30, 0), [screenSize])
 
   useFrame(() => {
-    if (chassisBody.current) {
+    if (gameState.raycast.chassisBody.current) {
       gl.autoClear = true
       gl.render(scene, camera)
       m.copy(camera.matrix).invert()
@@ -70,7 +68,7 @@ export function Minimap({ size = 200 }) {
       player.current.quaternion.setFromRotationMatrix(m)
       gl.autoClear = false
       gl.clearDepth()
-      v.subVectors(chassisBody.current.position, levelCenter)
+      v.subVectors(gameState.raycast.chassisBody.current.position, levelCenter)
       player.current.position.set(screenPosition.x + (v.x / levelDimensions.x) * size, screenPosition.y - (v.z / levelDimensions.z) * size, 0)
       gl.render(virtualScene, miniMapCamera.current)
     }
