@@ -5,10 +5,7 @@ import type { MutableRefObject } from 'react'
 import type { WorkerApi } from '@react-three/cannon'
 import type { Session } from '@supabase/supabase-js'
 import type { Mesh } from 'three'
-<<<<<<< typescript
 import type { GetState, SetState, StateSelector } from 'zustand'
-=======
->>>>>>> Convert ui files to typescript
 
 export const angularVelocity = [0, 0.5, 0] as const
 export const cameras = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE'] as const
