@@ -5,6 +5,7 @@ import type { MutableRefObject } from 'react'
 import type { WorkerApi } from '@react-three/cannon'
 import type { GetState, SetState, StateSelector } from 'zustand'
 import type { Session } from '@supabase/supabase-js'
+import { Mesh } from 'three'
 
 export const angularVelocity = [0, 0.5, 0] as const
 export const cameras = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE'] as const
@@ -76,7 +77,7 @@ const wheelInfos = [
 type Camera = typeof cameras[number]
 type Controls = typeof controls
 
-interface CannonApi { api: WorkerApi };
+interface CannonApi extends Mesh { api: WorkerApi };
 
 interface Raycast {
   chassisBody: MutableRefObject<CannonApi | null>;

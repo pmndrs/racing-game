@@ -1,20 +1,20 @@
 import { OrthographicCamera, useFBO, useTexture } from '@react-three/drei'
 import { createPortal, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { Box3, Matrix4, Scene, Vector3 } from 'three'
+import { Box3, Matrix4, Mesh, Object3D, Scene, Vector3, WebGLRenderTarget } from 'three'
 import { useStore, levelLayer } from '../store'
 
 const m = new Matrix4()
 const v = new Vector3()
 
-function useLevelGeometricProperties() {
+function useLevelGeometricProperties(): [Box3, Vector3, Vector3] {
   const [box] = useState(() => new Box3())
   const [center] = useState(() => new Vector3())
   const [dimensions] = useState(() => new Vector3())
-  const level = useStore((state) => state.level)
+  const level = useStore((state) => state.level) as React.MutableRefObject<Scene>
   useLayoutEffect(() => {
-    if (level.current) {
-      level.current.parent.updateWorldMatrix()
+    if (level.current && level.current.parent) {
+      level.current.parent.updateWorldMatrix(false, false)
       box.setFromObject(level.current)
       box.getCenter(center)
       box.getSize(dimensions)
@@ -23,8 +23,8 @@ function useLevelGeometricProperties() {
   return [box, center, dimensions]
 }
 
-function MinimapTexture({ buffer }) {
-  const camera = useRef()
+function MinimapTexture({ buffer }: {buffer: WebGLRenderTarget}) {
+  const camera = useRef<THREE.OrthographicCamera>(null!)
   const gl = useThree((state) => state.gl)
   const scene = useThree((state) => state.scene)
   const [levelBox, levelCenter] = useLevelGeometricProperties()
@@ -50,9 +50,9 @@ function MinimapTexture({ buffer }) {
 }
 
 export function Minimap({ size = 200 }) {
-  const player = useRef()
-  const miniMap = useRef()
-  const miniMapCamera = useRef()
+  const player = useRef<Mesh>(null!)
+  const miniMap = useRef<Mesh>(null!)
+  const miniMapCamera = useRef<THREE.OrthographicCamera>(null!)
   const [virtualScene] = useState(() => new Scene())
   const mask = useTexture('textures/mask.svg')
   const buffer = useFBO(size * 2, size * 2)
