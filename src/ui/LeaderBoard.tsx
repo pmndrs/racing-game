@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
-import { getScores } from '../data'
+import { getScores, ScoreInterface } from '../data'
 import { useStore } from '../store'
 
 export function LeaderBoard() {
-  const [scores, setScores] = useState([])
+  const [scores, setScores] = useState<ScoreInterface[]>([])
   const [last, setLast] = useState(0)
   const [set, leaderboard] = useStore((state) => [state.set, state.leaderboard])
   useEffect(() => {
     if (!leaderboard || Date.now() - last < 3000) return
-    getScores(10).then(setScores)
+    getScores(10).then(setScores as (value: ScoreInterface[] | null) => void | PromiseLike<void>)
     setLast(Date.now())
   }, [leaderboard])
   const close = () => set((state) => ({ ...state, leaderboard: false }))
@@ -28,13 +28,13 @@ export function LeaderBoard() {
   )
 }
 
-const standingToImage = {
+const standingToImage: {[number: string]: string} = {
   1: 'images/gold.png',
   2: 'images/silver.png',
   3: 'images/bronze.png',
 }
 
-export const Score = ({ name, time, standing }) => {
+export const Score = ({ name, time, standing }: {name: string, time: number, standing: number}) => {
   const isTop = standing < 3
 
   return (
