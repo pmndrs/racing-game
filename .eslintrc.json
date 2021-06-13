@@ -50,14 +50,14 @@
                 "allowTemplateLiterals": true,
                 "avoidEscape": true
             }],
-            "@typescript-eslint/consistent-type-imports": "error"
+            "@typescript-eslint/consistent-type-imports": "error",
+            "@typescript-eslint/no-non-null-assertion": "off",
+            "@typescript-eslint/explicit-module-boundary-types": "off"
 
             // "@typescript-eslint/array-type": ["error", {
             //     "default": "array-simple"
             // }],
-            // "@typescript-eslint/no-non-null-assertion": "off",
             // "@typescript-eslint/no-redeclare": "error",
-            // "@typescript-eslint/explicit-module-boundary-types": "off",
             // "@typescript-eslint/no-implied-eval": "error",
             // "@typescript-eslint/switch-exhaustiveness-check": "error",
         }

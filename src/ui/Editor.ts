@@ -1,7 +1,15 @@
 import { useControls, folder } from 'leva'
 import { useStore, vehicleConfig, wheelInfo } from '../store'
 
-const { directionLocal, axleLocal, chassisConnectionPointLocal, rollInfluence, ...filteredWheelInfo } = wheelInfo
+const { ...filteredWheelInfo } = wheelInfo
+
+type IFilteredWheel = typeof filteredWheelInfo
+type IVehicleConfig = typeof vehicleConfig
+
+interface VehicleEditorProps extends IFilteredWheel, IVehicleConfig {
+  debug: boolean
+  reset: boolean
+}
 
 export function Editor() {
   const [get, set, raycast] = useStore((state) => [state.get, state.set, state.raycast])
@@ -242,7 +250,7 @@ export function Editor() {
       {
         reset: {
           value: false,
-          onChange: () => setVehicleEditor({ debug: false, reset: false, ...vehicleConfig, ...filteredWheelInfo }),
+          onChange: () => (setVehicleEditor as (value: VehicleEditorProps) => void)({ debug: false, reset: false, ...vehicleConfig, ...filteredWheelInfo }),
         },
         stats: { value: false, onChange: (stats) => set({ stats }) },
         debug: { value: false, onChange: (debug) => set({ debug }) },

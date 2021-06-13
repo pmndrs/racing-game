@@ -2,10 +2,11 @@ import { createClient } from '@supabase/supabase-js'
 import type { Provider } from '@supabase/supabase-js'
 import type { Setter } from './store'
 
-export interface Score {
+export interface IScore {
   name: string
   time: number
   thumbnail: string
+  id?: number
 }
 
 const { VITE_SUPABASE_ANON_KEY, VITE_SUPABASE_URL } = import.meta.env
@@ -22,7 +23,7 @@ const url = isString(VITE_SUPABASE_ANON_KEY) ? VITE_SUPABASE_ANON_KEY : config.u
 
 const client = createClient(url, key)
 
-export const getScores = (limit = 50): PromiseLike<Score[] | null> =>
+export const getScores = (limit = 50): PromiseLike<IScore[] | null> =>
   client
     .from('scores')
     .select()
@@ -30,7 +31,7 @@ export const getScores = (limit = 50): PromiseLike<Score[] | null> =>
     .order('time')
     .then(({ data }) => data)
 
-export const insertScore = ({ time, name, thumbnail }: Score): PromiseLike<Score[] | null> =>
+export const insertScore = ({ time, name, thumbnail }: IScore): PromiseLike<IScore[] | null> =>
   client
     .from('scores')
     .insert({ time, name, thumbnail })
