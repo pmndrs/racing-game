@@ -59,7 +59,7 @@ export function Minimap({ size = 200 }) {
   const { gl, camera, scene, size: screenSize } = useThree()
   const [, levelCenter, levelDimensions] = useLevelGeometricProperties()
   const chassisBody = useStore((state) => state.raycast.chassisBody)
-  const screenPosition = useMemo(() => new Vector3(screenSize.width / 2 - size / 2 - 30, screenSize.height / 2 - size / 2 - 30, 0), [screenSize])
+  const screenPosition = useMemo(() => new Vector3(screenSize.width / -2 - size / -2 + 30, screenSize.height / -2 - size / -2 + 30, 0), [screenSize])
 
   useFrame(() => {
     if (chassisBody.current) {

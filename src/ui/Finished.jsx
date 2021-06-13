@@ -21,7 +21,7 @@ export const Finished = () => {
     setScores(scores)
     setPosition(scores.findIndex((score) => score.id === id) + 1)
   }
-
+  
   return (
     <div className="finished">
       {scores ? (

@@ -5,15 +5,22 @@ import { PositionalAudio } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
 import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
-import { Dust, Skid } from '../../effects'
-import { mutation, useStore } from '../../store'
+import { Dust, Skid, Boost } from '../../effects'
+import { useStore, mutation } from '../../store'
 
 const { lerp } = MathUtils
 const v = new Vector3()
 
 export function Vehicle({ angularVelocity, children, position, rotation }) {
   const defaultCamera = useThree((state) => state.camera)
-  const [camera, editor, raycast, ready, { force, maxBrake, steer, maxSpeed }] = useStore((s) => [s.camera, s.editor, s.raycast, s.ready, s.vehicleConfig])
+  const [set, camera, editor, raycast, ready, { force, maxBrake, steer, maxSpeed }] = useStore((s) => [
+    s.set,
+    s.camera,
+    s.editor,
+    s.raycast,
+    s.ready,
+    s.vehicleConfig,
+  ])
   const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
 
   useLayoutEffect(() => {
@@ -37,10 +44,15 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
   let engineValue = 0
   let speed = 0
   let controls
+  let boostValue = false
+  let swayValue = 0
 
   useFrame((state, delta) => {
     speed = mutation.speed
     controls = useStore.getState().controls
+    if (!ready) {
+      set((state) => ({ ...state, controls: { forward: false, backward: false, left: false, right: false } }))
+    }
 
     engineValue = lerp(
       engineValue,
@@ -56,13 +68,30 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
       if (camera === 'FIRST_PERSON') v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.4, -0.1)
       else if (camera === 'DEFAULT')
         v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (controls.brake ? 1 : 0))
+
       // ctrl.left-ctrl.right, up-down, near-far
       defaultCamera.position.lerp(v, delta)
+
       // ctrl.left-ctrl.right swivel
       defaultCamera.rotation.z = lerp(defaultCamera.rotation.z, Math.PI + (-steeringValue * speed) / (camera === 'DEFAULT' ? 40 : 60), delta)
     }
+
     // lean chassis
-    raycast.chassisBody.current.children[0].rotation.z = lerp(raycast.chassisBody.current.children[0].rotation.z, (-steeringValue * speed) / 200, delta * 4)
+    raycast.chassisBody.current.children[0].rotation.z = MathUtils.lerp(
+      raycast.chassisBody.current.children[0].rotation.z,
+      (-steeringValue * speed) / 200,
+      delta * 4,
+    )
+
+    // Camera sway
+    const swaySpeed = controls.boost ? 60 : 30
+    const startedBoosting = controls.boost && !boostValue
+    boostValue = controls.boost
+    const swayTarget = controls.boost ? (speed / maxSpeed) * 8 : (speed / maxSpeed) * 2
+    swayValue = startedBoosting ? (speed / maxSpeed + 0.25) * 30 : MathUtils.lerp(swayValue, swayTarget, delta * (controls.boost ? 10 : 20))
+    defaultCamera.rotation.z += (Math.sin(state.clock.elapsedTime * swaySpeed * 0.9) / 1000) * swayValue
+    defaultCamera.rotation.x += (Math.sin(state.clock.elapsedTime * swaySpeed) / 1000) * swayValue
+
     // Vibrations
     raycast.chassisBody.current.children[0].rotation.x = (Math.sin(state.clock.getElapsedTime() * 20) * speed) / maxSpeed / 100
     raycast.chassisBody.current.children[0].rotation.z = (Math.cos(state.clock.getElapsedTime() * 20) * speed) / maxSpeed / 100
@@ -72,6 +101,7 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
     <group ref={vehicle}>
       <Chassis ref={raycast.chassisBody} {...{ angularVelocity, position, rotation }}>
         {ready && <VehicleAudio />}
+        <Boost />
         {children}
       </Chassis>
       <Wheel ref={raycast.wheels[0]} leftSide />
@@ -86,19 +116,33 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
 
 function VehicleAudio() {
   const engineAudio = useRef()
+  const boostAudio = useRef()
   const accelerateAudio = useRef()
   const honkAudio = useRef()
   const brakeAudio = useRef()
   const [sound, maxSpeed] = useStore((state) => [state.sound, state.vehicleConfig.maxSpeed])
 
+  let rpmTarget = 0
   let controls
   let speed = 0
-  useFrame(() => {
+  const gears = 10
+  useFrame((state, delta) => {
     speed = mutation.speed
     controls = useStore.getState().controls
-    engineAudio.current.setVolume(sound ? 1 : 0)
-    accelerateAudio.current.setVolume(sound ? (speed / maxSpeed) * (controls.boost ? 3 : 2) : 0)
+
+    boostAudio.current.setVolume(sound ? (controls.boost ? Math.pow(speed / maxSpeed, 1.5) + 0.5 : 0) * 5 : 0)
+    boostAudio.current.setPlaybackRate(Math.pow(speed / maxSpeed, 1.5) + 0.5)
+    engineAudio.current.setVolume(sound ? 1 - speed / maxSpeed : 0)
+    accelerateAudio.current.setVolume(sound ? (speed / maxSpeed) * 2 : 0)
+
+    var gearPosition = speed / (maxSpeed / gears)
+    rpmTarget = ((gearPosition % 1) + Math.log(gearPosition)) / 6
+    if (rpmTarget < 0) rpmTarget = 0
+    if (controls.boost) rpmTarget += 0.1
+    engineAudio.current.setPlaybackRate(MathUtils.lerp(engineAudio.current.playbackRate, rpmTarget + 1, delta * 10))
+    accelerateAudio.current.setPlaybackRate(MathUtils.lerp(accelerateAudio.current.playbackRate, rpmTarget + 0.5, delta * 10))
     brakeAudio.current.setVolume(sound ? (controls.brake ? 1 : 0.5) : 0)
+
     if (sound) {
       if (controls.honk) {
         if (!honkAudio.current.isPlaying) honkAudio.current.play()
@@ -119,6 +163,7 @@ function VehicleAudio() {
   return (
     <>
       <PositionalAudio ref={engineAudio} url="/sounds/engine.mp3" autoplay loop distance={5} />
+      <PositionalAudio ref={boostAudio} url="/sounds/boost.mp3" autoplay loop distance={5} />
       <PositionalAudio ref={accelerateAudio} url="/sounds/accelerate.mp3" autoplay loop distance={5} />
       <PositionalAudio ref={honkAudio} url="/sounds/honk.mp3" distance={10} />
       <PositionalAudio ref={brakeAudio} url="/sounds/tire-brake.mp3" distance={10} />
