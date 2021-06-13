@@ -90,8 +90,11 @@ interface Raycast {
 }
 
 export type Setter = SetState<Store>;
+export type Getter = GetState<Store>;
 
 interface Store {
+  set: Setter;
+  get: Getter;
   camera: Camera;
   controls: Controls;
   debug: boolean;
