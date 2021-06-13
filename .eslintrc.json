@@ -34,7 +34,7 @@
         }
     },
     "overrides": [{
-        "files": ["src/**/*.tsx", "src/**/*.ts"],
+        "files": ["**/*.tsx", "**/*.ts"],
         "parser": "@typescript-eslint/parser",
         "extends": "plugin:@typescript-eslint/recommended",
         "plugins": ["@typescript-eslint"],
@@ -58,7 +58,8 @@
             "@typescript-eslint/no-redeclare": "error",
             "@typescript-eslint/explicit-module-boundary-types": "off",
             "@typescript-eslint/no-implied-eval": "error",
-            "@typescript-eslint/switch-exhaustiveness-check": "error"
+            "@typescript-eslint/switch-exhaustiveness-check": "error",
+            "@typescript-eslint/consistent-type-imports": "error"
         }
     }]
 }
