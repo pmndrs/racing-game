@@ -8,7 +8,7 @@ const o = new Object3D()
 const boostPositions = [new Vector3(-0.4, -0.5, -1.8), new Vector3(0.4, -0.5, -1.8)]
 
 export function Boost({ opacity = 0.5, length = 12, size = 0.1 }) {
-  const ref = useRef<InstancedMesh>(null)
+  const ref = useRef<InstancedMesh>(null!)
   let n: number
   let j: number
   let controls: ReturnType<typeof getState>['controls']
