@@ -168,4 +168,4 @@ Object.assign(useStore, useStoreImpl)
 
 const { getState } = useStoreImpl
 
-export { useStore, getState }
+export { getState, useStore }
