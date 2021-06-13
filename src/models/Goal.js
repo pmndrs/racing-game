@@ -1,7 +1,7 @@
 import { useBox } from '@react-three/cannon'
 import { mutation, useStore } from '../store'
 
-export function Goal({ start, args = [1, 1, 1], ...props }) {
+export function Goal({ start = false, args = [1, 1, 1], ...props }) {
   const set = useStore((state) => state.set)
   const onCollide = () => {
     if (start) {
