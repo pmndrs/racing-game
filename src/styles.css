@@ -44,7 +44,7 @@ body {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  background: transparent;
+  background-color: transparent;
   color: #606060;
   font-size: 0.85em;
 }
