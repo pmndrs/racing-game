@@ -34,7 +34,7 @@ export const vehicleConfig = {
   force: 1800,
   maxBrake: 65,
   maxSpeed: 128,
-} as const
+}
 
 export const wheelInfo = {
   radius: vehicleConfig.radius,
@@ -49,9 +49,9 @@ export const wheelInfo = {
   suspensionForce: 100,
   frictionSlip: 1.5,
   sideAcceleration: 3,
-} as const
+}
 
-const wheelInfos = [
+const wheelInfos: WheelInfos = [
   {
     ...wheelInfo,
     isFrontWheel: true,
@@ -72,13 +72,12 @@ const wheelInfos = [
     isFrontWheel: false,
     chassisConnectionPointLocal: [vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.back],
   },
-] as const
+]
 
 type Camera = typeof cameras[number]
 type Controls = typeof controls
 
 interface CannonApi extends Mesh { api: WorkerApi };
-
 interface Raycast {
   chassisBody: MutableRefObject<CannonApi | null>;
   wheels: [
@@ -87,7 +86,11 @@ interface Raycast {
     MutableRefObject<CannonApi | null>,
     MutableRefObject<CannonApi | null>,
   ];
+  wheelInfos: WheelInfos
 }
+
+type WheelInfosInterface = typeof wheelInfo & { isFrontWheel: boolean; }
+export type WheelInfos = [WheelInfosInterface, WheelInfosInterface, WheelInfosInterface, WheelInfosInterface]
 
 export type Setter = SetState<Store>;
 export type Getter = GetState<Store>;
