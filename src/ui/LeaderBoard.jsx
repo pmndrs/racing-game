@@ -25,7 +25,7 @@ export function LeaderBoard() {
         </button>
         <ul className="popup-content leaderboard-bottom">
           {scores.map((score, key) => (
-            <Score {...score} key={key} />
+            <Score {...score} standing={key} key={key} />
           ))}
         </ul>
       </div>
@@ -33,11 +33,30 @@ export function LeaderBoard() {
   )
 }
 
-export const Score = ({ name, time }) => (
-  <li className="popup-item">
-    <span className="leaderboard-name">{name}</span>
-    <span className="popup-item-key">
-      <span>{time}</span>
-    </span>
-  </li>
-)
+const standingToImage = {
+  1: 'images/gold.png',
+  2: 'images/silver.png',
+  3: 'images/bronze.png',
+}
+
+export const Score = ({ name, time, standing }) => {
+  const isTop = standing < 3
+
+  return (
+    <li className="popup-item">
+      <span className="leaderboard-name">
+        {isTop ? (
+          <>
+            <img src={standingToImage[String(standing + 1)]} width={13} height={13} />
+            {name}
+          </>
+        ) : (
+          `${standing + 1} ${name}`
+        )}
+      </span>
+      <span className="popup-item-key">
+        <span>{time}</span>
+      </span>
+    </li>
+  )
+}

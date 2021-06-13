@@ -20,6 +20,7 @@ function DebugScene({ children }) {
 export function App() {
   const [light, setLight] = useState()
   const { shadows, dpr, camera, editor, map, finished, stats } = useSnapshot(gameState)
+
   return (
     <Intro>
       <Canvas key={shadows + dpr} mode="concurrent" dpr={[1, dpr]} shadows={shadows} camera={{ position: [0, 5, 15], fov: 50 }}>

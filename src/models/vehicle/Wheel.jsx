@@ -11,7 +11,15 @@ export const Wheel = forwardRef(({ leftSide, ...props }, ref) => {
   const { radius } = useSnapshot(gameState)
   const scale = radius / 0.34
   useCylinder(
-    () => ({ mass: 50, type: 'Kinematic', material: 'wheel', collisionFilterGroup: 0, args: [gameState.radius, gameState.radius, 0.5, 16], ...props }),
+    () => ({
+      mass: 50,
+      type: 'Kinematic',
+      material: 'wheel',
+      collisionFilterGroup: 0,
+      rotation: [Math.PI / 2, 0, Math.PI / 3],
+      args: [gameState.radius, gameState.radius, 0.5, 16],
+      ...props,
+    }),
     ref,
   )
   return (

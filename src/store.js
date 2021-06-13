@@ -89,6 +89,7 @@ export const gameState = proxy({
     boost: false,
   },
   vehicleConfig,
+  session: null,
 })
 
 export const mutation = {

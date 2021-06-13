@@ -1,8 +1,11 @@
 import { Suspense, useEffect, useState } from 'react'
 import { Footer } from '@pmndrs/branding'
 import { useProgress } from '@react-three/drei'
+import { useSnapshot } from 'valtio'
 import { Keys } from './Help'
+import { Auth } from './Auth'
 import { gameState } from '../store'
+import { setupSession } from '../data'
 
 function Ready({ setReady }) {
   useEffect(() => () => void setReady(true), [])
@@ -17,12 +20,19 @@ function Loader() {
 export function Intro({ children }) {
   const [ready, setReady] = useState(false)
   const [clicked, setClicked] = useState(false)
+  const { session } = useSnapshot(gameState)
 
   useEffect(() => {
     if (clicked && ready) {
       gameState.ready = true
     }
   }, [ready, clicked])
+
+  useEffect(() => {
+    setupSession((nextSession) => {
+      gameState.session = nextSession
+    })
+  }, [])
 
   return (
     <>
@@ -33,6 +43,7 @@ export function Intro({ children }) {
           <a href="#" onClick={() => ready && setClicked(true)}>
             {!ready ? <Loader /> : 'Click to continue'}
           </a>
+          {session?.user.aud !== 'authenticated' && <Auth />}
         </div>
         <Footer
           date="2. June"
