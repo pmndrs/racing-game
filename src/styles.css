@@ -37,19 +37,36 @@ body {
   align-items: center;
 }
 
-.auth-provider { 
-  width: 250px;
-  height: auto;
-  padding: 1em;
-  margin: 1em 0;
+.auth-provider {
+  font-size: 0.7em;
+  border: 1px solid transparent;
+  border-bottom: 3px solid #a0a0a0;
+  border-radius: 3px;
+  padding: 8px 12px;
+  background: white;
+  color: black;
   display: flex;
-  justify-content: space-evenly;
   align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  width: 200px;
+  height: 45px;
 }
 
-.auth-provider img {
-  width: 32px;
-  height: 32px;
+.auth-provider:hover {
+  border-bottom: 1px solid #a0a0a0;
+}
+
+.auth-provider svg {
+  width: 24px;
+  margin-right: 10px;
+}
+
+.auth-header {
+  color: #b0b0b0;
+  font-weight: 600;
+  font-size: 1.1em;
+  text-align: center;
 }
 
 /* --------------- Leaderboard --------------- */
@@ -71,27 +88,6 @@ body {
 
 .finished .add-me {
   width: auto;
-}
-
-.name-form input {
-  display: block;
-  width: 300px;
-
-  border: none;
-  border-bottom: 2px solid white;
-  background: transparent;
-  padding: 10px;
-  color: white;
-}
-
-.name-form button {
-  width: auto;
-}
-
-.name-form > div {
-  display: flex;
-  align-items: flex-end;
-  margin: 20px 0;
 }
 
 .finished .restart {
@@ -287,19 +283,28 @@ button {
   background: #101010;
 }
 
-.fullscreen > div > a {
+.fullscreen .logout {
+  background: transparent;
+  border: none;
+  width: auto;
+  color: white;
+  display: block;
+  margin: 10px auto;
+}
+
+.fullscreen .continue-link {
   text-decoration: none;
   transition: all 1s;
   width: 20%;
   text-align: center;
 }
 
-.fullscreen.notready > div > a {
+.fullscreen.notready .continue-link {
   cursor: auto;
   color: #606060;
 }
 
-.fullscreen.ready > div > a {
+.fullscreen.ready .continue-link {
   cursor: pointer;
   color: white;
 }
