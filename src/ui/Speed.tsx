@@ -2,15 +2,15 @@ import { useEffect, useRef } from 'react'
 import { useStore, mutation } from '../store'
 
 export function Speed() {
-  const textRef = useRef()
-  const gaugeRef = useRef()
+  const textRef = useRef<HTMLSpanElement>(null!)
+  const gaugeRef = useRef<SVGStopElement>(null!)
   const maxSpeed = useStore((state) => state.vehicleConfig.maxSpeed)
   useEffect(() => {
     const interval = setInterval(() => {
       if (textRef.current !== null) {
         const computedSpeed = mutation.speed * 1.5
         textRef.current.innerText = computedSpeed.toFixed()
-        gaugeRef.current.setAttribute('offset', Math.max(1 - computedSpeed / maxSpeed, 0))
+        gaugeRef.current.setAttribute('offset', `${Math.max(1 - computedSpeed / maxSpeed, 0)}`)
       }
     }, 100)
     return () => clearInterval(interval)
@@ -28,7 +28,11 @@ export function Speed() {
   )
 }
 
-function Background({ gaugeRef, ...props }) {
+interface BackgroundProps extends React.HTMLAttributes<SVGSVGElement> {
+  gaugeRef: React.MutableRefObject<SVGStopElement>
+}
+
+function Background({ gaugeRef, ...props }: BackgroundProps) {
   return (
     <svg width={289} height={55} viewBox="0 0 289 55" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <defs>
@@ -42,7 +46,7 @@ function Background({ gaugeRef, ...props }) {
   )
 }
 
-function Foreground(props) {
+function Foreground(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg width={289} height={55} viewBox="0 0 289 55" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path

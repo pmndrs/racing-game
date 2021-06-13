@@ -107,6 +107,7 @@ interface Store {
   shadows: boolean;
   sound: boolean;
   stats: boolean;
+  vehicleConfig: typeof vehicleConfig
 }
 
 const useStoreImpl = create<Store>((set: SetState<Store>, get: GetState<Store>) => {
