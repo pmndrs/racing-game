@@ -18,10 +18,11 @@ export const Finished = () => {
     window.localStorage.setItem(LOCAL_STORAGE_KEY, name)
     const [{ id }] = await insertScore({ time: finished, name })
     const scores = await getScores()
+    console.log(scores)
     setScores(scores)
     setPosition(scores.findIndex((score) => score.id === id) + 1)
   }
-  
+
   return (
     <div className="finished">
       {scores ? (
@@ -29,7 +30,7 @@ export const Finished = () => {
           <h1> You are number #{position}</h1>
           <ul className="leaderboard">
             {scores.map((score, key) => (
-              <Score {...score} key={key} />
+              <Score {...score} standing={key} key={key} />
             ))}
           </ul>
         </>
