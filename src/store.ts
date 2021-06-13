@@ -4,10 +4,10 @@ import shallow from 'zustand/shallow'
 import type { MutableRefObject } from 'react'
 import type { WorkerApi } from '@react-three/cannon'
 import type { Session } from '@supabase/supabase-js'
-import type { Mesh } from 'three'
+import type { Group, Object3D } from 'three'
 import type { GetState, SetState, StateSelector } from 'zustand'
 
-export const angularVelocity = [0, 0.5, 0] as const
+export const angularVelocity = [0, 0.5, 0] as [number, number, number]
 export const cameras = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE'] as const
 
 const controls = {
@@ -23,8 +23,8 @@ const controls = {
 export const debug = false as const
 export const dpr = 1.5 as const
 export const levelLayer = 1 as const
-export const position = [-110, 0.75, 220] as const
-export const rotation = [0, Math.PI / 2 + 0.35, 0] as const
+export const position = [-110, 0.75, 220] as [number, number, number]
+export const rotation = [0, Math.PI / 2 + 0.35, 0] as [number, number, number]
 export const shadows = true as const
 export const stats = false as const
 
@@ -80,7 +80,7 @@ const wheelInfos: WheelInfos = [
 type Camera = typeof cameras[number]
 export type Controls = typeof controls
 
-export interface CannonApi extends Mesh {
+export interface CannonApi extends Object3D {
   api: WorkerApi
 }
 
@@ -94,7 +94,7 @@ interface Raycast {
 
 export type Setter = SetState<IState>
 
-type VehicleConfig = typeof vehicleConfig
+export type VehicleConfig = typeof vehicleConfig
 type WheelInfo = typeof wheelInfo
 export type WheelInfos = WheelInfo[]
 
@@ -108,7 +108,7 @@ interface IState {
   get: Getter
   help: boolean
   leaderboard: boolean
-  level: MutableRefObject<unknown>
+  level: MutableRefObject<Group | null>
   map: boolean
   raycast: Raycast
   ready: boolean
@@ -131,7 +131,7 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
     get,
     help: false,
     leaderboard: false,
-    level: createRef(),
+    level: createRef<Group>(),
     map: true,
     raycast: {
       chassisBody: createRef(),

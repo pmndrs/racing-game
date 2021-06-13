@@ -12,7 +12,7 @@ function useLevelGeometricProperties(): [Box3, Vector3, Vector3] {
   const [box] = useState(() => new Box3())
   const [center] = useState(() => new Vector3())
   const [dimensions] = useState(() => new Vector3())
-  const level = useStore((state) => state.level) as React.MutableRefObject<Scene>
+  const level = useStore((state) => state.level)
   useLayoutEffect(() => {
     if (level.current && level.current.parent) {
       level.current.parent.updateWorldMatrix(false, false)

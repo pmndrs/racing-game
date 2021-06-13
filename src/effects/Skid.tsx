@@ -10,8 +10,8 @@ const o = new Object3D()
 
 interface SkidProps {
   count?: number
-  opacity: number
-  size: number
+  opacity?: number
+  size?: number
 }
 
 export function Skid({ count = 500, opacity = 0.5, size = 0.4 }: SkidProps): JSX.Element {
