@@ -7,13 +7,13 @@ export function HideMouse({ delay = 3000 }) {
 
     const hideMouse = debounce(() => {
       isIdle = true
-      document.documentElement.style = 'cursor: none'
+      document.documentElement.style.cursor = 'none'
     }, delay)
 
     const onMouseMovement = () => {
       if (isIdle) {
         isIdle = false
-        document.documentElement.style = ''
+        document.documentElement.style.cursor = ''
       }
       hideMouse()
     }
