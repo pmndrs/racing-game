@@ -8,7 +8,13 @@ import type { Controls } from '../store'
 
 const o = new Object3D()
 
-export function Skid({ count = 500, opacity = 0.5, size = 0.4 }) {
+interface SkidProps {
+  count?: number
+  opacity: number
+  size: number
+}
+
+export function Skid({ count = 500, opacity = 0.5, size = 0.4 }: SkidProps): JSX.Element {
   const ref = useRef<InstancedMesh>(null!)
   const { wheels, chassisBody } = useStore((state) => state.raycast)
 
