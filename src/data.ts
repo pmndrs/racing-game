@@ -3,8 +3,8 @@ import type { Provider } from '@supabase/supabase-js'
 import type { Setter } from './store'
 
 export interface Score {
-  name: string;
-  time: number;
+  name: string
+  time: number
 }
 
 const { VITE_SUPABASE_ANON_KEY, VITE_SUPABASE_URL } = import.meta.env
@@ -43,6 +43,6 @@ export const setupSession = (set: Setter) => {
   })
 }
 
-export const authenticateUser = (provider: Provider) => client.auth.signIn({ provider })
+export const authenticateUser = async (provider: Provider) => client.auth.signIn({ provider })
 
-export const unAuthenticateUser = () => client.auth.signOut()
+export const unAuthenticateUser = async () => client.auth.signOut()

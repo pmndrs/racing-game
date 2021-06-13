@@ -8,9 +8,6 @@
         "plugin:react/recommended",
         "eslint:recommended"
     ],
-    "overrides": [{
-        "files": ["*.jsx", "*.js"]
-    }],
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true
@@ -27,11 +24,42 @@
         "react/display-name": 0,
         "react/prop-types": 0,
         "react/react-in-jsx-scope": 0,
-        "semi": ["error", "never"]
+        "semi": ["error", "never"],
+        "no-debugger": "error",
+        "eol-last": ["error", "always"]
     },
     "settings": {
         "react": {
             "version": "detect"
         }
-    }
+    },
+    "overrides": [{
+        "files": ["src/**/*.tsx", "src/**/*.ts"],
+        "parser": "@typescript-eslint/parser",
+        "extends": "plugin:@typescript-eslint/recommended",
+        "plugins": ["@typescript-eslint"],
+        "parserOptions": {
+            "project": "tsconfig.json"
+        },
+
+        "rules": {
+            "semi": "off",
+            "@typescript-eslint/semi": ["error", "never"],
+            "quotes": "off",
+            "@typescript-eslint/quotes": ["error", "single", {
+                "allowTemplateLiterals": true,
+                "avoidEscape": true
+            }],
+
+            "@typescript-eslint/array-type": ["error", {
+                "default": "array-simple"
+            }],
+            "@@typescript-eslint/no-non-null-assertion": "off",
+            "@typescript-eslint/no-redeclare": "error",
+            "@typescript-eslint/explicit-module-boundary-types": "off",
+            "@typescript-eslint/no-implied-eval": "error",
+            "@typescript-eslint/switch-exhaustiveness-check": "error",
+            "@typescript-eslint/promise-function-async": "error"
+        }
+    }]
 }
