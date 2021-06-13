@@ -49,7 +49,8 @@
             "@typescript-eslint/quotes": ["error", "single", {
                 "allowTemplateLiterals": true,
                 "avoidEscape": true
-            }]
+            }],
+            "@typescript-eslint/consistent-type-imports": "error"
 
             // "@typescript-eslint/array-type": ["error", {
             //     "default": "array-simple"
@@ -59,7 +60,6 @@
             // "@typescript-eslint/explicit-module-boundary-types": "off",
             // "@typescript-eslint/no-implied-eval": "error",
             // "@typescript-eslint/switch-exhaustiveness-check": "error",
-            // "@typescript-eslint/consistent-type-imports": "error"
         }
     },
     {
