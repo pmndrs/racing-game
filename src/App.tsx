@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Layers } from 'three'
 import { Canvas } from '@react-three/fiber'
 import { Physics, Debug } from '@react-three/cannon'
+import type { ReactNode } from 'react'
+import type { DirectionalLight } from 'three'
 import { Sky, Environment, PerspectiveCamera, OrthographicCamera, OrbitControls, Stats } from '@react-three/drei'
 import { angularVelocity, levelLayer, position, rotation, useStore } from './store'
 import { Ramp, Track, Vehicle, Goal, Train, Heightmap } from './models'
@@ -11,20 +13,20 @@ import { HideMouse, Keyboard } from './controls'
 const layers = new Layers()
 layers.enable(levelLayer)
 
-function DebugScene({ children }) {
+function DebugScene({ children }: { children: ReactNode}) {
   const debug = useStore((state) => state.debug)
-  return debug ? <Debug scale={1.0001} color="white" children={children} /> : children
+  return debug ? <Debug scale={1.0001} color="white">{children}</Debug> : <>{children}</>
 }
 
 export function App() {
-  const [light, setLight] = useState()
+  const [light, setLight] = useState<DirectionalLight>()
   const [shadows, dpr, camera, editor, map, finished, stats] = useStore((s) => [s.shadows, s.dpr, s.camera, s.editor, s.map, s.finished, s.stats])
 
   return (
     <Intro>
-      <Canvas key={shadows + dpr} mode="concurrent" dpr={[1, dpr]} shadows={shadows} camera={{ position: [0, 5, 15], fov: 50 }}>
+      <Canvas mode="concurrent" dpr={[1, dpr]} shadows={shadows} camera={{ position: [0, 5, 15], fov: 50 }}>
         <fog attach="fog" args={['white', 0, 500]} />
-        <Sky sunPosition={[100, 10, 100]} scale={1000} />
+        <Sky sunPosition={[100, 10, 100]} distance={1000} />
         <ambientLight layers={layers} intensity={0.1} />
         <directionalLight
           ref={setLight}
@@ -40,7 +42,7 @@ export function App() {
           castShadow
         />
         <PerspectiveCamera makeDefault={editor} fov={75} position={[0, 20, 20]} />
-        <Physics broadphase="SAP" contactEquationRelaxation={4} friction={1e-3} allowSleep>
+        <Physics broadphase="SAP" defaultContactMaterial={{ contactEquationRelaxation: 4, friction: 1e-3 }} allowSleep>
           <DebugScene>
             <Vehicle {...{ angularVelocity, position, rotation }}>
               {light && <primitive object={light.target} />}
