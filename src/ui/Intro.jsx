@@ -4,7 +4,7 @@ import { useProgress } from '@react-three/drei'
 import { Keys } from './Help'
 import { Auth } from './Auth'
 import { useStore } from '../store'
-import { client } from '../data'
+import { setupSession } from '../data'
 
 function Ready({ setReady }) {
   useEffect(() => () => void setReady(true), [])
@@ -26,11 +26,7 @@ export function Intro({ children }) {
   }, [ready, clicked])
 
   useEffect(() => {
-    set({ session: client.auth.session() })
-
-    client.auth.onAuthStateChange((_event, session) => {
-      set({ session: session })
-    })
+    setupSession(set)
   }, [])
 
   return (

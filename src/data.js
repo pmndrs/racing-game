@@ -8,7 +8,7 @@ const config = {
 const key = import.meta.env['VITE_SUPABASE_ANON_KEY'] || config.key
 const url = import.meta.env['VITE_SUPABASE_URL'] || config.url
 
-export const client = createClient(url, key)
+const client = createClient(url, key)
 
 export const getScores = (limit = 50) =>
   client
@@ -24,12 +24,15 @@ export const insertScore = ({ time, name }) =>
     .insert({ time, name })
     .then(({ data }) => data)
 
-export const authenticateUser = async (provider) => {
-  const data = await client.auth.signIn({ provider })
-  return data
+export const setupSession = (set) => {
+  const supaSession = client.auth.session()
+  set({ session: supaSession })
+
+  client.auth.onAuthStateChange((_event, session) => {
+    set({ session: session })
+  })
 }
 
-export const unAuthenticateUser = async () => {
-  const { error } = client.auth.signOut()
-  return error
-}
+export const authenticateUser = async (provider) => client.auth.signIn({ provider })
+
+export const unAuthenticateUser = async () => client.auth.signOut()
