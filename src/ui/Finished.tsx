@@ -18,7 +18,10 @@ export const Finished = () => {
   const sendScore = async () => {
     window.localStorage.setItem(LOCAL_STORAGE_KEY, name as string)
     const [{ id }] = await insertScore({ time: finished as number, name }) as ScoreInterface[]
-    const scores: Score[] = await (getScores() as PromiseLike<Score[]>)
+    const scores = await getScores()
+    if (!scores) {
+      return;
+    }
     setScores(scores)
     setPosition(scores.findIndex((score) => score.id === id) + 1)
   }
