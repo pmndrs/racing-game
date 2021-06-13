@@ -11,7 +11,7 @@ export const Finished = () => {
   const [finished, session] = useStore((state) => [state.finished, state.session])
   const readableTime = (finished / 1000).toFixed(2)
 
-  const [name, setName] = useState(window.localStorage.getItem(LOCAL_STORAGE_KEY))
+  const [name, setName] = useState(window.localStorage.getItem(LOCAL_STORAGE_KEY) || '')
   const [scores, setScores] = useState<IScore[]>(null!)
   const [position, setPosition] = useState<number>(null!)
 
