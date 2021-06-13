@@ -23,3 +23,15 @@ export const insertScore = ({ time, name }) =>
     .from('scores')
     .insert({ time, name })
     .then(({ data }) => data)
+
+export const setupSession = (set) => {
+  set({ session: client.auth.session() })
+
+  client.auth.onAuthStateChange((_event, session) => {
+    set({ session: session })
+  })
+}
+
+export const authenticateUser = async (provider) => client.auth.signIn({ provider })
+
+export const unAuthenticateUser = async () => client.auth.signOut()

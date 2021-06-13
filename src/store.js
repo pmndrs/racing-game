@@ -93,6 +93,7 @@ const useStoreImpl = create((set, get) => {
       boost: false,
     },
     vehicleConfig,
+    session: null,
   }
 })
 
