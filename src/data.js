@@ -25,8 +25,7 @@ export const insertScore = ({ time, name }) =>
     .then(({ data }) => data)
 
 export const setupSession = (set) => {
-  const supaSession = client.auth.session()
-  set({ session: supaSession })
+  set({ session: client.auth.session() })
 
   client.auth.onAuthStateChange((_event, session) => {
     set({ session: session })
