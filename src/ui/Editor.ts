@@ -249,6 +249,6 @@ export function Editor() {
       },
       { collapsed: true },
     ),
-  })) as [undefined, (value: Partial<IState>) => void]
+  }))
   return null
 }
