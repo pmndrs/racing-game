@@ -89,8 +89,8 @@ interface Raycast {
   wheelInfos: WheelInfos
 }
 
-type WheelInfosInterface = typeof wheelInfo & { isFrontWheel: boolean }
-export type WheelInfos = [WheelInfosInterface, WheelInfosInterface, WheelInfosInterface, WheelInfosInterface]
+type IWheelInfos = typeof wheelInfo & { isFrontWheel: boolean }
+export type WheelInfos = IWheelInfos[]
 
 export type Setter = SetState<IState>
 export type Getter = GetState<IState>

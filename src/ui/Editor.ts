@@ -1,5 +1,4 @@
 import { useControls, folder } from 'leva'
-import type { IState, WheelInfos } from '../store'
 import { reset } from '../store'
 import { useStore, vehicleConfig } from '../store'
 
@@ -31,7 +30,7 @@ export function Editor() {
           onChange: (value) =>
             set({
               vehicleConfig: { ...get().vehicleConfig, radius: value },
-              raycast: { ...get().raycast, wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, radius: value })) as WheelInfos },
+              raycast: { ...get().raycast, wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, radius: value })) },
             }),
         },
         width: {
@@ -51,7 +50,7 @@ export function Editor() {
                     info.chassisConnectionPointLocal[1],
                     info.chassisConnectionPointLocal[2],
                   ],
-                })) as WheelInfos,
+                })),
               },
             }),
         },
@@ -68,7 +67,7 @@ export function Editor() {
                 wheelInfos: get().raycast.wheelInfos.map((info) => ({
                   ...info,
                   chassisConnectionPointLocal: [info.chassisConnectionPointLocal[0], value, info.chassisConnectionPointLocal[2]],
-                })) as WheelInfos,
+                })),
               },
             }),
         },
@@ -89,7 +88,7 @@ export function Editor() {
                     info.chassisConnectionPointLocal[1],
                     index < 2 ? value : info.chassisConnectionPointLocal[2],
                   ],
-                })) as WheelInfos,
+                })),
               },
             }),
         },
@@ -110,7 +109,7 @@ export function Editor() {
                     info.chassisConnectionPointLocal[1],
                     index < 2 ? info.chassisConnectionPointLocal[2] : value,
                   ],
-                })) as WheelInfos,
+                })),
               },
             }),
         },
@@ -156,7 +155,7 @@ export function Editor() {
             set({
               raycast: {
                 ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, suspensionStiffness: value })) as WheelInfos,
+                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, suspensionStiffness: value })),
               },
             }),
         },
@@ -169,7 +168,7 @@ export function Editor() {
             set({
               raycast: {
                 ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, suspensionRestLength: value })) as WheelInfos,
+                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, suspensionRestLength: value })),
               },
             }),
         },
@@ -179,7 +178,7 @@ export function Editor() {
             set({
               raycast: {
                 ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, useCustomSlidingRotationalSpeed: value })) as WheelInfos,
+                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, useCustomSlidingRotationalSpeed: value })),
               },
             }),
         },
@@ -192,7 +191,7 @@ export function Editor() {
             set({
               raycast: {
                 ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, customSlidingRotationalSpeed: value })) as WheelInfos,
+                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, customSlidingRotationalSpeed: value })),
               },
             }),
         },
@@ -205,7 +204,7 @@ export function Editor() {
             set({
               raycast: {
                 ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, suspensionForce: value })) as WheelInfos,
+                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, suspensionForce: value })),
               },
             }),
         },
@@ -218,7 +217,7 @@ export function Editor() {
             set({
               raycast: {
                 ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, frictionSlip: value })) as WheelInfos,
+                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, frictionSlip: value })),
               },
             }),
         },
@@ -231,7 +230,7 @@ export function Editor() {
             set({
               raycast: {
                 ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, sideAcceleration: value })) as WheelInfos,
+                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, sideAcceleration: value })),
               },
             }),
         },
