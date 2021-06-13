@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { mutation } from '../store'
 
 export function Clock() {
-  const textRef = useRef()
+  const textRef = useRef<HTMLSpanElement>(null!)
   useEffect(() => {
     const interval = setInterval(() => {
       if (textRef.current !== null) {

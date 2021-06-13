@@ -37,7 +37,7 @@ export function Help() {
   )
 }
 
-export function Keys(props) {
+export function Keys(props: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div {...props}>
       {controlOptions.map(({ keys, action }) => (
