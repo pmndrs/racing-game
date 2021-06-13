@@ -7,7 +7,7 @@ import type { InstancedMesh } from 'three'
 const o = new Object3D()
 const boostPositions = [new Vector3(-0.4, -0.5, -1.8), new Vector3(0.4, -0.5, -1.8)]
 
-export function Boost({ opacity = 0.5, length = 12, size = 0.1 }) {
+export function Boost({ opacity = 0.5, count = 12, size = 0.1 }) {
   const ref = useRef<InstancedMesh>(null!)
   let n: number
   let j: number
@@ -31,7 +31,8 @@ export function Boost({ opacity = 0.5, length = 12, size = 0.1 }) {
   })
 
   return (
-    <instancedMesh ref={ref} args={[null, null, length]}>
+    // FIXME: https://github.com/three-types/three-ts-types/issues/92
+    <instancedMesh ref={ref} args={[null as any, null as any, count]}>
       <boxGeometry args={[size, size, size]} />
       <meshBasicMaterial color="#5ecfff" transparent opacity={opacity} depthWrite={true} />
     </instancedMesh>
