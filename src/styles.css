@@ -38,23 +38,28 @@ body {
 }
 
 .auth-provider {
-  width: 250px;
-  height: auto;
-  margin: 1em 0;
+  font-size: 0.7em;
+  border: 1px solid transparent;
+  border-bottom: 3px solid #a0a0a0;
+  border-radius: 3px;
+  padding: 8px 12px;
+  background: white;
+  color: black;
   display: flex;
-  justify-content: space-evenly;
   align-items: center;
-  background-color: transparent;
-  color: #606060;
-  font-size: 0.85em;
+  justify-content: center;
+  margin-bottom: 10px;
+  width: 200px;
+  height: 45px;
 }
 
 .auth-provider:hover {
-  color: #fff;
+  border-bottom: 1px solid #a0a0a0;
 }
 
 .auth-provider svg {
   width: 24px;
+  margin-right: 10px;
 }
 
 .auth-header {
