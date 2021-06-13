@@ -76,19 +76,16 @@ const wheelInfos = [
 type Camera = typeof cameras[number]
 type Controls = typeof controls
 
-interface CannonApi { api: WorkerApi };
-
-interface Raycast {
-  chassisBody: MutableRefObject<CannonApi | null>;
-  wheels: [
-    MutableRefObject<CannonApi | null>,
-    MutableRefObject<CannonApi | null>,
-    MutableRefObject<CannonApi | null>,
-    MutableRefObject<CannonApi | null>,
-  ];
+interface CannonApi {
+  api: WorkerApi
 }
 
-export type Setter = SetState<Store>;
+interface Raycast {
+  chassisBody: MutableRefObject<CannonApi | null>
+  wheels: [MutableRefObject<CannonApi | null>, MutableRefObject<CannonApi | null>, MutableRefObject<CannonApi | null>, MutableRefObject<CannonApi | null>]
+}
+
+export type Setter = SetState<Store>
 
 export interface Store {
   camera: Camera;

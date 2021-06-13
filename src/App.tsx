@@ -13,9 +13,15 @@ import { HideMouse, Keyboard } from './controls'
 const layers = new Layers()
 layers.enable(levelLayer)
 
-function DebugScene({ children }: { children: ReactNode}) {
+function DebugScene({ children }: { children: ReactNode }) {
   const debug = useStore((state) => state.debug)
-  return debug ? <Debug scale={1.0001} color="white">{children}</Debug> : <>{children}</>
+  return debug ? (
+    <Debug scale={1.0001} color="white">
+      {children}
+    </Debug>
+  ) : (
+    <>{children}</>
+  )
 }
 
 export function App() {
