@@ -37,8 +37,8 @@ export function Boost({ opacity = 0.5, count = 12, size = 0.1 }: BoostProps): JS
   })
 
   return (
-    // FIXME: https://github.com/three-types/three-ts-types/issues/92
-    <instancedMesh ref={ref} args={[null as any, null as any, count]}>
+    // @ts-expect-error - https://github.com/three-types/three-ts-types/issues/92
+    <instancedMesh ref={ref} args={[null, null, count]}>
       <boxGeometry args={[size, size, size]} />
       <meshBasicMaterial color="#5ecfff" transparent opacity={opacity} depthWrite={true} />
     </instancedMesh>
