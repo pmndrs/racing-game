@@ -6,21 +6,15 @@ import { Score } from './LeaderBoard'
 import { Auth } from './Auth'
 
 export const Finished = () => {
-  const LOCAL_STORAGE_KEY = 'racing-pmndrs-name'
-
   const [finished, session] = useStore((state) => [state.finished, state.session])
   const readableTime = (finished / 1000).toFixed(2)
 
-  const [name, setName] = useState(window.localStorage.getItem(LOCAL_STORAGE_KEY) || '')
   const [scores, setScores] = useState<IScore[]>(null!)
   const [position, setPosition] = useState<number>(null!)
 
   const sendScore = async () => {
-    if (!name) {
-      return
-    }
-    window.localStorage.setItem(LOCAL_STORAGE_KEY, name)
-    const [{ id }] = (await insertScore({ time: finished, name })) || [{}]
+    const user = session?.user?.user_metadata
+    const [{ id }] = (await insertScore({ time: finished, name: user?.full_name, thumbnail: user?.avatar_url })) || [{}]
     if (!id) {
       return
     }
@@ -50,14 +44,10 @@ export const Finished = () => {
             <Auth />
           ) : (
             <>
-              <form className="name-form" onSubmit={sendScore}>
-                <h2>You belong on our leaderboard! </h2>
-                <label htmlFor="name">Enter your username</label>
-                <div>
-                  <input required maxLength={10} minLength={2} id="name" name="name" value={name} onChange={(e) => setName(e.target.value)} />
-                  <button className="popup-item-key">Add my score</button>
-                </div>
-              </form>
+              <h2>You belong on our leaderboard {session.user.user_metadata.full_name}! </h2>
+              <button onClick={sendScore} style={{ margin: '0 auto', width: 'auto' }} className="popup-item-key">
+                Add my score
+              </button>
             </>
           )}
         </>

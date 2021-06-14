@@ -4,6 +4,7 @@ import type { Setter } from './store'
 
 export interface IScore {
   name: string
+  thumbnail: string
   time: number
   id?: number
 }
@@ -30,10 +31,10 @@ export const getScores = (limit = 50): PromiseLike<IScore[] | null> =>
     .order('time')
     .then(({ data }) => data)
 
-export const insertScore = ({ time, name }: IScore): PromiseLike<IScore[] | null> =>
+export const insertScore = ({ time, name, thumbnail }: IScore): PromiseLike<IScore[] | null> =>
   client
     .from('scores')
-    .insert({ time, name })
+    .insert({ time, name, thumbnail })
     .then(({ data }) => data)
 
 export const setupSession = (set: Setter) => {

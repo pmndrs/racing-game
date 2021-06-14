@@ -51,7 +51,7 @@ export const Score = ({ name, time, standing }: { name: string; time: number; st
         )}
       </span>
       <span className="popup-item-key">
-        <span>{time}</span>
+        <span>{(time / 1000).toFixed(2)}</span>
       </span>
     </li>
   )

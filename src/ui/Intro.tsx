@@ -4,7 +4,7 @@ import { useProgress } from '@react-three/drei'
 import { Keys } from './Help'
 import { Auth } from './Auth'
 import { useStore } from '../store'
-import { setupSession } from '../data'
+import { setupSession, unAuthenticateUser } from '../data'
 
 function Ready({ setReady }: { setReady: React.Dispatch<React.SetStateAction<boolean>> }) {
   useEffect(() => () => void setReady(true), [])
@@ -34,11 +34,22 @@ export function Intro({ children }: { children: React.ReactNode }) {
       <Suspense fallback={<Ready setReady={setReady} />}>{children}</Suspense>
       <div className={`fullscreen bg ${ready ? 'ready' : 'notready'} ${clicked && 'clicked'}`}>
         <div className="stack">
-          <Keys style={{ paddingBottom: 20 }} />
-          <a href="#" onClick={() => ready && setClicked(true)}>
-            {!ready ? <Loader /> : 'Click to continue'}
-          </a>
-          {session?.user?.aud !== 'authenticated' && <Auth />}
+          <div className="intro-keys">
+            <Keys style={{ paddingBottom: 20 }} />
+            <a className="continue-link" href="#" onClick={() => ready && setClicked(true)}>
+              {!ready ? <Loader /> : 'Click to continue'}
+            </a>
+          </div>
+          {session?.user?.aud !== 'authenticated' ? (
+            <Auth />
+          ) : (
+            <div>
+              Hello {session.user.user_metadata.full_name}
+              <button className="logout" onClick={unAuthenticateUser}>
+                Logout
+              </button>{' '}
+            </div>
+          )}
         </div>
         <Footer
           date="2. June"
