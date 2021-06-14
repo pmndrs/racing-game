@@ -92,6 +92,9 @@ const useStoreImpl = create((set, get) => {
       honk: false,
       boost: false,
     },
+    nitro: {
+      level: 390,
+    },
     vehicleConfig,
     session: null,
   }

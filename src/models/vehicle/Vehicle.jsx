@@ -44,15 +44,20 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
   let engineValue = 0
   let speed = 0
   let controls
+  let nitro
   let boostValue = false
   let swayValue = 0
 
   useFrame((state, delta) => {
     speed = mutation.speed
-    controls = useStore.getState().controls
+    nitro = useStore.getState().nitro
     if (!ready) {
-      set((state) => ({ ...state, controls: { forward: false, backward: false, left: false, right: false } }))
+      set((state) => ({ ...state, controls: { ...state.controls, forward: false, backward: false, left: false, right: false } }))
     }
+    if (nitro.level <= 200) {
+      set((state) => ({ ...state, controls: { ...state.controls, boost: false } }))
+    }
+    controls = useStore.getState().controls
 
     engineValue = lerp(
       engineValue,
