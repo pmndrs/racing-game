@@ -7,7 +7,7 @@ import type { Session } from '@supabase/supabase-js'
 import type { Group, Object3D } from 'three'
 import type { GetState, SetState, StateSelector } from 'zustand'
 
-export const angularVelocity = [0, 0.5, 0] as [number, number, number]
+export const angularVelocity = [0, 0.5, 0] as const
 export const cameras = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE'] as const
 
 const controls = {
@@ -23,8 +23,8 @@ const controls = {
 export const debug = false as const
 export const dpr = 1.5 as const
 export const levelLayer = 1 as const
-export const position = [-110, 0.75, 220] as [number, number, number]
-export const rotation = [0, Math.PI / 2 + 0.35, 0] as [number, number, number]
+export const position = [-110, 0.75, 220] as const
+export const rotation = [0, Math.PI / 2 + 0.35, 0] as const
 export const shadows = true as const
 export const stats = false as const
 
