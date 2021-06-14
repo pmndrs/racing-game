@@ -14,10 +14,10 @@ const { lerp } = MathUtils
 const v = new Vector3()
 
 interface VehicleProps {
-  angularVelocity: number[]
+  angularVelocity: [number, number, number]
   children: React.ReactNode
-  position: number[]
-  rotation: number[]
+  position: [number, number, number]
+  rotation: [number, number, number]
 }
 
 export function Vehicle({ angularVelocity, children, position, rotation }: VehicleProps) {

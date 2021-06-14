@@ -50,7 +50,7 @@ export function App() {
         <PerspectiveCamera makeDefault={editor} fov={75} position={[0, 20, 20]} />
         <Physics broadphase="SAP" defaultContactMaterial={{ contactEquationRelaxation: 4, friction: 1e-3 }} allowSleep>
           <DebugScene>
-            <Vehicle {...{ angularVelocity, position, rotation }}>
+            <Vehicle angularVelocity={[...angularVelocity]} position={[...position]} rotation={[...rotation]}>
               {light && <primitive object={light.target} />}
               <PerspectiveCamera makeDefault={!editor && camera !== 'BIRD_EYE'} fov={75} rotation={[0, Math.PI, 0]} position={[0, 10, -20]} />
               <OrthographicCamera makeDefault={!editor && camera === 'BIRD_EYE'} position={[0, 100, 0]} rotation={[(-1 * Math.PI) / 2, 0, Math.PI]} zoom={15} />
