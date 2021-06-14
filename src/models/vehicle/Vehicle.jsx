@@ -54,7 +54,7 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
     if (!ready) {
       set((state) => ({ ...state, controls: { ...state.controls, forward: false, backward: false, left: false, right: false } }))
     }
-    if (nitro.level <= 200) {
+    if (nitro <= 200) {
       set((state) => ({ ...state, controls: { ...state.controls, boost: false } }))
     }
     controls = useStore.getState().controls

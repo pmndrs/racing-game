@@ -22,7 +22,7 @@ export function Speed() {
 
   useEffect(() => {
     if (boost && nitroRef.current !== null) {
-      let level = useStore.getState().nitro.level
+      let level = useStore.getState().nitro
       const interval = setConsumption(level, true)
       return () => clearInterval(interval)
     } else {
@@ -44,7 +44,7 @@ export function Speed() {
           return
         }
         nitroRef.current.style.strokeDasharray = level
-        set((state) => ({ ...state, nitro: { level: level } }))
+        set((state) => ({ ...state, nitro: level }))
       }
     }, 100)
     return interval
