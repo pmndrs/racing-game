@@ -53,7 +53,7 @@ export function Keyboard() {
     { keys: ['h', 'H'], fn: (honk) => set((state) => ({ ...state, controls: { ...state.controls, honk } })) },
     { keys: ['Shift'], fn: (boost) => set((state) => ({ ...state, controls: { ...state.controls, boost } })) },
     { keys: ['r', 'R'], fn: () => reset(set), up: false },
-    { keys: ['e', 'E'], fn: () => set((state) => ({ ...state, editor: !state.editor })), up: false },
+    { keys: ['.'], fn: () => set((state) => ({ ...state, editor: !state.editor })), up: false },
     { keys: ['i', 'I'], fn: () => set((state) => ({ ...state, help: !state.help, leaderboard: false })), up: false },
     { keys: ['l', 'L'], fn: () => set((state) => ({ ...state, help: false, leaderboard: !state.leaderboard })), up: false },
     { keys: ['m', 'M'], fn: () => set((state) => ({ ...state, map: !state.map })), up: false },
