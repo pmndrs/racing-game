@@ -34,13 +34,10 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
   const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
 
   useLayoutEffect(() => {
-    const sub1 = raycast.chassisBody.current?.api.velocity.subscribe((velocity) =>
-      Object.assign(mutation, { velocity, speed: v.set(velocity[0], velocity[1], velocity[2]).length() }),
-    )
     // @ts-expect-error use-cannon has incorrect type definitions.
-    const sub2 = api.sliding.subscribe((sliding) => (mutation.sliding = sliding))
-    return () => void [sub1, sub2].forEach((sub) => sub())
-  }, [editor])
+    const sub = api.sliding.subscribe((sliding) => (mutation.sliding = sliding))
+    return () => void sub()
+  }, [])
 
   useLayoutEffect(() => {
     if (defaultCamera instanceof PerspectiveCamera && raycast.chassisBody.current) {

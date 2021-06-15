@@ -2,7 +2,6 @@ import { createRef } from 'react'
 import create from 'zustand'
 import shallow from 'zustand/shallow'
 import type { MutableRefObject } from 'react'
-import type { WorkerApi } from '@react-three/cannon'
 import type { Session } from '@supabase/supabase-js'
 import type { Group, Object3D } from 'three'
 import type { GetState, SetState, StateSelector } from 'zustand'
@@ -84,15 +83,12 @@ const wheelInfos: WheelInfos = [
 type Camera = typeof cameras[number]
 export type Controls = typeof controls
 export type Boost = typeof boost
-export interface CannonApi extends Object3D {
-  api: WorkerApi
-}
 
 type Getter = GetState<IState>
 
 interface Raycast {
-  chassisBody: MutableRefObject<CannonApi | null>
-  wheels: [MutableRefObject<CannonApi | null>, MutableRefObject<CannonApi | null>, MutableRefObject<CannonApi | null>, MutableRefObject<CannonApi | null>]
+  chassisBody: MutableRefObject<Object3D>
+  wheels: [MutableRefObject<Object3D>, MutableRefObject<Object3D>, MutableRefObject<Object3D>, MutableRefObject<Object3D>]
   wheelInfos: WheelInfos
 }
 
@@ -106,6 +102,7 @@ interface IState {
   camera: Camera
   controls: Controls
   boost: Boost
+  reset: boolean
   debug: boolean
   dpr: number
   editor: boolean
@@ -113,7 +110,7 @@ interface IState {
   get: Getter
   help: boolean
   leaderboard: boolean
-  level: MutableRefObject<Group | null>
+  level: MutableRefObject<Group>
   map: boolean
   raycast: Raycast
   ready: boolean
@@ -132,16 +129,22 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
     boost,
     debug,
     dpr,
+    reset: false,
     editor: false,
     finished: 0,
     get,
     help: false,
     leaderboard: false,
-    level: createRef<Group>(),
+    level: createRef() as unknown as MutableRefObject<Group>,
     map: true,
     raycast: {
-      chassisBody: createRef(),
-      wheels: [createRef(), createRef(), createRef(), createRef()],
+      chassisBody: createRef() as unknown as MutableRefObject<Object3D>,
+      wheels: [
+        createRef() as unknown as MutableRefObject<Object3D>,
+        createRef() as unknown as MutableRefObject<Object3D>,
+        createRef() as unknown as MutableRefObject<Object3D>,
+        createRef() as unknown as MutableRefObject<Object3D>,
+      ],
       wheelInfos,
       indexForwardAxis: 2,
       indexRightAxis: 0,
@@ -170,13 +173,7 @@ export const reset = (set: SetState<IState>) =>
   set((state) => {
     mutation.start = 0
     mutation.finish = 0
-
-    state.raycast.chassisBody.current?.api.position.set(...position)
-    state.raycast.chassisBody.current?.api.velocity.set(0, 0, 0)
-    state.raycast.chassisBody.current?.api.angularVelocity.set(...angularVelocity)
-    state.raycast.chassisBody.current?.api.rotation.set(...rotation)
-
-    return { ...state, finished: 0, boost }
+    return { ...state, reset: true, finished: 0, boost }
   })
 
 // Make the store shallow compare by default
