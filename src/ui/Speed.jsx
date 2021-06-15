@@ -1,12 +1,12 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 import { useStore, mutation } from '../store'
 
 export function Speed() {
   const textRef = useRef()
   const gaugeRef = useRef()
   const maxSpeed = useStore((state) => state.vehicleConfig.maxSpeed)
-  const boost = useStore((state) => state.boost)
-  const { boostRemaining } = boost
+  const { boostRemaining } = useStore((state) => state.boost)
+  const boostColor = useMemo(() => (boostRemaining <= 80 && boostRemaining >= 65 ? '#FFE600' : boostRemaining < 65 ? '#FF0000' : ''), [boostRemaining])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -29,7 +29,7 @@ export function Speed() {
         <span ref={textRef} /> mph
       </div>
       <div className="nitro-bar">
-        <NitroBar boostremaining={boostRemaining} />
+        <NitroBar boostRemaining={boostRemaining} boostColor={boostColor} />
       </div>
     </div>
   )
@@ -62,18 +62,14 @@ function Foreground(props) {
   )
 }
 
-function NitroBar({ ...props }) {
-  let color
-  const { boostremaining } = props
-  boostremaining <= 80 && boostremaining >= 65 ? (color = '#FFE600') : boostremaining < 65 ? (color = '#FF0000') : ''
-
+function NitroBar({ boostRemaining, boostColor, ...props }) {
   return (
     <svg width={289} height={55} viewBox="0 0 289 55" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path className="nitro-bg-path" d="M13,12 L200,12" />
       <path
-        className={boostremaining > 65 ? 'nitro-path' : 'nitro-path nitro-path-blink'}
-        stroke={boostremaining > 80 ? '#00ff00' : color}
-        strokeDasharray={`${boostremaining * 3.9}px`}
+        className={`nitro-path ${boostRemaining <= 65 ? 'nitro-path-blink' : ''}`}
+        stroke={boostRemaining > 80 ? '#00ff00' : boostColor}
+        strokeDasharray={`${boostRemaining * 3.9}px`}
         d="M15,12 L198,12"
       />
       <text className="nitro-text" x="0" y="17px">
