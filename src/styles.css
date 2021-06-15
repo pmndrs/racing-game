@@ -192,9 +192,7 @@ body {
 }
 
 .nitro-path {
-  stroke: #00ff00;
   stroke-width: 9px;
-  stroke-dasharray: 390px;
   stroke-dashoffset: 100%;
 }
 

@@ -4,10 +4,9 @@ import { useStore, mutation } from '../store'
 export function Speed() {
   const textRef = useRef()
   const gaugeRef = useRef()
-  const nitroRef = useRef()
-  const set = useStore((state) => state.set)
   const maxSpeed = useStore((state) => state.vehicleConfig.maxSpeed)
-  const boost = useStore((state) => state.controls.boost)
+  const boost = useStore((state) => state.boost)
+  const { boostRemaining } = boost
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -20,36 +19,6 @@ export function Speed() {
     return () => clearInterval(interval)
   }, [])
 
-  useEffect(() => {
-    if (boost && nitroRef.current !== null) {
-      let level = useStore.getState().nitro
-      const interval = setConsumption(level, true)
-      return () => clearInterval(interval)
-    } else {
-      const interval = setConsumption(null, false)
-      return () => clearInterval(interval)
-    }
-  }, [boost])
-
-  const setConsumption = (level, indicator) => {
-    const interval = setInterval(() => {
-      if (indicator) {
-        level -= 10
-        if (level <= 300 && level >= 250) {
-          nitroRef.current.style.stroke = '#FFE600'
-        } else if (level < 250 && level >= 200) {
-          nitroRef.current.style.stroke = '#FF0000'
-          if (!nitroRef.current.classList.contains('nitro-path-blink')) nitroRef.current.classList.add('nitro-path-blink')
-        } else if (level <= 199) {
-          return
-        }
-        nitroRef.current.style.strokeDasharray = level
-        set((state) => ({ ...state, nitro: level }))
-      }
-    }, 100)
-    return interval
-  }
-
   return (
     <div className="speed">
       <div className="speed-gauge">
@@ -60,7 +29,7 @@ export function Speed() {
         <span ref={textRef} /> mph
       </div>
       <div className="nitro-bar">
-        <NitroBar nitroRef={nitroRef} />
+        <NitroBar boostremaining={boostRemaining} />
       </div>
     </div>
   )
@@ -93,11 +62,20 @@ function Foreground(props) {
   )
 }
 
-function NitroBar({ nitroRef, ...props }) {
+function NitroBar({ ...props }) {
+  let color
+  const { boostremaining } = props
+  boostremaining <= 80 && boostremaining >= 65 ? (color = '#FFE600') : boostremaining < 65 ? (color = '#FF0000') : ''
+
   return (
     <svg width={289} height={55} viewBox="0 0 289 55" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path className="nitro-bg-path" d="M13,12 L200,12" />
-      <path className="nitro-path" ref={nitroRef} d="M15,12 L198,12" />
+      <path
+        className={boostremaining > 65 ? 'nitro-path' : 'nitro-path nitro-path-blink'}
+        stroke={boostremaining > 80 ? '#00ff00' : color}
+        strokeDasharray={`${boostremaining * 3.9}px`}
+        d="M15,12 L198,12"
+      />
       <text className="nitro-text" x="0" y="17px">
         <tspan>N</tspan>
       </text>

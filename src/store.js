@@ -90,9 +90,11 @@ const useStoreImpl = create((set, get) => {
       right: false,
       brake: false,
       honk: false,
-      boost: false,
     },
-    nitro: 390,
+    boost: {
+      boostActive: false,
+      boostRemaining: 100,
+    },
     vehicleConfig,
     session: null,
   }

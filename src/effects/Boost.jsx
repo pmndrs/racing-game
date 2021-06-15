@@ -13,14 +13,15 @@ export function Boost({ opacity = 0.5, length = 12, size = 0.1 }) {
   let ctrl
   let progress
   useFrame((state) => {
-    ctrl = useStore.getState().controls
+    ctrl = useStore.getState().boost
+    const { boostActive } = ctrl
     for (let i = 0; i < length; i += boostPositions.length) {
       n = MathUtils.randFloatSpread(0.05)
       for (j = 0; j < boostPositions.length; j++) {
         progress = (state.clock.getElapsedTime() + (i + j) * 0.2) % 1
         o.position.set(boostPositions[j].x + n, boostPositions[j].y, boostPositions[j].z - progress * 0.75)
         o.rotation.z += progress / 2
-        o.scale.setScalar(ctrl.boost ? (1 - progress) * 2 : 0)
+        o.scale.setScalar(boostActive ? (1 - progress) * 2 : 0)
         o.matrixWorldNeedsUpdate = true
         o.updateMatrixWorld()
         ref.current.setMatrixAt(i + j, o.matrixWorld)
