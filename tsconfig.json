@@ -15,7 +15,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    "incremental": true,
   },
   "include": ["./src"],
   "exclude": ["node_modues"],
