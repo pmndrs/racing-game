@@ -1,10 +1,12 @@
 import { useEffect, useRef, useMemo } from 'react'
+import { addEffect } from '@react-three/fiber'
 import { useStore, mutation } from '../store'
 
 interface BackgroundProps extends React.HTMLAttributes<SVGSVGElement> {
   gaugeRef: React.ForwardedRef<SVGStopElement>
   offset: React.SVGAttributes<SVGStopElement>['offset']
 }
+
 interface NitroProps extends React.HTMLAttributes<SVGSVGElement> {
   boostRemaining: number
   boostColor: string
@@ -59,8 +61,7 @@ export function Speed(): JSX.Element {
   let currentSpeed = '0'
 
   useEffect(() => {
-    let frame: number
-    const onFrame: FrameRequestCallback = () => {
+    return addEffect(() => {
       if (textRef.current && gaugeRef.current) {
         const computedSpeed = mutation.speed * 1.5
 
@@ -76,10 +77,7 @@ export function Speed(): JSX.Element {
           currentSpeed = newSpeed
         }
       }
-      frame = requestAnimationFrame(onFrame)
-    }
-    frame = requestAnimationFrame(onFrame)
-    return () => cancelAnimationFrame(frame)
+    })
   }, [])
 
   return (

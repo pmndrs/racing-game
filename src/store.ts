@@ -83,7 +83,6 @@ const wheelInfos: WheelInfos = [
 
 type Camera = typeof cameras[number]
 export type Controls = typeof controls
-
 export type Boost = typeof boost
 export interface CannonApi extends Object3D {
   api: WorkerApi
