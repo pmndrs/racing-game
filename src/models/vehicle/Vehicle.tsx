@@ -1,17 +1,25 @@
 import { MathUtils, PerspectiveCamera, Vector3 } from 'three'
-import { useRef, useLayoutEffect, useEffect } from 'react'
+import React, { useRef, useLayoutEffect, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { PositionalAudio } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
 import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
 import { Dust, Skid, Boost } from '../../effects'
-import { useStore, mutation } from '../../store'
+import { useStore, getState, mutation } from '../../store'
+import type { PositionalAudio as PositionalAudioImpl } from 'three'
 
 const { lerp } = MathUtils
 const v = new Vector3()
 
-export function Vehicle({ angularVelocity, children, position, rotation }) {
+interface VehicleProps {
+  angularVelocity: [number, number, number]
+  children: React.ReactNode
+  position: [number, number, number]
+  rotation: [number, number, number]
+}
+
+export function Vehicle({ angularVelocity, children, position, rotation }: VehicleProps) {
   const defaultCamera = useThree((state) => state.camera)
   const [set, camera, editor, raycast, ready, { force, maxBrake, steer, maxSpeed }] = useStore((s) => [
     s.set,
@@ -21,16 +29,21 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
     s.ready,
     s.vehicleConfig,
   ])
+  // @ts-expect-error We for some reason have an api property on our raycast.
+  // However useRaycastVehicle doesn't except a custom type defintion that has this api property.
   const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
 
   useLayoutEffect(() => {
-    const sub1 = raycast.chassisBody.current.api.velocity.subscribe((velocity) => Object.assign(mutation, { velocity, speed: v.set(...velocity).length() }))
+    const sub1 = raycast.chassisBody.current?.api.velocity.subscribe((velocity) =>
+      Object.assign(mutation, { velocity, speed: v.set(velocity[0], velocity[1], velocity[2]).length() }),
+    )
+    // @ts-expect-error use-cannon has incorrect type definitions.
     const sub2 = api.sliding.subscribe((sliding) => (mutation.sliding = sliding))
     return () => void [sub1, sub2].forEach((sub) => sub())
   }, [editor])
 
   useLayoutEffect(() => {
-    if (defaultCamera instanceof PerspectiveCamera) {
+    if (defaultCamera instanceof PerspectiveCamera && raycast.chassisBody.current) {
       defaultCamera.rotation.set(0, Math.PI, 0)
       defaultCamera.position.set(0, 10, -20)
       defaultCamera.lookAt(raycast.chassisBody.current.position)
@@ -44,14 +57,12 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
   let engineValue = 0
   let speed = 0
   let controls
-  let boost
   let boostValue = false
   let swayValue = 0
 
   useFrame((state, delta) => {
     speed = mutation.speed
-    boost = useStore.getState().boost
-    const { boostActive, boostRemaining } = boost
+    const { boostActive, boostRemaining } = getState().boost
 
     if (!ready) {
       set((state) => ({ ...state, controls: { ...state.controls, forward: false, backward: false, left: false, right: false } }))
@@ -61,7 +72,7 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
     } else if (boostRemaining >= 51 && boostActive) {
       set((state) => ({ ...state, boost: { ...state.boost, boostRemaining: boostActive ? boostRemaining - 0.5 : boostRemaining } }))
     }
-    controls = useStore.getState().controls
+    controls = getState().controls
 
     engineValue = lerp(
       engineValue,
@@ -85,6 +96,9 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
       defaultCamera.rotation.z = lerp(defaultCamera.rotation.z, Math.PI + (-steeringValue * speed) / (camera === 'DEFAULT' ? 40 : 60), delta)
     }
 
+    if (!raycast.chassisBody.current || (raycast.chassisBody.current.children[0] && raycast.chassisBody.current.children[0].rotation)) {
+      return
+    }
     // lean chassis
     raycast.chassisBody.current.children[0].rotation.z = MathUtils.lerp(
       raycast.chassisBody.current.children[0].rotation.z,
@@ -124,11 +138,11 @@ export function Vehicle({ angularVelocity, children, position, rotation }) {
 }
 
 function VehicleAudio() {
-  const engineAudio = useRef()
-  const boostAudio = useRef()
-  const accelerateAudio = useRef()
-  const honkAudio = useRef()
-  const brakeAudio = useRef()
+  const engineAudio = useRef<PositionalAudioImpl>(null!)
+  const boostAudio = useRef<PositionalAudioImpl>(null!)
+  const accelerateAudio = useRef<PositionalAudioImpl>(null!)
+  const honkAudio = useRef<PositionalAudioImpl>(null!)
+  const brakeAudio = useRef<PositionalAudioImpl>(null!)
   const [sound, maxSpeed] = useStore((state) => [state.sound, state.vehicleConfig.maxSpeed])
 
   let rpmTarget = 0
@@ -136,17 +150,17 @@ function VehicleAudio() {
   let boost
   let speed = 0
   const gears = 10
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     speed = mutation.speed
-    controls = useStore.getState().controls
-    boost = useStore.getState().boost
+    controls = getState().controls
+    boost = getState().boost
 
     boostAudio.current.setVolume(sound ? (boost.boostActive ? Math.pow(speed / maxSpeed, 1.5) + 0.5 : 0) * 5 : 0)
     boostAudio.current.setPlaybackRate(Math.pow(speed / maxSpeed, 1.5) + 0.5)
     engineAudio.current.setVolume(sound ? 1 - speed / maxSpeed : 0)
     accelerateAudio.current.setVolume(sound ? (speed / maxSpeed) * 2 : 0)
 
-    var gearPosition = speed / (maxSpeed / gears)
+    const gearPosition = speed / (maxSpeed / gears)
     rpmTarget = ((gearPosition % 1) + Math.log(gearPosition)) / 6
     if (rpmTarget < 0) rpmTarget = 0
     if (boost.boostActive) rpmTarget += 0.1
@@ -168,7 +182,7 @@ function VehicleAudio() {
     const engine = engineAudio.current
     const honk = honkAudio.current
     const brake = brakeAudio.current
-    return () => [engine, honk, brake].forEach((sound) => sound.current && sound.current.isPlaying && sound.current.stop())
+    return () => [engine, honk, brake].forEach((sound) => sound && sound.isPlaying && sound.stop())
   }, [])
 
   return (

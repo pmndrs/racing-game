@@ -1,6 +1,11 @@
 import { authenticateUser } from '../data'
+import type { Provider } from '@supabase/supabase-js'
 
-const providers = [
+const providers: readonly {
+  readonly provider: Provider
+  readonly label: string
+  readonly Logo: () => JSX.Element
+}[] = [
   {
     provider: 'google',
     label: 'Sign in with Google',
@@ -26,10 +31,10 @@ const providers = [
       </svg>
     ),
   },
-]
+] as const
 
 export function Auth() {
-  const signIn = async (provider) => {
+  const signIn = async (provider: Provider) => {
     try {
       await authenticateUser(provider)
     } catch (error) {
@@ -41,8 +46,8 @@ export function Auth() {
     <div>
       <h2 className="auth-header">Want to save your score?</h2>
       <div className="auth-providers">
-        {providers.map(({ provider, label, Logo }) => (
-          <button key={provider} className="auth-provider" onClick={() => signIn(provider)}>
+        {providers.map(({ provider, label, Logo }, key) => (
+          <button key={key} className="auth-provider" onClick={() => signIn(provider)}>
             <Logo />
             <span>{label}</span>
           </button>

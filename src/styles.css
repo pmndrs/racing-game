@@ -104,7 +104,7 @@ body {
   margin-top: 20px;
   counter-reset: listCounter;
   max-height: 70vh;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .leaderboard li {
