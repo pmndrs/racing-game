@@ -96,6 +96,10 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
       defaultCamera.rotation.z = lerp(defaultCamera.rotation.z, Math.PI + (-steeringValue * speed) / (camera === 'DEFAULT' ? 40 : 60), delta)
     }
 
+    if (!raycast.chassisBody.current || (raycast.chassisBody.current.children[0] && raycast.chassisBody.current.children[0].rotation)) {
+      return
+    }
+
     // lean chassis
     raycast.chassisBody.current.children[0].rotation.z = MathUtils.lerp(
       raycast.chassisBody.current.children[0].rotation.z,
