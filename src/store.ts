@@ -176,7 +176,7 @@ export const reset = (set: SetState<IState>) =>
     state.raycast.chassisBody.current?.api.angularVelocity.set(...angularVelocity)
     state.raycast.chassisBody.current?.api.rotation.set(...rotation)
 
-    return { ...state, finished: 0 }
+    return { ...state, finished: 0, boost }
   })
 
 // Make the store shallow compare by default

@@ -36,7 +36,7 @@ const Foreground = (props: React.SVGProps<SVGSVGElement>): JSX.Element => (
 )
 
 const NitroBar = ({ boostRemaining, boostColor, ...props }: NitroProps): JSX.Element => (
-  <svg width={289} height={55} viewBox="0 0 289 55" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+  <svg width={289} height={55} viewBox="0 0 289 55" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path className="nitro-bg-path" d="M13,12 L200,12" />
     <path
       className={`nitro-path ${boostRemaining <= 65 ? 'nitro-path-blink' : ''}`}
