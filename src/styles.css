@@ -176,6 +176,43 @@ body {
   margin-top: -40px;
 }
 
+.nitro-bar {
+  position: relative;
+  top: 15px;
+}
+
+.nitro-bg-path {
+  stroke: #132237;
+  stroke-width: 13px;
+  stroke-dasharray: 295px;
+}
+
+.nitro-path {
+  stroke-width: 9px;
+  stroke-dashoffset: 100%;
+}
+
+.nitro-path-blink {
+  animation: nitroBlink 0.8s infinite;
+}
+
+@keyframes nitroBlink {
+  100%,
+  0% {
+    stroke: #500;
+  }
+  60% {
+    stroke: #ff0000;
+  }
+}
+
+.nitro-text {
+  stroke: #fff;
+  fill: #fff;
+  font-size: 13px;
+  letter-spacing: 0.1px;
+  font-weight: bold;
+}
 /* --------------- CONTROLS --------------- */
 
 .controls {

@@ -6,8 +6,7 @@ import { useRaycastVehicle } from '@react-three/cannon'
 import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
 import { Dust, Skid, Boost } from '../../effects'
-import { getState } from '../../store'
-import { useStore, mutation } from '../../store'
+import { useStore, getState, mutation } from '../../store'
 import type { PositionalAudio as PositionalAudioImpl } from 'three'
 
 const { lerp } = MathUtils
@@ -63,14 +62,21 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
 
   useFrame((state, delta) => {
     speed = mutation.speed
-    controls = getState().controls
+    const { boostActive, boostRemaining } = getState().boost
+
     if (!ready) {
       set((state) => ({ ...state, controls: { ...state.controls, forward: false, backward: false, left: false, right: false } }))
     }
+    if (boostRemaining <= 51) {
+      set((state) => ({ ...state, boost: { ...state.boost, boostActive: false } }))
+    } else if (boostRemaining >= 51 && boostActive) {
+      set((state) => ({ ...state, boost: { ...state.boost, boostRemaining: boostActive ? boostRemaining - 0.5 : boostRemaining } }))
+    }
+    controls = getState().controls
 
     engineValue = lerp(
       engineValue,
-      controls.forward || controls.backward ? force * (controls.forward && !controls.backward ? (controls.boost ? -1.5 : -1) : 1) : 0,
+      controls.forward || controls.backward ? force * (controls.forward && !controls.backward ? (boostActive ? -1.5 : -1) : 1) : 0,
       delta * 20,
     )
     steeringValue = lerp(steeringValue, controls.left || controls.right ? steer * (controls.left && !controls.right ? 1 : -1) : 0, delta * 20)
@@ -101,11 +107,11 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
     )
 
     // Camera sway
-    const swaySpeed = controls.boost ? 60 : 30
-    const startedBoosting = controls.boost && !boostValue
-    boostValue = controls.boost
-    const swayTarget = controls.boost ? (speed / maxSpeed) * 8 : (speed / maxSpeed) * 2
-    swayValue = startedBoosting ? (speed / maxSpeed + 0.25) * 30 : MathUtils.lerp(swayValue, swayTarget, delta * (controls.boost ? 10 : 20))
+    const swaySpeed = boostActive ? 60 : 30
+    const startedBoosting = boostActive && !boostValue
+    boostValue = boostActive
+    const swayTarget = boostActive ? (speed / maxSpeed) * 8 : (speed / maxSpeed) * 2
+    swayValue = startedBoosting ? (speed / maxSpeed + 0.25) * 30 : MathUtils.lerp(swayValue, swayTarget, delta * (boostActive ? 10 : 20))
     defaultCamera.rotation.z += (Math.sin(state.clock.elapsedTime * swaySpeed * 0.9) / 1000) * swayValue
     defaultCamera.rotation.x += (Math.sin(state.clock.elapsedTime * swaySpeed) / 1000) * swayValue
 
@@ -146,8 +152,9 @@ function VehicleAudio() {
   useFrame((_, delta) => {
     speed = mutation.speed
     controls = getState().controls
+    const { boostActive } = getState().boost
 
-    boostAudio.current.setVolume(sound ? (controls.boost ? Math.pow(speed / maxSpeed, 1.5) + 0.5 : 0) * 5 : 0)
+    boostAudio.current.setVolume(sound ? (boostActive ? Math.pow(speed / maxSpeed, 1.5) + 0.5 : 0) * 5 : 0)
     boostAudio.current.setPlaybackRate(Math.pow(speed / maxSpeed, 1.5) + 0.5)
     engineAudio.current.setVolume(sound ? 1 - speed / maxSpeed : 0)
     accelerateAudio.current.setVolume(sound ? (speed / maxSpeed) * 2 : 0)
@@ -155,7 +162,7 @@ function VehicleAudio() {
     const gearPosition = speed / (maxSpeed / gears)
     rpmTarget = ((gearPosition % 1) + Math.log(gearPosition)) / 6
     if (rpmTarget < 0) rpmTarget = 0
-    if (controls.boost) rpmTarget += 0.1
+    if (boostActive) rpmTarget += 0.1
     engineAudio.current.setPlaybackRate(MathUtils.lerp(engineAudio.current.playbackRate, rpmTarget + 1, delta * 10))
     accelerateAudio.current.setPlaybackRate(MathUtils.lerp(accelerateAudio.current.playbackRate, rpmTarget + 0.5, delta * 10))
     brakeAudio.current.setVolume(sound ? (controls.brake ? 1 : 0.5) : 0)

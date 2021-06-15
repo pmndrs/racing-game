@@ -1,10 +1,15 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 import { addEffect } from '@react-three/fiber'
 import { useStore, mutation } from '../store'
 
 interface BackgroundProps extends React.HTMLAttributes<SVGSVGElement> {
   gaugeRef: React.ForwardedRef<SVGStopElement>
   offset: React.SVGAttributes<SVGStopElement>['offset']
+}
+
+interface NitroProps extends React.HTMLAttributes<SVGSVGElement> {
+  boostRemaining: number
+  boostColor: string
 }
 
 const Background = ({ offset, gaugeRef, ...props }: BackgroundProps): JSX.Element => (
@@ -30,10 +35,27 @@ const Foreground = (props: React.SVGProps<SVGSVGElement>): JSX.Element => (
   </svg>
 )
 
+const NitroBar = ({ boostRemaining, boostColor, ...props }: NitroProps): JSX.Element => (
+  <svg width={289} height={55} viewBox="0 0 289 55" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <path className="nitro-bg-path" d="M13,12 L200,12" />
+    <path
+      className={`nitro-path ${boostRemaining <= 65 ? 'nitro-path-blink' : ''}`}
+      stroke={boostRemaining > 80 ? '#00ff00' : boostColor}
+      strokeDasharray={`${boostRemaining * 3.9}px`}
+      d="M15,12 L198,12"
+    />
+    <text className="nitro-text" x="0" y="17px">
+      <tspan>N</tspan>
+    </text>
+  </svg>
+)
+
 export function Speed(): JSX.Element {
   const textRef = useRef<HTMLSpanElement>(null)
   const gaugeRef = useRef<SVGStopElement>(null)
   const maxSpeed = useStore((state) => state.vehicleConfig.maxSpeed)
+  const { boostRemaining } = useStore((state) => state.boost)
+  const boostColor = useMemo(() => (boostRemaining <= 80 && boostRemaining >= 65 ? '#FFE600' : boostRemaining < 65 ? '#FF0000' : ''), [boostRemaining])
 
   let currentOffset = '1.00'
   let currentSpeed = '0'
@@ -66,6 +88,9 @@ export function Speed(): JSX.Element {
       </div>
       <div className="speed-text">
         <span ref={textRef}>{currentSpeed}</span> mph
+      </div>
+      <div className="nitro-bar">
+        <NitroBar boostRemaining={boostRemaining} boostColor={boostColor} />
       </div>
     </div>
   )

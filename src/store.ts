@@ -12,12 +12,16 @@ export const cameras = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE'] as const
 
 const controls = {
   backward: false,
-  boost: false,
   brake: false,
   forward: false,
   honk: false,
   left: false,
   right: false,
+}
+
+const boost = {
+  boostActive: false,
+  boostRemaining: 100,
 }
 
 export const debug = false as const
@@ -79,7 +83,7 @@ const wheelInfos: WheelInfos = [
 
 type Camera = typeof cameras[number]
 export type Controls = typeof controls
-
+export type Boost = typeof boost
 export interface CannonApi extends Object3D {
   api: WorkerApi
 }
@@ -101,6 +105,7 @@ export type WheelInfos = WheelInfo[]
 interface IState {
   camera: Camera
   controls: Controls
+  boost: Boost
   debug: boolean
   dpr: number
   editor: boolean
@@ -124,6 +129,7 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
   return {
     camera: cameras[0],
     controls,
+    boost,
     debug,
     dpr,
     editor: false,
@@ -170,7 +176,7 @@ export const reset = (set: SetState<IState>) =>
     state.raycast.chassisBody.current?.api.angularVelocity.set(...angularVelocity)
     state.raycast.chassisBody.current?.api.rotation.set(...rotation)
 
-    return { ...state, finished: 0 }
+    return { ...state, finished: 0, boost }
   })
 
 // Make the store shallow compare by default

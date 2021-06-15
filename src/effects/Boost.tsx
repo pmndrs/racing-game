@@ -17,17 +17,16 @@ export function Boost({ count = 12, opacity = 0.5, size = 0.1 }: BoostProps): JS
   const ref = useRef<InstancedMesh>(null!)
   let n: number
   let j: number
-  let controls: ReturnType<typeof getState>['controls']
   let progress: number
   useFrame((state) => {
-    controls = getState().controls
+    const boostActive = getState().boost.boostActive
     for (let i = 0; i < count; i += boostPositions.length) {
       n = MathUtils.randFloatSpread(0.05)
       for (j = 0; j < boostPositions.length; j++) {
         progress = (state.clock.getElapsedTime() + (i + j) * 0.2) % 1
         o.position.set(boostPositions[j].x + n, boostPositions[j].y, boostPositions[j].z - progress * 0.75)
         o.rotation.z += progress / 2
-        o.scale.setScalar(controls.boost ? (1 - progress) * 2 : 0)
+        o.scale.setScalar(boostActive ? (1 - progress) * 2 : 0)
         o.matrixWorldNeedsUpdate = true
         o.updateMatrixWorld()
         ref.current.setMatrixAt(i + j, o.matrixWorld)

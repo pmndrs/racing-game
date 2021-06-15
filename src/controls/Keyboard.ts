@@ -51,7 +51,7 @@ export function Keyboard() {
     { keys: ['ArrowRight', 'd', 'D'], fn: (right) => set((state) => ({ ...state, controls: { ...state.controls, right } })) },
     { keys: [' '], fn: (brake) => set((state) => ({ ...state, controls: { ...state.controls, brake } })) },
     { keys: ['h', 'H'], fn: (honk) => set((state) => ({ ...state, controls: { ...state.controls, honk } })) },
-    { keys: ['Shift'], fn: (boost) => set((state) => ({ ...state, controls: { ...state.controls, boost } })) },
+    { keys: ['Shift'], fn: (boostActive) => set((state) => ({ ...state, boost: { ...state.boost, boostActive } })) },
     { keys: ['r', 'R'], fn: () => reset(set), up: false },
     { keys: ['.'], fn: () => set((state) => ({ ...state, editor: !state.editor })), up: false },
     { keys: ['i', 'I'], fn: () => set((state) => ({ ...state, help: !state.help, leaderboard: false })), up: false },
