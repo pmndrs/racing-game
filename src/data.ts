@@ -21,8 +21,8 @@ const config = {
 
 const isString = (v: unknown): v is string => typeof v === 'string'
 
-const key = isString(VITE_SUPABASE_URL) ? VITE_SUPABASE_URL : config.key
-const url = isString(VITE_SUPABASE_ANON_KEY) ? VITE_SUPABASE_ANON_KEY : config.url
+const url = isString(VITE_SUPABASE_URL) ? VITE_SUPABASE_URL : config.url
+const key = isString(VITE_SUPABASE_ANON_KEY) ? VITE_SUPABASE_ANON_KEY : config.key
 
 const client = createClient(url, key)
 
