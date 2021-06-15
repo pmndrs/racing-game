@@ -1,15 +1,10 @@
-import { useEffect, useRef, useMemo } from 'react'
+import { useEffect, useRef } from 'react'
 import { addEffect } from '@react-three/fiber'
 import { useStore, mutation } from '../store'
 
 interface BackgroundProps extends React.HTMLAttributes<SVGSVGElement> {
   gaugeRef: React.ForwardedRef<SVGStopElement>
   offset: React.SVGAttributes<SVGStopElement>['offset']
-}
-
-interface NitroProps extends React.HTMLAttributes<SVGSVGElement> {
-  boostRemaining: number
-  boostColor: string
 }
 
 const Background = ({ offset, gaugeRef, ...props }: BackgroundProps): JSX.Element => (
@@ -35,47 +30,44 @@ const Foreground = (props: React.SVGProps<SVGSVGElement>): JSX.Element => (
   </svg>
 )
 
-const NitroBar = ({ boostRemaining, boostColor, ...props }: NitroProps): JSX.Element => (
-  <svg width={289} height={55} viewBox="0 0 289 55" xmlns="http://www.w3.org/2000/svg" {...props}>
-    <path className="nitro-bg-path" d="M13,12 L200,12" />
-    <path
-      className={`nitro-path ${boostRemaining <= 65 ? 'nitro-path-blink' : ''}`}
-      stroke={boostRemaining > 80 ? '#00ff00' : boostColor}
-      strokeDasharray={`${boostRemaining * 3.9}px`}
-      d="M15,12 L198,12"
-    />
-    <text className="nitro-text" x="0" y="17px">
-      <tspan>N</tspan>
-    </text>
-  </svg>
-)
-
 export function Speed(): JSX.Element {
-  const textRef = useRef<HTMLSpanElement>(null)
-  const gaugeRef = useRef<SVGStopElement>(null)
+  const textRef = useRef<HTMLSpanElement>(null!)
+  const gaugeRef = useRef<SVGStopElement>(null!)
+  const boostRef = useRef<SVGPathElement>(null!)
   const maxSpeed = useStore((state) => state.vehicleConfig.maxSpeed)
-  const { boostRemaining } = useStore((state) => state.boost)
-  const boostColor = useMemo(() => (boostRemaining <= 80 && boostRemaining >= 65 ? '#FFE600' : boostRemaining < 65 ? '#FF0000' : ''), [boostRemaining])
 
+  let t = 0
   let currentOffset = '1.00'
   let currentSpeed = '0'
+  let computedSpeed: number
+  let newOffset: string
+  let newSpeed: string
+  let boostRemaining: number
+  let boostColor: string
 
   useEffect(() => {
-    return addEffect(() => {
-      if (textRef.current && gaugeRef.current) {
-        const computedSpeed = mutation.speed * 1.5
+    return addEffect((time) => {
+      if (time - t > 200) {
+        t = time
 
-        const newOffset = `${Math.max(1 - computedSpeed / maxSpeed, 0).toFixed(2)}`
+        computedSpeed = mutation.speed * 1.5
+        newOffset = `${Math.max(1 - computedSpeed / maxSpeed, 0).toFixed(2)}`
         if (newOffset !== currentOffset) {
           gaugeRef.current.setAttribute('offset', newOffset)
           currentOffset = newOffset
         }
 
-        const newSpeed = `${computedSpeed.toFixed()}`
+        newSpeed = `${computedSpeed.toFixed()}`
         if (newSpeed !== currentSpeed) {
           textRef.current.innerText = newSpeed
           currentSpeed = newSpeed
         }
+
+        boostRemaining = mutation.boostRemaining
+        boostColor = boostRemaining <= 80 && boostRemaining >= 65 ? '#FFE600' : boostRemaining < 65 ? '#FF0000' : ''
+        boostRef.current.classList.toggle('nitro-path-blink', boostRemaining <= 65)
+        boostRef.current.style.stroke = boostRemaining > 80 ? '#00ff00' : boostColor
+        boostRef.current.style.strokeDasharray = `${boostRemaining * 3.9}px`
       }
     })
   }, [])
@@ -90,7 +82,13 @@ export function Speed(): JSX.Element {
         <span ref={textRef}>{currentSpeed}</span> mph
       </div>
       <div className="nitro-bar">
-        <NitroBar boostRemaining={boostRemaining} boostColor={boostColor} />
+        <svg width={289} height={55} viewBox="0 0 289 55" xmlns="http://www.w3.org/2000/svg">
+          <path className="nitro-bg-path" d="M13,12 L200,12" />
+          <path ref={boostRef} className="nitro-path" d="M15,12 L198,12" />
+          <text className="nitro-text" x="0" y="17px">
+            <tspan>N</tspan>
+          </text>
+        </svg>
       </div>
     </div>
   )

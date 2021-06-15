@@ -190,10 +190,11 @@ body {
 .nitro-path {
   stroke-width: 9px;
   stroke-dashoffset: 100%;
+  transition: stroke-dasharray 0.5s;
 }
 
 .nitro-path-blink {
-  animation: nitroBlink 0.8s infinite;
+  animation: nitroBlink 0.5s infinite;
 }
 
 @keyframes nitroBlink {

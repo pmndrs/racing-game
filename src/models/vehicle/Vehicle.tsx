@@ -21,23 +21,13 @@ interface VehicleProps {
 
 export function Vehicle({ angularVelocity, children, position, rotation }: VehicleProps) {
   const defaultCamera = useThree((state) => state.camera)
-  const [set, camera, editor, raycast, ready, { force, maxBrake, steer, maxSpeed }] = useStore((s) => [
-    s.set,
-    s.camera,
-    s.editor,
-    s.raycast,
-    s.ready,
-    s.vehicleConfig,
-  ])
+  const [camera, editor, raycast, ready, { force, maxBrake, steer, maxSpeed }] = useStore((s) => [s.camera, s.editor, s.raycast, s.ready, s.vehicleConfig])
   // @ts-expect-error We for some reason have an api property on our raycast.
   // However useRaycastVehicle doesn't except a custom type defintion that has this api property.
   const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
 
-  useLayoutEffect(() => {
-    // @ts-expect-error use-cannon has incorrect type definitions.
-    const sub = api.sliding.subscribe((sliding) => (mutation.sliding = sliding))
-    return () => void sub()
-  }, [])
+  // @ts-expect-error use-cannon has incorrect type definitions.
+  useLayoutEffect(() => api.sliding.subscribe((sliding) => (mutation.sliding = sliding)), [])
 
   useLayoutEffect(() => {
     if (defaultCamera instanceof PerspectiveCamera && raycast.chassisBody.current) {
@@ -56,20 +46,20 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
   let controls
   let boostValue = false
   let swayValue = 0
+  let boostActive = false
+  let boostRemaining = 0
 
   useFrame((state, delta) => {
-    speed = mutation.speed
-    const { boostActive, boostRemaining } = getState().boost
-
-    if (!ready) {
-      set((state) => ({ ...state, controls: { ...state.controls, forward: false, backward: false, left: false, right: false } }))
-    }
-    if (boostRemaining <= 51) {
-      set((state) => ({ ...state, boost: { ...state.boost, boostActive: false } }))
-    } else if (boostRemaining >= 51 && boostActive) {
-      set((state) => ({ ...state, boost: { ...state.boost, boostRemaining: boostActive ? boostRemaining - 0.5 : boostRemaining } }))
-    }
     controls = getState().controls
+    speed = mutation.speed
+    boostActive = mutation.boostActive
+    boostRemaining = mutation.boostRemaining
+
+    if (boostRemaining <= 51) {
+      mutation.boostActive = false
+    } else if (boostRemaining >= 51 && boostActive) {
+      mutation.boostRemaining = boostActive ? boostRemaining - 0.5 : boostRemaining
+    }
 
     engineValue = lerp(
       engineValue,
@@ -142,11 +132,12 @@ function VehicleAudio() {
   let rpmTarget = 0
   let controls
   let speed = 0
+  let boostActive = false
   const gears = 10
   useFrame((_, delta) => {
     speed = mutation.speed
     controls = getState().controls
-    const { boostActive } = getState().boost
+    boostActive = mutation.boostActive
 
     boostAudio.current.setVolume(sound ? (boostActive ? Math.pow(speed / maxSpeed, 1.5) + 0.5 : 0) * 5 : 0)
     boostAudio.current.setPlaybackRate(Math.pow(speed / maxSpeed, 1.5) + 0.5)

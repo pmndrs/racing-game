@@ -91,11 +91,10 @@ export const Chassis = forwardRef<Object3D, ChassisProps>(({ args = [2, 1.1, 4.7
     ref,
   )
 
-  useLayoutEffect(() => {
-    const sub = api.velocity.subscribe((velocity) => Object.assign(mutation, { velocity, speed: v.set(velocity[0], velocity[1], velocity[2]).length() }))
-    // @ts-expect-error use-cannon has incorrect type definitions.
-    return () => void sub()
-  }, [])
+  useLayoutEffect(
+    () => api.velocity.subscribe((velocity) => Object.assign(mutation, { velocity, speed: v.set(...(velocity as [number, number, number])).length() })),
+    [],
+  )
 
   useEffect(() => {
     if (reset) {

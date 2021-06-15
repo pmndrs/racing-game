@@ -18,11 +18,6 @@ const controls = {
   right: false,
 }
 
-const boost = {
-  boostActive: false,
-  boostRemaining: 100,
-}
-
 export const debug = false as const
 export const dpr = 1.5 as const
 export const levelLayer = 1 as const
@@ -82,7 +77,6 @@ const wheelInfos: WheelInfos = [
 
 type Camera = typeof cameras[number]
 export type Controls = typeof controls
-export type Boost = typeof boost
 
 type Getter = GetState<IState>
 
@@ -101,7 +95,6 @@ export type WheelInfos = WheelInfo[]
 interface IState {
   camera: Camera
   controls: Controls
-  boost: Boost
   reset: boolean
   debug: boolean
   dpr: number
@@ -126,7 +119,6 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
   return {
     camera: cameras[0],
     controls,
-    boost,
     debug,
     dpr,
     reset: false,
@@ -167,13 +159,17 @@ export const mutation = {
   start: 0,
   finish: 0,
   sliding: false,
+  boostActive: false,
+  boostRemaining: 100,
 }
 
 export const reset = (set: SetState<IState>) =>
   set((state) => {
     mutation.start = 0
     mutation.finish = 0
-    return { ...state, reset: true, finished: 0, boost }
+    mutation.boostActive = false
+    mutation.boostRemaining = 100
+    return { ...state, reset: true, finished: 0 }
   })
 
 // Make the store shallow compare by default

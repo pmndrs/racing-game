@@ -1,7 +1,7 @@
 import { Object3D, Vector3, MathUtils } from 'three'
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { getState } from '../store'
+import { mutation } from '../store'
 import type { InstancedMesh } from 'three'
 
 const o = new Object3D()
@@ -15,12 +15,14 @@ interface BoostProps {
 
 export function Boost({ count = 12, opacity = 0.5, size = 0.1 }: BoostProps): JSX.Element {
   const ref = useRef<InstancedMesh>(null!)
+  let i: number
   let n: number
   let j: number
   let progress: number
+  let boostActive = false
   useFrame((state) => {
-    const boostActive = getState().boost.boostActive
-    for (let i = 0; i < count; i += boostPositions.length) {
+    boostActive = mutation.boostActive
+    for (i = 0; i < count; i += boostPositions.length) {
       n = MathUtils.randFloatSpread(0.05)
       for (j = 0; j < boostPositions.length; j++) {
         progress = (state.clock.getElapsedTime() + (i + j) * 0.2) % 1
