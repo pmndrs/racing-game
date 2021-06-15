@@ -18,10 +18,10 @@ export const getScores = (limit = 50) =>
     .order('time')
     .then(({ data }) => data)
 
-export const insertScore = ({ time, name }) =>
+export const insertScore = ({ time, name, thumbnail }) =>
   client
     .from('scores')
-    .insert({ time, name })
+    .insert({ time, name, thumbnail })
     .then(({ data }) => data)
 
 export const setupSession = (set) => {
