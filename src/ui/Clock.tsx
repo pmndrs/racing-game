@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { addEffect } from '@react-three/fiber'
 import { mutation } from '../store'
 import { readableTime } from './LeaderBoard'
 
@@ -8,9 +9,8 @@ export function Clock() {
   let currentText = '0.00'
 
   useEffect(() => {
-    let frame: number
     let lastTime = 0
-    const onFrame: FrameRequestCallback = (time) => {
+    return addEffect((time) => {
       if (ref.current && time - lastTime >= 100) {
         lastTime = time
         const { start, finish } = mutation
@@ -21,10 +21,7 @@ export function Clock() {
           currentText = newText
         }
       }
-      frame = requestAnimationFrame(onFrame)
-    }
-    frame = requestAnimationFrame(onFrame)
-    return () => cancelAnimationFrame(frame)
+    })
   }, [])
 
   return (
