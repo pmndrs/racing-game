@@ -1,16 +1,21 @@
 import { useBox } from '@react-three/cannon'
 import { mutation, useStore } from '../store'
+import type { BoxProps } from '@react-three/cannon'
 
-export function Goal({ start, args = [1, 1, 1], ...props }) {
+interface GoalProps extends BoxProps {
+  which: 'finish' | 'start'
+}
+
+export function Goal({ which, args = [1, 1, 1], ...props }: GoalProps): null {
   const set = useStore((state) => state.set)
   const onCollide = () => {
-    if (start) {
+    if (which === 'start') {
       mutation.start = Date.now()
       mutation.finish = 0
-    } else {
+    }
+    if (which === 'finish' && mutation.start && !mutation.finish) {
       mutation.finish = Date.now()
-      const time = !mutation.start && !mutation.finish ? 0 : mutation.finish ? mutation.finish - mutation.start : Date.now() - mutation.start
-      set({ finished: time })
+      set({ finished: mutation.finish - mutation.start })
     }
   }
   useBox(() => ({ isTrigger: true, args, userData: { trigger: true }, onCollide, ...props }), undefined, [args, props])

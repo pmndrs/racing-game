@@ -1,10 +1,27 @@
-import { useControls, folder } from 'leva'
-import { useStore, vehicleConfig, wheelInfo } from '../store'
+import { button, folder, useControls } from 'leva'
+import { debug, dpr, shadows, stats, useStore, vehicleConfig, wheelInfo } from '../store'
 
 const { directionLocal, axleLocal, chassisConnectionPointLocal, rollInfluence, ...filteredWheelInfo } = wheelInfo
 
+const initialValues = {
+  debug,
+  dpr,
+  shadows,
+  stats,
+  ...filteredWheelInfo,
+  ...vehicleConfig,
+}
+
 export function Editor() {
-  const [get, set, raycast] = useStore((state) => [state.get, state.set, state.raycast])
+  const [get, set, debug, dpr, raycast, shadows, stats] = useStore((state) => [
+    state.get,
+    state.set,
+    state.debug,
+    state.dpr,
+    state.raycast,
+    state.shadows,
+    state.stats,
+  ])
   const { radius, width, height, front, back, steer, force, maxBrake, maxSpeed } = vehicleConfig
   const {
     suspensionStiffness,
@@ -18,8 +35,8 @@ export function Editor() {
 
   const [, setVehicleEditor] = useControls(() => ({
     Performance: folder({
-      shadows: { value: true, onChange: (shadows) => set({ shadows }) },
-      dpr: { value: 1.5, min: 1, max: 2, step: 0.5, onChange: (dpr) => set({ dpr }) },
+      dpr: { value: dpr, min: 1, max: 2, step: 0.5, onChange: (dpr) => set({ dpr }) },
+      shadows: { value: shadows, onChange: (shadows) => set({ shadows }) },
     }),
     Vehicle: folder(
       {
@@ -240,15 +257,15 @@ export function Editor() {
     ),
     Debug: folder(
       {
-        reset: {
-          value: false,
-          onChange: () => setVehicleEditor({ debug: false, reset: false, ...vehicleConfig, ...filteredWheelInfo }),
-        },
-        stats: { value: false, onChange: (stats) => set({ stats }) },
-        debug: { value: false, onChange: (debug) => set({ debug }) },
+        debug: { value: debug, onChange: (debug) => set({ debug }) },
+        stats: { value: stats, onChange: (stats) => set({ stats }) },
       },
       { collapsed: true },
     ),
+    reset: button(() => {
+      // @ts-expect-error -- FIXME: types when using folders seem to be broken
+      setVehicleEditor(initialValues)
+    }),
   }))
   return null
 }

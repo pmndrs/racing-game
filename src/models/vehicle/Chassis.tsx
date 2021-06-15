@@ -1,11 +1,52 @@
+import type { BoxBufferGeometry, Mesh, MeshStandardMaterial, Object3D } from 'three'
 import { Color, MathUtils } from 'three'
-import { forwardRef, useRef, useCallback } from 'react'
+import React, { forwardRef, useRef, useCallback } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGLTF, PositionalAudio } from '@react-three/drei'
+import type { BoxProps } from '@react-three/cannon'
 import { useBox } from '@react-three/cannon'
 import debounce from 'lodash-es/debounce'
 import clamp from 'lodash-es/clamp'
-import { useStore, mutation } from '../../store'
+import { useStore, mutation, getState } from '../../store'
+import type { GLTF } from 'three-stdlib'
+import type { PositionalAudio as PositionalAudioImpl } from 'three'
+
+type GLTFResult = GLTF & {
+  nodes: {
+    /* Manually typed meshes names */
+    Chassis_1: Mesh
+    Chassis_2: Mesh
+    Glass: Mesh
+    BrakeLights: Mesh
+    HeadLights: Mesh
+    Cabin_Grilles: Mesh
+    Undercarriage: Mesh
+    TurnSignals: Mesh
+    Chrome: Mesh
+    Wheel_1: Mesh
+    Wheel_2: Mesh
+    License_1: Mesh
+    License_2: Mesh
+    Cube013: Mesh
+    Cube013_1: Mesh
+    Cube013_2: Mesh
+    'pointer-left': Mesh
+    'pointer-right': Mesh
+  }
+  materials: {
+    /* Manually typed meshes names */
+    BodyPaint: MeshStandardMaterial
+    License: MeshStandardMaterial
+    Chassis_2: MeshStandardMaterial
+    Glass: MeshStandardMaterial
+    BrakeLight: MeshStandardMaterial
+    defaultMatClone: MeshStandardMaterial
+    HeadLight: MeshStandardMaterial
+    Black: MeshStandardMaterial
+    Undercarriage: MeshStandardMaterial
+    TurnSignal: MeshStandardMaterial
+  }
+}
 
 const c = new Color()
 
@@ -17,28 +58,42 @@ source: https://sketchfab.com/3d-models/classic-muscle-car-641efc889e5f4543bae51
 title: Classic Muscle car
 */
 
-export const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children, ...props }, ref) => {
-  const glass = useRef()
-  const brake = useRef()
-  const wheel = useRef()
-  const needle = useRef()
-  const crashAudio = useRef()
+interface ChassisProps extends BoxProps {
+  args?: number[]
+  mass?: number
+  children: React.ReactNode
+}
+type MaterialMash = Mesh<BoxBufferGeometry, MeshStandardMaterial>
+
+export const Chassis = forwardRef<Object3D, ChassisProps>(({ args = [2, 1.1, 4.7], mass = 500, children, ...props }, ref) => {
+  const glass = useRef<MaterialMash>(null!)
+  const brake = useRef<MaterialMash>(null!)
+  const wheel = useRef<MaterialMash>(null!)
+  const needle = useRef<MaterialMash>(null!)
+  const crashAudio = useRef<PositionalAudioImpl>(null!)
   const [ready, camera, vehicleConfig] = useStore((s) => [s.ready, s.camera, s.vehicleConfig])
-  const { nodes: n, materials: m } = useGLTF('/models/chassis-draco.glb')
+  const { nodes: n, materials: m } = useGLTF('/models/chassis-draco.glb') as GLTFResult
   const onCollide = useCallback(
     debounce((e) => {
-      if (e.body.userData.trigger || !useStore.getState().sound) return
+      if (e.body.userData.trigger || !getState().sound) return
       crashAudio.current?.setVolume(clamp(e.contact.impactVelocity / 10, 0.2, 1))
       if (!crashAudio.current?.isPlaying) crashAudio.current?.play()
     }, 200),
+    [],
   )
-  const [, api] = useBox(() => ({ mass, args, allowSleep: false, onCollide, ...props }), ref)
+  const [, api] = useBox(
+    () => ({ mass, args, allowSleep: false, onCollide, ...props }),
+    // @ts-expect-error Sigh, generics...
+    // ref is officially a ForwardedRef<Object3D>... Which is correct and is actually a parent of the type:
+    // MutableRefObject<Object3D>, however as it's not the exact type, typescript will error.
+    ref,
+  )
 
   let speed = 0
   let ctrl
   useFrame((_, delta) => {
     speed = mutation.speed
-    ctrl = useStore.getState().controls
+    ctrl = getState().controls
     brake.current.material.color.lerp(c.set(ctrl.brake ? '#555' : 'white'), delta * 10)
     brake.current.material.emissive.lerp(c.set(ctrl.brake ? 'red' : 'red'), delta * 10)
     brake.current.material.opacity = MathUtils.lerp(brake.current.material.opacity, ctrl.brake ? 1 : 0.3, delta * 10)
@@ -49,6 +104,7 @@ export const Chassis = forwardRef(({ args = [2, 1.1, 4.7], mass = 500, children,
   })
 
   return (
+    // @ts-expect-error Uhm why is apy not on the groupprops???
     <group ref={ref} api={api} dispose={null}>
       <group position={[0, -0.2, -0.2]}>
         <mesh castShadow receiveShadow geometry={n.Chassis_1.geometry} material={m.BodyPaint} material-color="#f0c050" />
