@@ -503,10 +503,10 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
 
-"@react-three/cannon@2.1.2":
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/@react-three/cannon/-/cannon-2.1.2.tgz#b4deb287940eb96088b9f0305f7035c1b461d588"
-  integrity sha512-3FjeTm72ASEJaWWU6E625TFXaNdDuQqFCG+lImggVoOb+kmcNN0aEjswMQhMyvW5mF9mGWF8bI2otITl5qWfAg==
+"@react-three/cannon@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@react-three/cannon/-/cannon-2.3.1.tgz#06d32c4c4651e13bb2f533ffcb770f2312410a24"
+  integrity sha512-n5GjVopoM5jZ5T96sdR9tDNxVUKYLAdwZOptoYRqpq5MXDiheB+PLvDXNSZ3EG18J4vSA/gzUtVE7oLxbq0CwQ==
   dependencies:
     cannon-es "^0.17.1"
     cannon-es-debugger "^0.1.4"
