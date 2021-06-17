@@ -1,5 +1,3 @@
-import type { HTMLAttributes } from 'react'
-
 import { useStore } from '../store'
 
 const controlOptions = [
@@ -19,7 +17,7 @@ const controlOptions = [
   { keys: ['L'], action: 'Leaderboards' },
 ]
 
-export function Help(): JSX.Element {
+export function Help() {
   const [set, help, sound] = useStore((state) => [state.set, state.help, state.sound])
   return (
     <>
@@ -39,7 +37,7 @@ export function Help(): JSX.Element {
   )
 }
 
-export function Keys(props: HTMLAttributes<HTMLDivElement>): JSX.Element {
+export function Keys(props: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div {...props}>
       {controlOptions.map(({ keys, action }) => (

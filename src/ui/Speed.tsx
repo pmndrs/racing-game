@@ -1,13 +1,10 @@
 import { useEffect, useRef } from 'react'
 import { addEffect } from '@react-three/fiber'
-
-import type { ForwardedRef, HTMLAttributes, SVGAttributes, SVGProps } from 'react'
-
 import { useStore, mutation } from '../store'
 
-interface BackgroundProps extends HTMLAttributes<SVGSVGElement> {
-  gaugeRef: ForwardedRef<SVGStopElement>
-  offset: SVGAttributes<SVGStopElement>['offset']
+interface BackgroundProps extends React.HTMLAttributes<SVGSVGElement> {
+  gaugeRef: React.ForwardedRef<SVGStopElement>
+  offset: React.SVGAttributes<SVGStopElement>['offset']
 }
 
 const Background = ({ offset, gaugeRef, ...props }: BackgroundProps): JSX.Element => (
@@ -22,7 +19,7 @@ const Background = ({ offset, gaugeRef, ...props }: BackgroundProps): JSX.Elemen
   </svg>
 )
 
-const Foreground = (props: SVGProps<SVGSVGElement>): JSX.Element => (
+const Foreground = (props: React.SVGProps<SVGSVGElement>): JSX.Element => (
   <svg width={289} height={55} viewBox="0 0 289 55" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       fillRule="evenodd"

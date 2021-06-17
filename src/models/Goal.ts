@@ -1,6 +1,5 @@
 import { useBox } from '@react-three/cannon'
 import { mutation, useStore } from '../store'
-
 import type { BoxProps } from '@react-three/cannon'
 
 interface GoalProps extends BoxProps {
