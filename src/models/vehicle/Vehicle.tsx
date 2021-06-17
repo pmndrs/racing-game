@@ -1,31 +1,32 @@
 import { MathUtils, PerspectiveCamera, Vector3 } from 'three'
-import { useRef, useLayoutEffect, useEffect } from 'react'
+import React, { useRef, useLayoutEffect, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { PositionalAudio } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
-
-import type { ReactNode } from 'react'
-import type { PositionalAudio as PositionalAudioImpl } from 'three'
-
 import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
 import { Dust, Skid, Boost } from '../../effects'
 import { useStore, getState, mutation } from '../../store'
-
-import type { ChassisProps } from './Chassis'
+import type { PositionalAudio as PositionalAudioImpl } from 'three'
 
 const { lerp } = MathUtils
 const v = new Vector3()
 
-interface VehicleProps extends Pick<ChassisProps, 'angularVelocity' | 'position' | 'rotation'> {
-  children: ReactNode
+interface VehicleProps {
+  angularVelocity: [number, number, number]
+  children: React.ReactNode
+  position: [number, number, number]
+  rotation: [number, number, number]
 }
 
 export function Vehicle({ angularVelocity, children, position, rotation }: VehicleProps) {
   const defaultCamera = useThree((state) => state.camera)
   const [camera, editor, raycast, ready, { force, maxBrake, steer, maxSpeed }] = useStore((s) => [s.camera, s.editor, s.raycast, s.ready, s.vehicleConfig])
-  const [vehicle, api] = useRaycastVehicle(() => raycast, undefined, [raycast])
+  // @ts-expect-error We for some reason have an api property on our raycast.
+  // However useRaycastVehicle doesn't except a custom type defintion that has this api property.
+  const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
 
+  // @ts-expect-error use-cannon has incorrect type definitions.
   useLayoutEffect(() => api.sliding.subscribe((sliding) => (mutation.sliding = sliding)), [])
 
   useLayoutEffect(() => {

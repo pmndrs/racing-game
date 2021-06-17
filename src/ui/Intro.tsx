@@ -1,15 +1,12 @@
-import { Suspense, useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { Footer } from '@pmndrs/branding'
 import { useProgress } from '@react-three/drei'
-
-import type { Dispatch, ReactNode, SetStateAction } from 'react'
-
-import { useStore } from '../store'
-import { setupSession, unAuthenticateUser } from '../data'
 import { Keys } from './Help'
 import { Auth } from './Auth'
+import { useStore } from '../store'
+import { setupSession, unAuthenticateUser } from '../data'
 
-function Ready({ setReady }: { setReady: Dispatch<SetStateAction<boolean>> }) {
+function Ready({ setReady }: { setReady: React.Dispatch<React.SetStateAction<boolean>> }) {
   useEffect(() => () => void setReady(true), [])
   return null
 }
@@ -19,11 +16,7 @@ function Loader() {
   return <div>loading {progress.toFixed()} %</div>
 }
 
-interface IntroProps {
-  children: ReactNode
-}
-
-export function Intro({ children }: IntroProps): JSX.Element {
+export function Intro({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false)
   const [clicked, setClicked] = useState(false)
   const [session, set] = useStore((state) => [state.session, state.set])

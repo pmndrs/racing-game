@@ -2,7 +2,6 @@ import { createRef } from 'react'
 import create from 'zustand'
 import shallow from 'zustand/shallow'
 import type { MutableRefObject } from 'react'
-import type { WheelInfoOptions } from '@react-three/cannon'
 import type { Session } from '@supabase/supabase-js'
 import type { Group, Object3D } from 'three'
 import type { GetState, SetState, StateSelector } from 'zustand'
@@ -37,40 +36,25 @@ export const vehicleConfig = {
   force: 1800,
   maxBrake: 65,
   maxSpeed: 128,
-} as const
+}
 
-type WheelInfo = Required<
-  Pick<
-    WheelInfoOptions,
-    | 'radius'
-    | 'directionLocal'
-    | 'suspensionStiffness'
-    | 'suspensionRestLength'
-    | 'axleLocal'
-    | 'chassisConnectionPointLocal'
-    | 'useCustomSlidingRotationalSpeed'
-    | 'customSlidingRotationalSpeed'
-    | 'rollInfluence'
-    | 'frictionSlip'
-    | 'isFrontWheel'
-  >
->
-
-export const wheelInfo: WheelInfo = {
+export const wheelInfo = {
   radius: vehicleConfig.radius,
   directionLocal: [0, -1, 0],
   suspensionStiffness: 30,
   suspensionRestLength: 0.35,
   axleLocal: [-1, 0, 0],
   chassisConnectionPointLocal: [1, 0, 1],
+  isFrontWheel: false,
   useCustomSlidingRotationalSpeed: true,
   customSlidingRotationalSpeed: -0.01,
   rollInfluence: 0,
+  suspensionForce: 100,
   frictionSlip: 1.5,
-  isFrontWheel: false,
+  sideAcceleration: 3,
 }
 
-const wheelInfos: WheelInfo[] = [
+const wheelInfos: WheelInfos = [
   {
     ...wheelInfo,
     chassisConnectionPointLocal: [-vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.front],
@@ -99,12 +83,14 @@ type Getter = GetState<IState>
 interface Raycast {
   chassisBody: MutableRefObject<Object3D>
   wheels: [MutableRefObject<Object3D>, MutableRefObject<Object3D>, MutableRefObject<Object3D>, MutableRefObject<Object3D>]
-  wheelInfos: WheelInfo[]
+  wheelInfos: WheelInfos
 }
 
 export type Setter = SetState<IState>
 
 export type VehicleConfig = typeof vehicleConfig
+type WheelInfo = typeof wheelInfo
+export type WheelInfos = WheelInfo[]
 
 interface IState {
   camera: Camera
@@ -166,17 +152,7 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
   }
 })
 
-interface Mutation {
-  boostActive: boolean
-  boostRemaining: number
-  finish: number
-  sliding: boolean
-  speed: number
-  start: number
-  velocity: [number, number, number]
-}
-
-export const mutation: Mutation = {
+export const mutation = {
   // Everything in here is mutated to avoid even slight overhead
   velocity: [0, 0, 0],
   speed: 0,
