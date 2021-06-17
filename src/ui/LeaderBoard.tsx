@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
+
+import type { HTMLAttributes } from 'react'
+
 import { getScores } from '../data'
 import { useStore } from '../store'
+
 import type { SavedScore } from '../data'
 
 export function LeaderBoard(): JSX.Element {
@@ -33,7 +37,7 @@ const standingToImage: Record<1 | 2 | 3, string> = {
   3: 'images/bronze.png',
 }
 
-type ScoreProps = {
+interface ScoreProps {
   name: string
   standing: number
   time: number
@@ -41,7 +45,7 @@ type ScoreProps = {
 
 export const readableTime = (time: number): string => (time / 1000).toFixed(2)
 
-interface ScoresProps extends React.HTMLAttributes<HTMLUListElement> {
+interface ScoresProps extends HTMLAttributes<HTMLUListElement> {
   scores: SavedScore[]
 }
 
