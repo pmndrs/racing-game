@@ -1,12 +1,15 @@
-import { Object3D } from 'three'
+import { Euler, Object3D, Vector3, Matrix4 } from 'three'
 import { useRef, useLayoutEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { getState, mutation, useStore } from '../store'
 import type { MutableRefObject } from 'react'
-import type { Euler, InstancedMesh, Vector3 } from 'three'
+import type { InstancedMesh } from 'three'
 import type { Controls } from '../store'
 
+const v = new Vector3()
 const o = new Object3D()
+const m = new Matrix4()
+const e = new Euler()
 
 interface SkidProps {
   count?: number
@@ -23,8 +26,9 @@ export function Skid({ count = 500, opacity = 0.5, size = 0.4 }: SkidProps): JSX
   useFrame(() => {
     controls = getState().controls
     if (controls.brake && mutation.speed > 10) {
-      setItemAt(ref, chassisBody.current!.rotation, wheels[2].current!.position, index++)
-      setItemAt(ref, chassisBody.current!.rotation, wheels[3].current!.position, index++)
+      e.setFromRotationMatrix(m.extractRotation(chassisBody.current.matrix))
+      setItemAt(ref, e, wheels[2].current.getWorldPosition(v), index++)
+      setItemAt(ref, e, wheels[3].current.getWorldPosition(v), index++)
       if (index === count) index = 0
     }
   })

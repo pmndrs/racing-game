@@ -32,8 +32,8 @@ export function Dust({ count = 200, opacity = 0.1, size = 1 }: DustProps): JSX.E
     if (state.clock.getElapsedTime() - time > 0.02) {
       time = state.clock.getElapsedTime()
       // Set new trail
-      setItemAt(ref, wheels[2].current!.position, index++, intensity)
-      setItemAt(ref, wheels[3].current!.position, index++, intensity)
+      setItemAt(ref, wheels[2].current.getWorldPosition(v), index++, intensity)
+      setItemAt(ref, wheels[3].current.getWorldPosition(v), index++, intensity)
       if (index === count) index = 0
     } else {
       // Shrink old one
