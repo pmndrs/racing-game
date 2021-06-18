@@ -6,9 +6,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, typescript ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, typescript ]
 
 jobs:
   build:
@@ -17,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x]
+        node-version: [16.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -26,6 +26,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: yarn install
-    - run: yarn run prettier
-    - run: yarn run lint
-    - run: yarn run build
+    - run: npm run prettier
+    - run: npm run eslint
+    - run: npm run build
