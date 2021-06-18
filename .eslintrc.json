@@ -17,6 +17,7 @@
         },
         "plugins": ["@typescript-eslint"],
         "rules": {
+            "@typescript-eslint/ban-types": ["error", { "extendDefaults": true, "types": { "{}": false } }],
             "@typescript-eslint/consistent-type-imports": "error",
             "@typescript-eslint/explicit-module-boundary-types": "off",
             "@typescript-eslint/no-non-null-assertion": "off",

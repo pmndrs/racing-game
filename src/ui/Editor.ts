@@ -23,15 +23,7 @@ export function Editor() {
     state.stats,
   ])
   const { radius, width, height, front, back, steer, force, maxBrake, maxSpeed } = vehicleConfig
-  const {
-    suspensionStiffness,
-    suspensionRestLength,
-    useCustomSlidingRotationalSpeed,
-    customSlidingRotationalSpeed,
-    suspensionForce,
-    frictionSlip,
-    sideAcceleration,
-  } = raycast.wheelInfos[0]
+  const [{ suspensionStiffness, suspensionRestLength, useCustomSlidingRotationalSpeed, customSlidingRotationalSpeed, frictionSlip }] = raycast.wheelInfos
 
   const [, setVehicleEditor] = useControls(() => ({
     Performance: folder({
@@ -213,19 +205,6 @@ export function Editor() {
               },
             }),
         },
-        suspensionForce: {
-          value: suspensionForce,
-          min: 0,
-          max: 500,
-          step: 0.01,
-          onChange: (value) =>
-            set({
-              raycast: {
-                ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, suspensionForce: value })),
-              },
-            }),
-        },
         frictionSlip: {
           value: frictionSlip,
           min: -10,
@@ -236,19 +215,6 @@ export function Editor() {
               raycast: {
                 ...get().raycast,
                 wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, frictionSlip: value })),
-              },
-            }),
-        },
-        sideAcceleration: {
-          value: sideAcceleration,
-          min: -10,
-          max: 10,
-          step: 0.01,
-          onChange: (value) =>
-            set({
-              raycast: {
-                ...get().raycast,
-                wheelInfos: get().raycast.wheelInfos.map((info) => ({ ...info, sideAcceleration: value })),
               },
             }),
         },

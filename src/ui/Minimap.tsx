@@ -1,8 +1,10 @@
 import { OrthographicCamera, useFBO, useTexture } from '@react-three/drei'
 import { createPortal, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import type { Mesh, WebGLRenderTarget } from 'three'
 import { Box3, Matrix4, Scene, Vector3 } from 'three'
+
+import type { Mesh, WebGLRenderTarget } from 'three'
+
 import { useStore, levelLayer } from '../store'
 
 const m = new Matrix4()
@@ -50,7 +52,7 @@ function MinimapTexture({ buffer }: { buffer: WebGLRenderTarget }) {
   return <OrthographicCamera ref={camera} makeDefault={false} rotation={[-Math.PI / 2, 0, 0]} near={20} far={500} />
 }
 
-export function Minimap({ size = 200 }) {
+export function Minimap({ size = 200 }): JSX.Element {
   const player = useRef<Mesh>(null!)
   const miniMap = useRef<Mesh>(null!)
   const miniMapCamera = useRef<THREE.OrthographicCamera>(null!)

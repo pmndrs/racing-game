@@ -1,10 +1,13 @@
 import { useEffect, useRef } from 'react'
 import { addEffect } from '@react-three/fiber'
+
+import type { ForwardedRef, HTMLAttributes, SVGAttributes, SVGProps } from 'react'
+
 import { useStore, mutation } from '../store'
 
-interface BackgroundProps extends React.HTMLAttributes<SVGSVGElement> {
-  gaugeRef: React.ForwardedRef<SVGStopElement>
-  offset: React.SVGAttributes<SVGStopElement>['offset']
+interface BackgroundProps extends HTMLAttributes<SVGSVGElement> {
+  gaugeRef: ForwardedRef<SVGStopElement>
+  offset: SVGAttributes<SVGStopElement>['offset']
 }
 
 const Background = ({ offset, gaugeRef, ...props }: BackgroundProps): JSX.Element => (
@@ -19,7 +22,7 @@ const Background = ({ offset, gaugeRef, ...props }: BackgroundProps): JSX.Elemen
   </svg>
 )
 
-const Foreground = (props: React.SVGProps<SVGSVGElement>): JSX.Element => (
+const Foreground = (props: SVGProps<SVGSVGElement>): JSX.Element => (
   <svg width={289} height={55} viewBox="0 0 289 55" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       fillRule="evenodd"
@@ -31,9 +34,9 @@ const Foreground = (props: React.SVGProps<SVGSVGElement>): JSX.Element => (
 )
 
 export function Speed(): JSX.Element {
-  const textRef = useRef<HTMLSpanElement>(null!)
-  const gaugeRef = useRef<SVGStopElement>(null!)
-  const boostRef = useRef<SVGPathElement>(null!)
+  const textRef = useRef<HTMLSpanElement>(null)
+  const gaugeRef = useRef<SVGStopElement>(null)
+  const boostRef = useRef<SVGPathElement>(null)
   const maxSpeed = useStore((state) => state.vehicleConfig.maxSpeed)
 
   let t = 0
@@ -52,22 +55,24 @@ export function Speed(): JSX.Element {
 
         computedSpeed = mutation.speed * 1.5
         newOffset = `${Math.max(1 - computedSpeed / maxSpeed, 0).toFixed(2)}`
-        if (newOffset !== currentOffset) {
+        if (newOffset !== currentOffset && gaugeRef.current) {
           gaugeRef.current.setAttribute('offset', newOffset)
           currentOffset = newOffset
         }
 
         newSpeed = `${computedSpeed.toFixed()}`
-        if (newSpeed !== currentSpeed) {
+        if (newSpeed !== currentSpeed && textRef.current) {
           textRef.current.innerText = newSpeed
           currentSpeed = newSpeed
         }
 
         boostRemaining = mutation.boostRemaining
         boostColor = boostRemaining <= 80 && boostRemaining >= 65 ? '#FFE600' : boostRemaining < 65 ? '#FF0000' : ''
-        boostRef.current.classList.toggle('nitro-path-blink', boostRemaining <= 65)
-        boostRef.current.style.stroke = boostRemaining > 80 ? '#00ff00' : boostColor
-        boostRef.current.style.strokeDasharray = `${boostRemaining * 3.9}px`
+        if (boostRef.current) {
+          boostRef.current.classList.toggle('nitro-path-blink', boostRemaining <= 65)
+          boostRef.current.style.stroke = boostRemaining > 80 ? '#00ff00' : boostColor
+          boostRef.current.style.strokeDasharray = `${boostRemaining * 3.9}px`
+        }
       }
     })
   }, [])
