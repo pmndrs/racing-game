@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGLTF, useAnimations, PositionalAudio } from '@react-three/drei'
-import type { Triplet} from '@react-three/cannon'
+import type { Triplet } from '@react-three/cannon'
 import { useBox } from '@react-three/cannon'
 import { useStore } from '../../store'
 import type { Group, Mesh, MeshStandardMaterial } from 'three'
