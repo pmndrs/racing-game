@@ -29,7 +29,7 @@ export function Dust({ count = 200, opacity = 0.1, size = 1 }: DustProps): JSX.E
     controls = getState().controls
     intensity = MathUtils.lerp(intensity, (Number(mutation.sliding || controls.brake) * mutation.speed) / 40, delta * 8)
 
-    if (state.clock.getElapsedTime() - time > 0.02) {
+    if (state.clock.getElapsedTime() - time > 0.02 && wheels[2].current && wheels[3].current) {
       time = state.clock.getElapsedTime()
       // Set new trail
       setItemAt(ref, wheels[2].current.getWorldPosition(v), index++, intensity)

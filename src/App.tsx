@@ -2,13 +2,17 @@ import { useState } from 'react'
 import { Layers } from 'three'
 import { Canvas } from '@react-three/fiber'
 import { Physics, Debug } from '@react-three/cannon'
-import type { ReactNode } from 'react'
-import type { DirectionalLight } from 'three'
 import { Sky, Environment, PerspectiveCamera, OrthographicCamera, OrbitControls, Stats } from '@react-three/drei'
-import { angularVelocity, levelLayer, position, rotation, useStore } from './store'
+
+import type { ComponentType, ReactNode } from 'react'
+import type { DirectionalLight } from 'three'
+
+import { angularVelocity, levelLayer, mutation, position, rotation, useStore } from './store'
 import { Ramp, Track, Vehicle, Goal, Train, Heightmap } from './models'
 import { Clock, Speed, Minimap, Intro, Help, Editor, LeaderBoard, Finished } from './ui'
 import { HideMouse, Keyboard } from './controls'
+
+import type { Booleans, Numbers } from './store'
 
 const layers = new Layers()
 layers.enable(levelLayer)
@@ -24,9 +28,34 @@ function DebugScene({ children }: { children: ReactNode }) {
   )
 }
 
+const useToggle =
+  <P extends {}>(ToggledComponent: ComponentType<P>, toggle: Booleans | Numbers) =>
+  (props: P) => {
+    const value = useStore((state) => state[toggle])
+    return value ? <ToggledComponent {...props} /> : null
+  }
+
 export function App() {
   const [light, setLight] = useState<DirectionalLight>()
-  const [camera, dpr, editor, finished, map, shadows, stats] = useStore((s) => [s.camera, s.dpr, s.editor, s.finished, s.map, s.shadows, s.stats])
+  const [camera, dpr, editor, set, shadows] = useStore((s) => [s.camera, s.dpr, s.editor, s.set, s.shadows])
+
+  const onStart = () => {
+    mutation.start = Date.now()
+    mutation.finish = 0
+  }
+
+  const onFinish = () => {
+    if (mutation.start && !mutation.finish) {
+      mutation.finish = Date.now()
+      set({ finished: mutation.finish - mutation.start })
+    }
+  }
+
+  const ToggledEditor = useToggle(Editor, 'editor')
+  const ToggledFinished = useToggle(Finished, 'finished')
+  const ToggledMap = useToggle(Minimap, 'map')
+  const ToggledOrbitControls = useToggle(OrbitControls, 'editor')
+  const ToggledStats = useToggle(Stats, 'stats')
 
   return (
     <Intro>
@@ -58,21 +87,21 @@ export function App() {
             <Train />
             <Ramp args={[30, 6, 8]} position={[2, -1, 168.55]} rotation={[0, 0.49, Math.PI / 15]} />
             <Heightmap elementSize={0.5085} position={[327 - 66.5, -3.3, -473 + 213]} rotation={[-Math.PI / 2, 0, -Math.PI]} />
-            <Goal which="start" args={[0.001, 10, 18]} rotation={[0, 0.55, 0]} position={[-27, 1, 180]} />
-            <Goal which="finish" args={[0.001, 10, 18]} rotation={[0, -1.2, 0]} position={[-104, 1, -189]} />
+            <Goal args={[0.001, 10, 18]} onCollideEnd={onStart} rotation={[0, 0.55, 0]} position={[-27, 1, 180]} />
+            <Goal args={[0.001, 10, 18]} onCollideBegin={onFinish} rotation={[0, -1.2, 0]} position={[-104, 1, -189]} />
           </DebugScene>
         </Physics>
         <Track />
         <Environment files={'textures/dikhololo_night_1k.hdr'} />
-        {map && <Minimap />}
-        {editor && <OrbitControls />}
+        <ToggledMap />
+        <ToggledOrbitControls />
       </Canvas>
       <Clock />
-      {editor && <Editor />}
-      {finished && <Finished />}
+      <ToggledEditor />
+      <ToggledFinished />
       <Help />
       <Speed />
-      {stats && <Stats />}
+      <ToggledStats />
       <LeaderBoard />
       <HideMouse />
       <Keyboard />
