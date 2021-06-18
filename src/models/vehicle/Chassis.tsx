@@ -3,7 +3,7 @@ import { Color, Vector3, MathUtils } from 'three'
 import React, { forwardRef, useRef, useCallback, useLayoutEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGLTF, PositionalAudio } from '@react-three/drei'
-import type { BoxProps } from '@react-three/cannon'
+import type { BoxProps, Triplet } from '@react-three/cannon'
 import { useBox } from '@react-three/cannon'
 import debounce from 'lodash-es/debounce'
 import clamp from 'lodash-es/clamp'
@@ -61,7 +61,7 @@ title: Classic Muscle car
 */
 
 interface ChassisProps extends BoxProps {
-  args?: number[]
+  args?: Triplet
   mass?: number
   children: React.ReactNode
 }

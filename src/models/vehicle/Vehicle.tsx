@@ -26,7 +26,6 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
   // However useRaycastVehicle doesn't except a custom type defintion that has this api property.
   const [vehicle, api] = useRaycastVehicle(() => raycast, null, [raycast])
 
-  // @ts-expect-error use-cannon has incorrect type definitions.
   useLayoutEffect(() => api.sliding.subscribe((sliding) => (mutation.sliding = sliding)), [])
 
   useLayoutEffect(() => {

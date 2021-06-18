@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGLTF, useAnimations, PositionalAudio } from '@react-three/drei'
+import type { Triplet} from '@react-three/cannon'
 import { useBox } from '@react-three/cannon'
 import { useStore } from '../../store'
 import type { Group, Mesh, MeshStandardMaterial } from 'three'
@@ -41,7 +42,7 @@ source: https://sketchfab.com/3d-models/train-locomotive-sd40-2-bdeadf60bf774adc
 title: Train , Locomotive SD40-2
 */
 
-export function Train({ args = [38, 8, 10], position = [-145.84, 3.42, 54.67], rotation = [0, -0.09, 0] }) {
+export function Train({ args = [38, 8, 10] as Triplet, position = [-145.84, 3.42, 54.67] as Triplet, rotation = [0, -0.09, 0] as Triplet }) {
   const group = useRef<Group>(null!)
   const [ready, sound] = useStore((state) => [state.ready, state.sound])
   const { animations, nodes: n, materials: m } = useGLTF('/models/track-draco.glb') as GLTFResult

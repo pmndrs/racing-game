@@ -1,9 +1,9 @@
-import type { BoxProps } from '@react-three/cannon'
+import type { BoxProps, Triplet } from '@react-three/cannon'
 import { useBox } from '@react-three/cannon'
 import type { BoxGeometryProps } from '@react-three/fiber'
 
 interface RampProps extends BoxProps {
-  args: number[]
+  args: Triplet
 }
 
 export function Ramp({ args, ...props }: RampProps) {
