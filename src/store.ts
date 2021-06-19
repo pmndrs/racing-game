@@ -22,8 +22,8 @@ const controls = {
 export const debug = true as const
 export const dpr = 1.5 as const
 export const levelLayer = 1 as const
-export const position = [-110, 0.75, 220] as const
-// export const position = [-55, 1, -5] as const
+// export const position = [-110, 0.75, 220] as const
+export const position = [-55, 1, -5] as const
 export const rotation = [0, Math.PI / 2 + 0.35, 0] as const
 export const shadows = true as const
 export const stats = false as const
@@ -122,6 +122,7 @@ interface IState extends BaseState {
   camera: Camera
   controls: Controls
   checkpoint1: number
+  checkpointDifference: number
   checkpointRecord: number
   showCheckpoint: boolean
   get: Getter
