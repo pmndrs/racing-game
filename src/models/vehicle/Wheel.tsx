@@ -1,12 +1,15 @@
 import { forwardRef } from 'react'
 import { useGLTF } from '@react-three/drei'
-import type { CylinderProps } from '@react-three/cannon'
 import { useCylinder } from '@react-three/cannon'
+
 import { useStore } from '../../store'
+
+import type { MutableRefObject } from 'react'
+import type { CylinderProps } from '@react-three/cannon'
 import type { Mesh, MeshStandardMaterial, Object3D } from 'three'
 import type { GLTF } from 'three-stdlib'
 
-type GLTFResult = GLTF & {
+interface WheelGLTF extends GLTF {
   nodes: {
     /* Manually typed meshes names */
     Mesh_14: Mesh
@@ -25,7 +28,7 @@ interface WheelProps extends CylinderProps {
 
 export const Wheel = forwardRef<Object3D, WheelProps>(({ leftSide, ...props }, ref) => {
   const { radius } = useStore((state) => state.vehicleConfig)
-  const { nodes, materials } = useGLTF('/models/wheel-draco.glb') as GLTFResult
+  const { nodes, materials } = useGLTF('/models/wheel-draco.glb') as WheelGLTF
   const scale = radius / 0.34
   useCylinder(
     () => ({
@@ -37,10 +40,7 @@ export const Wheel = forwardRef<Object3D, WheelProps>(({ leftSide, ...props }, r
       args: [radius, radius, 0.5, 16],
       ...props,
     }),
-    // @ts-expect-error Sigh, generics...
-    // ref is officially a ForwardedRef<Object3D>... Which is correct and is actually a parent of the type:
-    // MutableRefObject<Object3D>, however as it's not the exact type, typescript will error.
-    ref,
+    ref as MutableRefObject<Object3D>,
   )
   return (
     <group ref={ref} dispose={null}>

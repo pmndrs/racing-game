@@ -1,3 +1,4 @@
+import type { HTMLAttributes } from 'react'
 import { isMobile } from 'react-device-detect'
 import { useStore } from '../store'
 
@@ -18,7 +19,7 @@ const controlOptions = [
   { keys: ['L'], action: 'Leaderboards' },
 ]
 
-export function Help() {
+export function Help(): JSX.Element {
   const [set, help, sound] = useStore((state) => [state.set, state.help, state.sound])
   return (
     <>
@@ -45,7 +46,7 @@ export function Help() {
   )
 }
 
-export function Keys(props: React.HTMLAttributes<HTMLDivElement>) {
+export function Keys(props: HTMLAttributes<HTMLDivElement>): JSX.Element {
   return (
     <div {...props}>
       {controlOptions.map(({ keys, action }) => (
