@@ -32,7 +32,7 @@ body {
   position: absolute;
   top: 28%;
   left: 50%;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 1em;
   font-variant-numeric: tabular-nums;
   width: 200px;
@@ -42,6 +42,14 @@ body {
 
 .hide {
   display: none
+}
+
+.checkpoint > .green {
+  color: green
+}
+
+.checkpoint > .red {
+  color: red
 }
 
 /* --------------- AUTH --------------- */

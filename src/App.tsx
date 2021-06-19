@@ -53,7 +53,9 @@ export function App() {
 
   const onCheckpoint = () => {
     mutation.tempCheckpoint1 = Date.now() - mutation.start
-    mutation.checkpointDifference = mutation.tempCheckpoint1 - mutation.checkpoint1
+    if (mutation.checkpoint1 ! == 0) {
+      mutation.checkpointDifference = mutation.tempCheckpoint1 - mutation.checkpoint1
+    }
     mutation.checkpoint1 = mutation.tempCheckpoint1
     set({
       checkpoint1: mutation.checkpoint1,
