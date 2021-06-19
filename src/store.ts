@@ -1,11 +1,13 @@
 import { createRef } from 'react'
 import create from 'zustand'
 import shallow from 'zustand/shallow'
+import { isMobile } from 'react-device-detect'
 import type { MutableRefObject } from 'react'
 import type { WheelInfoOptions } from '@react-three/cannon'
 import type { Session } from '@supabase/supabase-js'
 import type { Group, Object3D } from 'three'
 import type { GetState, SetState, StateSelector } from 'zustand'
+import { isPortraitMode } from './lib'
 
 export const angularVelocity = [0, 0.5, 0] as const
 export const cameras = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE'] as const
@@ -120,7 +122,16 @@ export type BaseState = {
 interface IState extends BaseState {
   camera: Camera
   controls: Controls
+  reset: boolean
+  debug: boolean
+  dpr: number
+  editor: boolean
+  menu: boolean
+  finished: number
   get: Getter
+  help: boolean
+  isMobilePortrait: boolean
+  leaderboard: boolean
   level: MutableRefObject<Group>
   raycast: Raycast
   session: Session | null
@@ -135,12 +146,14 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
     debug,
     dpr,
     editor: false,
+    menu: true,
     finished: 0,
     get,
     help: false,
     leaderboard: false,
     level: createRef() as unknown as MutableRefObject<Group>,
-    map: true,
+    map: !isMobile,
+    isMobilePortrait: isMobile && isPortraitMode.matches,
     raycast: {
       chassisBody: createRef() as unknown as MutableRefObject<Object3D>,
       wheels: [
@@ -199,6 +212,6 @@ export const reset = (set: SetState<IState>) =>
 const useStore = <T>(sel: StateSelector<IState, T>) => useStoreImpl(sel, shallow)
 Object.assign(useStore, useStoreImpl)
 
-const { getState } = useStoreImpl
+const { getState, setState } = useStoreImpl
 
-export { getState, useStore }
+export { getState, useStore, setState }

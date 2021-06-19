@@ -11,6 +11,7 @@ import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
 import { Dust, Skid, Boost } from '../../effects'
 import { useStore, getState, mutation } from '../../store'
+import { useOrientationChange } from '../../lib'
 
 import type { ChassisProps } from './Chassis'
 
@@ -24,6 +25,9 @@ interface VehicleProps extends Pick<ChassisProps, 'angularVelocity' | 'position'
 export function Vehicle({ angularVelocity, children, position, rotation }: VehicleProps) {
   const defaultCamera = useThree((state) => state.camera)
   const [camera, editor, raycast, ready, { force, maxBrake, steer, maxSpeed }] = useStore((s) => [s.camera, s.editor, s.raycast, s.ready, s.vehicleConfig])
+  const isMobilePortrait = useOrientationChange()
+  // @ts-expect-error use-cannon has incorrect type definitions.
+  // However useRaycastVehicle doesn't except a custom type defintion that has this api property.
   const [vehicle, api] = useRaycastVehicle(() => raycast, undefined, [raycast])
 
   useLayoutEffect(() => api.sliding.subscribe((sliding) => (mutation.sliding = sliding)), [])
@@ -73,7 +77,11 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
     if (!editor) {
       if (camera === 'FIRST_PERSON') v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.4, -0.1)
       else if (camera === 'DEFAULT')
-        v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (controls.brake ? 1 : 0))
+        v.set(
+          (Math.sin(steeringValue) * speed) / 2.5,
+          1.25 + (engineValue / 1000) * -0.5 + (isMobilePortrait ? 1 : 0),
+          -5 - speed / 15 + (controls.brake ? 1 : 0) - (isMobilePortrait ? 2 : 0),
+        )
 
       // ctrl.left-ctrl.right, up-down, near-far
       defaultCamera.position.lerp(v, delta)

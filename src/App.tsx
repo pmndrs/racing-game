@@ -3,13 +3,13 @@ import { Layers } from 'three'
 import { Canvas } from '@react-three/fiber'
 import { Physics, Debug } from '@react-three/cannon'
 import { Sky, Environment, PerspectiveCamera, OrthographicCamera, OrbitControls, Stats } from '@react-three/drei'
-
+import { isMobile } from 'react-device-detect'
 import type { ComponentType, ReactNode } from 'react'
 import type { DirectionalLight } from 'three'
 
 import { angularVelocity, levelLayer, mutation, position, rotation, useStore } from './store'
 import { Ramp, Track, Vehicle, Goal, Train, Heightmap } from './models'
-import { Clock, Speed, Minimap, Intro, Help, Editor, LeaderBoard, Finished } from './ui'
+import { Clock, Speed, Minimap, Intro, Help, Editor, LeaderBoard, Finished, MobileControls } from './ui'
 import { HideMouse, Keyboard } from './controls'
 
 import type { Booleans, Numbers } from './store'
@@ -105,6 +105,7 @@ export function App() {
       <LeaderBoard />
       <HideMouse />
       <Keyboard />
+      {isMobile && <MobileControls />}
     </Intro>
   )
 }

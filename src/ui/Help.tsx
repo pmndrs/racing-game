@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from 'react'
-
+import { isMobile } from 'react-device-detect'
 import { useStore } from '../store'
 
 const controlOptions = [
@@ -24,8 +24,15 @@ export function Help(): JSX.Element {
   return (
     <>
       <div className={`${sound ? 'sound' : 'nosound'}`}></div>
-      <div className="controls">
-        {!help && <button onClick={() => set({ help: true })}>i</button>}
+      <div className={`controls ${isMobile ? 'is-mobile' : ''}`}>
+        <button value="reset" className="reset-btn">
+          Reset
+        </button>
+        {!help && (
+          <button className="popup-btn" onClick={() => set({ help: true })}>
+            i
+          </button>
+        )}
         <div className={`popup ${help ? 'open' : ''}`}>
           <button className="popup-close" onClick={() => set({ help: false })}>
             i
