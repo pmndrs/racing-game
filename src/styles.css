@@ -469,6 +469,74 @@ button {
   color: inherit;
 }
 
+/* --------------- MOBILE STYLES --------------- */
+
+.speed.is-mobile {
+  bottom: unset;
+  top: 40px;
+}
+
+.controls.is-mobile {
+  bottom: unset;
+  top: 40px;
+}
+
+.is-mobile .reset-btn {
+  display: block;
+}
+.is-mobile .popup-btn {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .speed {
+    bottom: 60px;
+    left: 60px;
+  }
+  .controls {
+    bottom: 60px;
+    right: 60px;
+  }
+  .speed.is-mobile {
+    top: 60px;
+    right: 60px;
+  }
+
+  .controls.is-mobile {
+    top: 60px;
+    right: 60px;
+  }
+}
+.nosound {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  height: 24px;
+  width: 24px;
+  background: url(./textures/no_sound.png) no-repeat;
+  background-size: 24px 24px;
+  opacity: 1;
+  animation: hideSoundIcon 3s forwards;
+}
+
+@keyframes hideSoundIcon {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes hideSoundIcon {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 /* portrait */
 @media (max-width: 767px) and (max-aspect-ratio: 13/9) {
   .controls-container {
@@ -544,74 +612,5 @@ button {
   }
   .pmndrs-menu {
     position: absolute;
-  }
-}
-
-/* --------------- MOBILE STYLES --------------- */
-
-.speed.is-mobile {
-  bottom: unset;
-  top: 40px;
-}
-
-.controls.is-mobile {
-  bottom: unset;
-  top: 40px;
-}
-
-.is-mobile .reset-btn {
-  display: block;
-}
-.is-mobile .popup-btn {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .speed {
-    bottom: 60px;
-    left: 60px;
-  }
-  .controls {
-    bottom: 60px;
-    right: 60px;
-  }
-  .speed.is-mobile {
-    top: 60px;
-    right: 60px;
-  }
-
-  .controls.is-mobile {
-    top: 60px;
-    right: 60px;
-  }
-}
-
-.nosound {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  height: 24px;
-  width: 24px;
-  background: url(./textures/no_sound.png) no-repeat;
-  background-size: 24px 24px;
-  opacity: 1;
-  animation: hideSoundIcon 3s forwards;
-}
-
-@keyframes hideSoundIcon {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
-@-webkit-keyframes hideSoundIcon {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
   }
 }
