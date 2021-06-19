@@ -9,6 +9,7 @@ import { useStore, levelLayer } from '../store'
 
 const m = new Matrix4()
 const v = new Vector3()
+const playerPosition = new Vector3()
 
 function useLevelGeometricProperties(): [Box3, Vector3, Vector3] {
   const [box] = useState(() => new Box3())
@@ -73,7 +74,7 @@ export function Minimap({ size = 200 }): JSX.Element {
       player.current.quaternion.setFromRotationMatrix(m)
       gl.autoClear = false
       gl.clearDepth()
-      v.subVectors(chassisBody.current.position, levelCenter)
+      v.subVectors(chassisBody.current.getWorldPosition(playerPosition), levelCenter)
       player.current.position.set(screenPosition.x + (v.x / levelDimensions.x) * size, screenPosition.y - (v.z / levelDimensions.z) * size, 0)
       gl.render(virtualScene, miniMapCamera.current)
     }
