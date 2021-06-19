@@ -39,8 +39,6 @@ export function App() {
   const [light, setLight] = useState<DirectionalLight>()
   const [camera, dpr, editor, set, shadows] = useStore((s) => [s.camera, s.dpr, s.editor, s.set, s.shadows])
 
-  // mutation.start = Date.now()
-
   const onStart = () => {
     mutation.start = Date.now()
     mutation.finish = 0
@@ -54,23 +52,18 @@ export function App() {
   }
 
   const onCheckpoint = () => {
-    console.log('checkpoint!')
     mutation.tempCheckpoint1 = Date.now() - mutation.start
     if (mutation.checkpoint1 == 0) {
       mutation.checkpoint1 = mutation.tempCheckpoint1
       return
     }
 
-    console.log('not first rodeo!')
-
     mutation.checkpointDifference = mutation.tempCheckpoint1 - mutation.checkpoint1
-    mutation.checkpoint1 = mutation.tempCheckpoint1
-
-    console.log('diff:', mutation.checkpointDifference)
+    if (mutation.checkpointDifference < 0) {
+      mutation.checkpoint1 = mutation.tempCheckpoint1
+    }
 
     set({
-      checkpoint1: mutation.checkpoint1,
-      checkpointDifference: mutation.checkpointDifference,
       showCheckpoint: true,
     })
     setTimeout(() => set({ showCheckpoint: false }), 3000)
@@ -128,7 +121,7 @@ export function App() {
       <Help />
       <Speed />
       <ToggledStats />
-      {<Checkpoint />}
+      <Checkpoint />
       <LeaderBoard />
       <HideMouse />
       <Keyboard />

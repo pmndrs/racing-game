@@ -5,13 +5,13 @@ const formatCheckpointDifference = (diffMs: number, negative: boolean) => {
 }
 
 export function Checkpoint() {
-  const [showCheckpoint, checkpointDifference] = useStore((s) => [s.showCheckpoint, s.checkpointDifference])
+  const [showCheckpoint] = useStore((s) => [s.showCheckpoint])
   const improved = mutation.checkpointDifference < 0
 
   return (
     <div className={`checkpoint ${showCheckpoint ? '' : 'hide'}`}>
       <p>{mutation.tempCheckpoint1 / 1000}</p>
-      <p className={improved ? 'green' : 'red'}>{formatCheckpointDifference(checkpointDifference, improved)}</p>
+      <p className={improved ? 'green' : 'red'}>{formatCheckpointDifference(mutation.checkpointDifference, improved)}</p>
     </div>
   )
 }

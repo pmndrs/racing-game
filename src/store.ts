@@ -19,11 +19,10 @@ const controls = {
   right: false,
 }
 
-export const debug = true as const
+export const debug = false as const
 export const dpr = 1.5 as const
 export const levelLayer = 1 as const
-// export const position = [-110, 0.75, 220] as const
-export const position = [-55, 1, -5] as const
+export const position = [-110, 0.75, 220] as const
 export const rotation = [0, Math.PI / 2 + 0.35, 0] as const
 export const shadows = true as const
 export const stats = false as const
@@ -121,9 +120,6 @@ export type BaseState = {
 interface IState extends BaseState {
   camera: Camera
   controls: Controls
-  checkpoint1: number
-  checkpointDifference: number
-  checkpointRecord: number
   showCheckpoint: boolean
   get: Getter
   level: MutableRefObject<Group>
@@ -140,8 +136,6 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
     debug,
     dpr,
     editor: false,
-    checkpoint1: 0,
-    checkpointRecord: 0,
     finished: 0,
     get,
     help: false,
@@ -203,7 +197,6 @@ export const mutation: Mutation = {
 export const reset = (set: SetState<IState>) =>
   set((state) => {
     mutation.start = 0
-    mutation.checkpoint1 = 0
     mutation.finish = 0
     mutation.boostActive = false
     mutation.boostRemaining = 100
