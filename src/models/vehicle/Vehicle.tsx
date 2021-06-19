@@ -57,7 +57,7 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
     if (boostRemaining <= 51) {
       mutation.boostActive = false
     } else if (boostRemaining >= 51 && boostActive) {
-      mutation.boostRemaining = boostActive ? boostRemaining - 0.5 : boostRemaining
+      mutation.boostRemaining = boostRemaining - 0.5
     }
 
     engineValue = lerp(
