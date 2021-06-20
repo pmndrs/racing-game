@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import { reset, useStore } from '../store'
+import { useStore } from '../store'
 import { getScores, insertScore } from '../data'
 import { readableTime, Scores } from './LeaderBoard'
 import { Auth } from './Auth'
 import type { SavedScore } from '../data'
 
 export const Finished = (): JSX.Element => {
-  const [time, session, set] = useStore((state) => [state.finished, state.session, state.set])
+  const { finished: time, reset, session } = useStore(({ actions: { reset }, finished, session }) => ({ finished, reset, session }))
   const [scoreId, setScoreId] = useState<SavedScore['id']>('')
   const [scores, setScores] = useState<SavedScore[]>([])
   const [position, setPosition] = useState<number>(0)
@@ -58,7 +58,7 @@ export const Finished = (): JSX.Element => {
       ) : (
         <Auth />
       )}
-      <button className="restart" onClick={() => reset(set)}>
+      <button className="restart" onClick={reset}>
         <div>Restart</div>
       </button>
     </div>

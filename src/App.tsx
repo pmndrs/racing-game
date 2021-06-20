@@ -4,15 +4,14 @@ import { Canvas } from '@react-three/fiber'
 import { Physics, Debug } from '@react-three/cannon'
 import { Sky, Environment, PerspectiveCamera, OrthographicCamera, OrbitControls, Stats } from '@react-three/drei'
 
-import type { ComponentType, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import type { DirectionalLight } from 'three'
 
-import { angularVelocity, levelLayer, mutation, position, rotation, useStore } from './store'
-import { Ramp, Track, Vehicle, Goal, Train, Heightmap } from './models'
-import { Clock, Speed, Minimap, Intro, Help, Editor, LeaderBoard, Finished, Checkpoint } from './ui'
 import { HideMouse, Keyboard } from './controls'
-
-import type { Booleans, Numbers } from './store'
+import { Ramp, Track, Vehicle, Goal, Train, Heightmap } from './models'
+import { angularVelocity, levelLayer, position, rotation, useStore } from './store'
+import { Checkpoint, Clock, Speed, Minimap, Intro, Help, Editor, LeaderBoard, Finished } from './ui'
+import { useToggle } from './useToggle'
 
 const layers = new Layers()
 layers.enable(levelLayer)
@@ -28,44 +27,10 @@ function DebugScene({ children }: { children: ReactNode }) {
   )
 }
 
-const useToggle =
-  <P extends {}>(ToggledComponent: ComponentType<P>, toggle: Booleans | Numbers) =>
-  (props: P) => {
-    const value = useStore((state) => state[toggle])
-    return value ? <ToggledComponent {...props} /> : null
-  }
-
 export function App() {
   const [light, setLight] = useState<DirectionalLight>()
-  const [camera, dpr, editor, set, shadows] = useStore((s) => [s.camera, s.dpr, s.editor, s.set, s.shadows])
-
-  const onStart = () => {
-    mutation.start = Date.now()
-    mutation.finish = 0
-  }
-
-  const onFinish = () => {
-    if (mutation.start && !mutation.finish) {
-      mutation.finish = Date.now()
-      set({ finished: mutation.finish - mutation.start })
-    }
-  }
-
-  const onCheckpoint = () => {
-    mutation.tempCheckpoint1 = Date.now() - mutation.start
-    if (mutation.checkpoint1 == 0) {
-      mutation.checkpoint1 = mutation.tempCheckpoint1
-      return
-    }
-
-    mutation.checkpointDifference = mutation.tempCheckpoint1 - mutation.checkpoint1
-    if (mutation.checkpointDifference < 0) {
-      mutation.checkpoint1 = mutation.tempCheckpoint1
-    }
-
-    set({ showCheckpoint: true })
-    setTimeout(() => set({ showCheckpoint: false }), 3000)
-  }
+  const [actions, camera, dpr, editor, shadows] = useStore((s) => [s.actions, s.camera, s.dpr, s.editor, s.shadows])
+  const { onCheckpoint, onFinish, onStart } = actions
 
   const ToggledEditor = useToggle(Editor, 'editor')
   const ToggledFinished = useToggle(Finished, 'finished')

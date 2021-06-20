@@ -27,7 +27,7 @@ interface WheelProps extends CylinderProps {
 }
 
 export const Wheel = forwardRef<Object3D, WheelProps>(({ leftSide, ...props }, ref) => {
-  const { radius } = useStore((state) => state.vehicleConfig)
+  const { radius } = useStore((state) => state.wheelInfo)
   const { nodes, materials } = useGLTF('/models/wheel-draco.glb') as WheelGLTF
   const scale = radius / 0.34
   useCylinder(
@@ -41,6 +41,7 @@ export const Wheel = forwardRef<Object3D, WheelProps>(({ leftSide, ...props }, r
       ...props,
     }),
     ref as MutableRefObject<Object3D>,
+    [radius],
   )
   return (
     <group ref={ref} dispose={null}>

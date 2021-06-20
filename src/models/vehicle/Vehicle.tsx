@@ -1,38 +1,69 @@
 import { MathUtils, PerspectiveCamera, Vector3 } from 'three'
-import { useRef, useLayoutEffect, useEffect } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { PositionalAudio } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
 
-import type { ReactNode } from 'react'
+import type { PropsWithChildren } from 'react'
+import type { WheelInfoOptions } from '@react-three/cannon'
 import type { PositionalAudio as PositionalAudioImpl } from 'three'
 
+import { Dust, Skid, Boost } from '../../effects'
+import { getState, mutation, useStore } from '../../store'
+import { useToggle } from '../../useToggle'
 import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
-import { Dust, Skid, Boost } from '../../effects'
-import { useStore, getState, mutation } from '../../store'
 
+import type { WheelInfo } from '../../store'
 import type { ChassisProps } from './Chassis'
 
 const { lerp } = MathUtils
 const v = new Vector3()
 
-interface VehicleProps extends Pick<ChassisProps, 'angularVelocity' | 'position' | 'rotation'> {
-  children: ReactNode
-}
+type VehicleProps = PropsWithChildren<Pick<ChassisProps, 'angularVelocity' | 'position' | 'rotation'>>
+type DerivedWheelInfo = WheelInfo & Required<Pick<WheelInfoOptions, 'chassisConnectionPointLocal' | 'isFrontWheel'>>
 
 export function Vehicle({ angularVelocity, children, position, rotation }: VehicleProps) {
   const defaultCamera = useThree((state) => state.camera)
-  const [camera, editor, raycast, ready, { force, maxBrake, steer, maxSpeed }] = useStore((s) => [s.camera, s.editor, s.raycast, s.ready, s.vehicleConfig])
-  const [vehicle, api] = useRaycastVehicle(() => raycast, undefined, [raycast])
+  const [camera, chassisBody, editor, vehicleConfig, wheelInfo, wheels] = useStore((s) => [
+    s.camera,
+    s.chassisBody,
+    s.editor,
+    s.vehicleConfig,
+    s.wheelInfo,
+    s.wheels,
+  ])
+  const { back, force, front, height, maxBrake, steer, maxSpeed, width } = vehicleConfig
 
-  useLayoutEffect(() => api.sliding.subscribe((sliding) => (mutation.sliding = sliding)), [])
+  const wheelInfos = wheels.map((_, index): DerivedWheelInfo => {
+    const length = index < 2 ? front : back
+    const sideMulti = index % 2 ? 0.5 : -0.5
+    return {
+      ...wheelInfo,
+      chassisConnectionPointLocal: [width * sideMulti, height, length],
+      isFrontWheel: Boolean(index % 2),
+    }
+  })
+
+  const raycast = {
+    chassisBody,
+    indexForwardAxis: 2,
+    indexRightAxis: 0,
+    indexUpAxis: 1,
+    wheels,
+    wheelInfos,
+  }
+
+  // @ts-expect-error - need to update use-cannon types
+  const [, api] = useRaycastVehicle(() => raycast, undefined, [wheelInfo])
+
+  useLayoutEffect(() => api.sliding.subscribe((sliding) => (mutation.sliding = sliding)), [api])
 
   useLayoutEffect(() => {
-    if (defaultCamera instanceof PerspectiveCamera && raycast.chassisBody.current) {
+    if (defaultCamera instanceof PerspectiveCamera) {
       defaultCamera.rotation.set(0, Math.PI, 0)
       defaultCamera.position.set(0, 10, -20)
-      defaultCamera.lookAt(raycast.chassisBody.current.position)
+      defaultCamera.lookAt(chassisBody.current!.position)
       defaultCamera.rotation.x -= 0.3
       defaultCamera.rotation.z = Math.PI // resolves the weird spin in the beginning
     }
@@ -83,11 +114,7 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
     }
 
     // lean chassis
-    raycast.chassisBody.current.children[0].rotation.z = MathUtils.lerp(
-      raycast.chassisBody.current.children[0].rotation.z,
-      (-steeringValue * speed) / 200,
-      delta * 4,
-    )
+    chassisBody.current!.children[0].rotation.z = MathUtils.lerp(chassisBody.current!.children[0].rotation.z, (-steeringValue * speed) / 200, delta * 4)
 
     // Camera sway
     const swaySpeed = boostActive ? 60 : 30
@@ -99,21 +126,24 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
     defaultCamera.rotation.x += (Math.sin(state.clock.elapsedTime * swaySpeed) / 1000) * swayValue
 
     // Vibrations
-    raycast.chassisBody.current.children[0].rotation.x = (Math.sin(state.clock.getElapsedTime() * 20) * (speed / maxSpeed)) / 100
-    raycast.chassisBody.current.children[0].rotation.z = (Math.cos(state.clock.getElapsedTime() * 20) * (speed / maxSpeed)) / 100
+    chassisBody.current!.children[0].rotation.x = (Math.sin(state.clock.getElapsedTime() * 20) * (speed / maxSpeed)) / 100
+    chassisBody.current!.children[0].rotation.z = (Math.cos(state.clock.getElapsedTime() * 20) * (speed / maxSpeed)) / 100
   })
 
+  const ToggledVehicleAudio = useToggle(VehicleAudio, 'ready')
+
   return (
-    <group ref={vehicle}>
-      <Chassis ref={raycast.chassisBody} {...{ angularVelocity, position, rotation }}>
-        {ready && <VehicleAudio />}
+    <group>
+      <Chassis ref={chassisBody} {...{ angularVelocity, position, rotation }}>
+        <ToggledVehicleAudio />
         <Boost />
         {children}
       </Chassis>
-      <Wheel ref={raycast.wheels[0]} leftSide />
-      <Wheel ref={raycast.wheels[1]} />
-      <Wheel ref={raycast.wheels[2]} leftSide />
-      <Wheel ref={raycast.wheels[3]} />
+      <>
+        {wheels.map((wheel, index) => (
+          <Wheel ref={wheel} leftSide={!(index % 2)} key={index} />
+        ))}
+      </>
       <Dust />
       <Skid />
     </group>
