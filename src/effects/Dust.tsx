@@ -17,7 +17,7 @@ interface DustProps {
 }
 
 export function Dust({ count = 200, opacity = 0.1, size = 1 }: DustProps): JSX.Element {
-  const { wheels } = useStore((state) => state.raycast)
+  const wheels = useStore((state) => state.wheels)
   const ref = useRef<InstancedMesh>(null!)
 
   let controls: ReturnType<typeof getState>['controls']

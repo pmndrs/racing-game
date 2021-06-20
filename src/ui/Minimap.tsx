@@ -28,56 +28,54 @@ function useLevelGeometricProperties(): [Box3, Vector3, Vector3] {
 }
 
 function MinimapTexture({ buffer }: { buffer: WebGLRenderTarget }) {
-  const camera = useRef<THREE.OrthographicCamera>(null!)
+  const camera = useRef<THREE.OrthographicCamera>(null)
   const gl = useThree((state) => state.gl)
   const scene = useThree((state) => state.scene)
   const [levelBox, levelCenter] = useLevelGeometricProperties()
 
   useEffect(() => {
     gl.setRenderTarget(buffer)
-    camera.current.bottom = levelBox.min.z - levelCenter.z
-    camera.current.top = levelBox.max.z - levelCenter.z
-    camera.current.left = levelBox.min.x - levelCenter.x
-    camera.current.right = levelBox.max.x - levelCenter.x
-    camera.current.position.set(levelCenter.x, levelCenter.y + levelBox.max.y, levelCenter.z)
-    camera.current.updateProjectionMatrix()
-    gl.render(scene, camera.current)
+    camera.current!.bottom = levelBox.min.z - levelCenter.z
+    camera.current!.top = levelBox.max.z - levelCenter.z
+    camera.current!.left = levelBox.min.x - levelCenter.x
+    camera.current!.right = levelBox.max.x - levelCenter.x
+    camera.current!.position.set(levelCenter.x, levelCenter.y + levelBox.max.y, levelCenter.z)
+    camera.current!.updateProjectionMatrix()
+    gl.render(scene, camera.current!)
     gl.setRenderTarget(null)
   }, [])
 
   useLayoutEffect(() => {
-    camera.current.layers.disableAll()
-    camera.current.layers.enable(levelLayer)
+    camera.current!.layers.disableAll()
+    camera.current!.layers.enable(levelLayer)
   }, [])
 
   return <OrthographicCamera ref={camera} makeDefault={false} rotation={[-Math.PI / 2, 0, 0]} near={20} far={500} />
 }
 
 export function Minimap({ size = 200 }): JSX.Element {
-  const player = useRef<Mesh>(null!)
-  const miniMap = useRef<Mesh>(null!)
-  const miniMapCamera = useRef<THREE.OrthographicCamera>(null!)
+  const player = useRef<Mesh>(null)
+  const miniMap = useRef<Mesh>(null)
+  const miniMapCamera = useRef<THREE.OrthographicCamera>(null)
   const [virtualScene] = useState(() => new Scene())
   const mask = useTexture('textures/mask.svg')
   const buffer = useFBO(size * 2, size * 2)
   const { gl, camera, scene, size: screenSize } = useThree()
   const [, levelCenter, levelDimensions] = useLevelGeometricProperties()
-  const chassisBody = useStore((state) => state.raycast.chassisBody)
+  const chassisBody = useStore((state) => state.chassisBody)
   const screenPosition = useMemo(() => new Vector3(screenSize.width / -2 - size / -2 + 30, screenSize.height / -2 - size / -2 + 30, 0), [screenSize])
 
   useFrame(() => {
-    if (chassisBody.current) {
-      gl.autoClear = true
-      gl.render(scene, camera)
-      m.copy(camera.matrix).invert()
-      miniMap.current.quaternion.setFromRotationMatrix(m)
-      player.current.quaternion.setFromRotationMatrix(m)
-      gl.autoClear = false
-      gl.clearDepth()
-      v.subVectors(chassisBody.current.getWorldPosition(playerPosition), levelCenter)
-      player.current.position.set(screenPosition.x + (v.x / levelDimensions.x) * size, screenPosition.y - (v.z / levelDimensions.z) * size, 0)
-      gl.render(virtualScene, miniMapCamera.current)
-    }
+    gl.autoClear = true
+    gl.render(scene, camera)
+    m.copy(camera.matrix).invert()
+    miniMap.current!.quaternion.setFromRotationMatrix(m)
+    player.current!.quaternion.setFromRotationMatrix(m)
+    gl.autoClear = false
+    gl.clearDepth()
+    v.subVectors(chassisBody.current!.getWorldPosition(playerPosition), levelCenter)
+    player.current!.position.set(screenPosition.x + (v.x / levelDimensions.x) * size, screenPosition.y - (v.z / levelDimensions.z) * size, 0)
+    gl.render(virtualScene, miniMapCamera.current!)
   }, 1)
 
   return (

@@ -1,8 +1,9 @@
 import { createRef } from 'react'
 import create from 'zustand'
 import shallow from 'zustand/shallow'
-import type { MutableRefObject } from 'react'
-import type { WheelInfoOptions } from '@react-three/cannon'
+import type { RefObject } from 'react'
+// TODO: Export PublicApi
+import type { Api, WheelInfoOptions } from '@react-three/cannon'
 import type { Session } from '@supabase/supabase-js'
 import type { Group, Object3D } from 'three'
 import type { GetState, SetState, StateSelector } from 'zustand'
@@ -28,7 +29,6 @@ export const shadows = true as const
 export const stats = false as const
 
 export const vehicleConfig = {
-  radius: 0.38,
   width: 1.7,
   height: -0.3,
   front: 1.35,
@@ -39,101 +39,125 @@ export const vehicleConfig = {
   maxSpeed: 128,
 } as const
 
-type WheelInfo = Required<
+export type WheelInfo = Required<
   Pick<
     WheelInfoOptions,
-    | 'radius'
-    | 'directionLocal'
-    | 'suspensionStiffness'
-    | 'suspensionRestLength'
     | 'axleLocal'
-    | 'chassisConnectionPointLocal'
-    | 'useCustomSlidingRotationalSpeed'
     | 'customSlidingRotationalSpeed'
-    | 'rollInfluence'
+    | 'directionLocal'
     | 'frictionSlip'
-    | 'isFrontWheel'
+    | 'radius'
+    | 'rollInfluence'
     | 'sideAcceleration'
+    | 'suspensionRestLength'
+    | 'suspensionStiffness'
+    | 'useCustomSlidingRotationalSpeed'
   >
 >
 
 export const wheelInfo: WheelInfo = {
-  radius: vehicleConfig.radius,
-  directionLocal: [0, -1, 0],
-  suspensionStiffness: 30,
-  suspensionRestLength: 0.35,
   axleLocal: [-1, 0, 0],
-  chassisConnectionPointLocal: [1, 0, 1],
-  useCustomSlidingRotationalSpeed: true,
   customSlidingRotationalSpeed: -0.01,
-  rollInfluence: 0,
+  directionLocal: [0, -1, 0],
   frictionSlip: 1.5,
+  radius: 0.38,
+  rollInfluence: 0,
   sideAcceleration: 3,
-  isFrontWheel: false,
+  suspensionRestLength: 0.35,
+  suspensionStiffness: 30,
+  useCustomSlidingRotationalSpeed: true,
 }
 
-const wheelInfos: WheelInfo[] = [
-  {
-    ...wheelInfo,
-    chassisConnectionPointLocal: [-vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.front],
-    isFrontWheel: true,
-  },
-  {
-    ...wheelInfo,
-    chassisConnectionPointLocal: [vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.front],
-    isFrontWheel: true,
-  },
-  {
-    ...wheelInfo,
-    chassisConnectionPointLocal: [-vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.back],
-  },
-  {
-    ...wheelInfo,
-    chassisConnectionPointLocal: [vehicleConfig.width / 2, vehicleConfig.height, vehicleConfig.back],
-  },
-]
+const actionNames = ['onCheckpoint', 'onFinish', 'onStart', 'reset'] as const
+export type ActionNames = typeof actionNames[number]
 
 type Camera = typeof cameras[number]
 export type Controls = typeof controls
 
 type Getter = GetState<IState>
-
-interface Raycast {
-  chassisBody: MutableRefObject<Object3D>
-  wheels: [MutableRefObject<Object3D>, MutableRefObject<Object3D>, MutableRefObject<Object3D>, MutableRefObject<Object3D>]
-  wheelInfos: WheelInfo[]
-}
-
 export type Setter = SetState<IState>
 
 export type VehicleConfig = typeof vehicleConfig
 
-const booleans = ['debug', 'editor', 'help', 'leaderboard', 'map', 'ready', 'reset', 'shadows', 'sound', 'stats'] as const
-const numbers = ['dpr', 'finished'] as const
-export type Booleans = typeof booleans[number]
-export type Numbers = typeof numbers[number]
-export type BaseState = {
-  [K in Booleans]: boolean
-} &
-  {
-    [K in Numbers]: number
-  }
+const booleans = ['checkpoint', 'debug', 'editor', 'help', 'leaderboard', 'map', 'ready', 'shadows', 'sound', 'stats'] as const
+type Booleans = typeof booleans[number]
 
-interface IState extends BaseState {
+type BaseState = {
+  [K in Booleans]: boolean
+}
+
+export interface IState extends BaseState {
+  actions: Record<ActionNames, () => void>
+  api: {
+    // TODO: This should be PublicApi
+    chassisBody: Api[1] | null
+  }
   camera: Camera
+  chassisBody: RefObject<Object3D>
   controls: Controls
-  showCheckpoint: boolean
+  dpr: number
+  finished: number
   get: Getter
-  level: MutableRefObject<Group>
-  raycast: Raycast
+  level: RefObject<Group>
   session: Session | null
   set: Setter
   vehicleConfig: VehicleConfig
+  wheelInfo: WheelInfo
+  wheels: [RefObject<Object3D>, RefObject<Object3D>, RefObject<Object3D>, RefObject<Object3D>]
 }
 
 const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState>) => {
+  const actions = {
+    onCheckpoint: () => {
+      mutation.tempCheckpoint1 = Date.now() - mutation.start
+      if (mutation.checkpoint1 == 0) {
+        mutation.checkpoint1 = mutation.tempCheckpoint1
+        return
+      }
+
+      mutation.checkpointDifference = mutation.tempCheckpoint1 - mutation.checkpoint1
+      if (mutation.checkpointDifference < 0) {
+        mutation.checkpoint1 = mutation.tempCheckpoint1
+      }
+
+      set({ checkpoint: true })
+      setTimeout(() => set({ checkpoint: false }), 3000)
+    },
+    onFinish: () => {
+      if (mutation.start && !mutation.finish) {
+        mutation.finish = Date.now()
+        set({ finished: mutation.finish - mutation.start })
+      }
+    },
+    onStart: () => {
+      mutation.start = Date.now()
+      mutation.finish = 0
+    },
+    reset: () => {
+      mutation.start = 0
+      mutation.finish = 0
+      mutation.boostActive = false
+      mutation.boostRemaining = 100
+
+      set((state) => {
+        state.api.chassisBody?.position.set(...position)
+        state.api.chassisBody?.velocity.set(0, 0, 0)
+        state.api.chassisBody?.angularVelocity.set(...angularVelocity)
+        state.api.chassisBody?.rotation.set(...rotation)
+
+        return { ...state, finished: 0 }
+      })
+    },
+  }
+
   return {
+    actions,
+    api: {
+      chassisBody: null,
+    },
     camera: cameras[0],
+    chassisBody: createRef<Object3D>(),
+    checkpoint: false,
     controls,
     debug,
     dpr,
@@ -142,30 +166,17 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
     get,
     help: false,
     leaderboard: false,
-    level: createRef() as unknown as MutableRefObject<Group>,
+    level: createRef<Group>(),
     map: true,
-    raycast: {
-      chassisBody: createRef() as unknown as MutableRefObject<Object3D>,
-      wheels: [
-        createRef() as unknown as MutableRefObject<Object3D>,
-        createRef() as unknown as MutableRefObject<Object3D>,
-        createRef() as unknown as MutableRefObject<Object3D>,
-        createRef() as unknown as MutableRefObject<Object3D>,
-      ],
-      wheelInfos,
-      indexForwardAxis: 2,
-      indexRightAxis: 0,
-      indexUpAxis: 1,
-    },
     ready: false,
-    reset: false,
     session: null,
     set,
     shadows,
-    showCheckpoint: false,
     sound: true,
     stats,
     vehicleConfig,
+    wheelInfo,
+    wheels: [createRef<Object3D>(), createRef<Object3D>(), createRef<Object3D>(), createRef<Object3D>()],
   }
 })
 
@@ -196,19 +207,10 @@ export const mutation: Mutation = {
   boostRemaining: 100,
 }
 
-export const reset = (set: SetState<IState>) =>
-  set((state) => {
-    mutation.start = 0
-    mutation.finish = 0
-    mutation.boostActive = false
-    mutation.boostRemaining = 100
-    return { ...state, reset: true, finished: 0 }
-  })
-
 // Make the store shallow compare by default
 const useStore = <T>(sel: StateSelector<IState, T>) => useStoreImpl(sel, shallow)
 Object.assign(useStore, useStoreImpl)
 
-const { getState } = useStoreImpl
+const { getState, setState } = useStoreImpl
 
-export { getState, useStore }
+export { getState, setState, useStore }
