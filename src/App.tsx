@@ -63,9 +63,7 @@ export function App() {
       mutation.checkpoint1 = mutation.tempCheckpoint1
     }
 
-    set({
-      showCheckpoint: true,
-    })
+    set({ showCheckpoint: true })
     setTimeout(() => set({ showCheckpoint: false }), 3000)
   }
 

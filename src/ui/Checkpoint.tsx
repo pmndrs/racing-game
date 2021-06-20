@@ -5,7 +5,7 @@ const formatCheckpointDifference = (diffMs: number, negative: boolean) => {
 }
 
 export function Checkpoint() {
-  const [showCheckpoint] = useStore((s) => [s.showCheckpoint])
+  const showCheckpoint = useStore((state) => state.showCheckpoint)
   const improved = mutation.checkpointDifference < 0
 
   return (
