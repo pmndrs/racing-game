@@ -53,6 +53,7 @@ type WheelInfo = Required<
     | 'rollInfluence'
     | 'frictionSlip'
     | 'isFrontWheel'
+    | 'sideAcceleration'
   >
 >
 
@@ -67,7 +68,6 @@ export const wheelInfo: WheelInfo = {
   customSlidingRotationalSpeed: -0.01,
   rollInfluence: 0,
   frictionSlip: 1.5,
-  //@ts-ignore
   sideAcceleration: 3,
   isFrontWheel: false,
 }
