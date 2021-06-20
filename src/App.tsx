@@ -74,7 +74,7 @@ export function App() {
           </DebugScene>
         </Physics>
         <Track />
-        <Environment files={'textures/dikhololo_night_1k.hdr'} />
+        <Environment files="textures/dikhololo_night_1k.hdr" />
         <ToggledMap />
         <ToggledOrbitControls />
       </Canvas>
