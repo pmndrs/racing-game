@@ -122,6 +122,7 @@ export type BaseState = {
 interface IState extends BaseState {
   camera: Camera
   controls: Controls
+  showCheckpoint: boolean
   get: Getter
   level: MutableRefObject<Group>
   raycast: Raycast
@@ -161,6 +162,7 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
     session: null,
     set,
     shadows,
+    showCheckpoint: false,
     sound: true,
     stats,
     vehicleConfig,
@@ -170,6 +172,9 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
 interface Mutation {
   boostActive: boolean
   boostRemaining: number
+  checkpoint1: number
+  tempCheckpoint1: number
+  checkpointDifference: number
   finish: number
   sliding: boolean
   speed: number
@@ -182,6 +187,9 @@ export const mutation: Mutation = {
   velocity: [0, 0, 0],
   speed: 0,
   start: 0,
+  checkpoint1: 0,
+  tempCheckpoint1: 0,
+  checkpointDifference: 0,
   finish: 0,
   sliding: false,
   boostActive: false,

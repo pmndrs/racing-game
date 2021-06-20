@@ -9,7 +9,7 @@ import type { DirectionalLight } from 'three'
 
 import { angularVelocity, levelLayer, mutation, position, rotation, useStore } from './store'
 import { Ramp, Track, Vehicle, Goal, Train, Heightmap } from './models'
-import { Clock, Speed, Minimap, Intro, Help, Editor, LeaderBoard, Finished } from './ui'
+import { Clock, Speed, Minimap, Intro, Help, Editor, LeaderBoard, Finished, Checkpoint } from './ui'
 import { HideMouse, Keyboard } from './controls'
 
 import type { Booleans, Numbers } from './store'
@@ -51,6 +51,24 @@ export function App() {
     }
   }
 
+  const onCheckpoint = () => {
+    mutation.tempCheckpoint1 = Date.now() - mutation.start
+    if (mutation.checkpoint1 == 0) {
+      mutation.checkpoint1 = mutation.tempCheckpoint1
+      return
+    }
+
+    mutation.checkpointDifference = mutation.tempCheckpoint1 - mutation.checkpoint1
+    if (mutation.checkpointDifference < 0) {
+      mutation.checkpoint1 = mutation.tempCheckpoint1
+    }
+
+    set({
+      showCheckpoint: true,
+    })
+    setTimeout(() => set({ showCheckpoint: false }), 3000)
+  }
+
   const ToggledEditor = useToggle(Editor, 'editor')
   const ToggledFinished = useToggle(Finished, 'finished')
   const ToggledMap = useToggle(Minimap, 'map')
@@ -88,7 +106,8 @@ export function App() {
             <Ramp args={[30, 6, 8]} position={[2, -1, 168.55]} rotation={[0, 0.49, Math.PI / 15]} />
             <Heightmap elementSize={0.5085} position={[327 - 66.5, -3.3, -473 + 213]} rotation={[-Math.PI / 2, 0, -Math.PI]} />
             <Goal args={[0.001, 10, 18]} onCollideEnd={onStart} rotation={[0, 0.55, 0]} position={[-27, 1, 180]} />
-            <Goal args={[0.001, 10, 18]} onCollideBegin={onFinish} rotation={[0, -1.2, 0]} position={[-104, 1, -189]} />
+            <Goal args={[0.001, 10, 18]} onCollideEnd={onFinish} rotation={[0, -1.2, 0]} position={[-104, 1, -189]} />
+            <Goal args={[0.001, 10, 18]} onCollideEnd={onCheckpoint} rotation={[0, -0.5, 0]} position={[-50, 1, -5]} />
           </DebugScene>
         </Physics>
         <Track />
@@ -102,6 +121,7 @@ export function App() {
       <Help />
       <Speed />
       <ToggledStats />
+      <Checkpoint />
       <LeaderBoard />
       <HideMouse />
       <Keyboard />
