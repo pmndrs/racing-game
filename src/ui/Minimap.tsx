@@ -1,7 +1,7 @@
 import { OrthographicCamera, useFBO, useTexture } from '@react-three/drei'
 import { createPortal, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { Box3, Matrix4, Scene, Vector3 } from 'three'
+import { Box3, Matrix4, Scene, Vector2, Vector3 } from 'three'
 
 import type { Mesh, Sprite, WebGLRenderTarget } from 'three'
 
@@ -11,6 +11,7 @@ const m = new Matrix4()
 const v = new Vector3()
 const playerPosition = new Vector3()
 const playerRotation = new Vector3()
+const spriteRotation = new Vector2()
 
 function useLevelGeometricProperties(): [Box3, Vector3, Vector3] {
   const [box] = useState(() => new Box3())
@@ -78,7 +79,8 @@ export function Minimap({ size = 200 }): JSX.Element {
     v.subVectors(chassisBody.current!.getWorldPosition(playerPosition), levelCenter)
     player.current!.position.set(screenPosition.x + (v.x / levelDimensions.x) * size, screenPosition.y - (v.z / levelDimensions.z) * size, 0)
     chassisBody.current!.getWorldDirection(playerRotation)
-    player.current!.material.rotation = Math.PI - playerRotation.x
+    spriteRotation.set(playerRotation.x, playerRotation.z)
+    player.current!.material.rotation = Math.PI / 2 - spriteRotation.angle()
     gl.render(virtualScene, miniMapCamera.current!)
   }, 1)
 
