@@ -70,30 +70,28 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
   }, [defaultCamera])
 
   let i = 0
+  let isBoosting = false
   let steeringValue = 0
   let engineValue = 0
   let speed = 0
   let controls
-  let boostValue = false
+  let swaySpeed = 0
+  let swayTarget = 0
   let swayValue = 0
-  let boostActive = false
-  let boostRemaining = 0
 
   useFrame((state, delta) => {
     controls = getState().controls
     speed = mutation.speed
-    boostActive = mutation.boostActive
-    boostRemaining = mutation.boostRemaining
 
-    if (boostRemaining <= 51) {
-      mutation.boostActive = false
-    } else if (boostRemaining >= 51 && boostActive) {
-      mutation.boostRemaining = boostRemaining - 0.5
+    isBoosting = controls.boost && mutation.boost > 0
+
+    if (isBoosting) {
+      mutation.boost = Math.max(mutation.boost - 1, 0)
     }
 
     engineValue = lerp(
       engineValue,
-      controls.forward || controls.backward ? force * (controls.forward && !controls.backward ? (boostActive ? -1.5 : -1) : 1) : 0,
+      controls.forward || controls.backward ? force * (controls.forward && !controls.backward ? (isBoosting ? -1.5 : -1) : 1) : 0,
       delta * 20,
     )
     steeringValue = lerp(steeringValue, controls.left || controls.right ? steer * (controls.left && !controls.right ? 1 : -1) : 0, delta * 20)
@@ -102,9 +100,11 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
     for (i = 2; i < 4; i++) api.setBrake(controls.brake ? (controls.forward ? maxBrake / 1.5 : maxBrake) : 0, i)
 
     if (!editor) {
-      if (camera === 'FIRST_PERSON') v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.4, -0.1)
-      else if (camera === 'DEFAULT')
+      if (camera === 'FIRST_PERSON') {
+        v.set(0.3 + (Math.sin(-steeringValue) * speed) / 30, 0.4, -0.1)
+      } else if (camera === 'DEFAULT') {
         v.set((Math.sin(steeringValue) * speed) / 2.5, 1.25 + (engineValue / 1000) * -0.5, -5 - speed / 15 + (controls.brake ? 1 : 0))
+      }
 
       // ctrl.left-ctrl.right, up-down, near-far
       defaultCamera.position.lerp(v, delta)
@@ -117,11 +117,9 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
     chassisBody.current!.children[0].rotation.z = MathUtils.lerp(chassisBody.current!.children[0].rotation.z, (-steeringValue * speed) / 200, delta * 4)
 
     // Camera sway
-    const swaySpeed = boostActive ? 60 : 30
-    const startedBoosting = boostActive && !boostValue
-    boostValue = boostActive
-    const swayTarget = boostActive ? (speed / maxSpeed) * 8 : (speed / maxSpeed) * 2
-    swayValue = startedBoosting ? (speed / maxSpeed + 0.25) * 30 : MathUtils.lerp(swayValue, swayTarget, delta * (boostActive ? 10 : 20))
+    swaySpeed = isBoosting ? 60 : 30
+    swayTarget = isBoosting ? (speed / maxSpeed) * 8 : (speed / maxSpeed) * 2
+    swayValue = isBoosting ? (speed / maxSpeed + 0.25) * 30 : MathUtils.lerp(swayValue, swayTarget, delta * (isBoosting ? 10 : 20))
     defaultCamera.rotation.z += (Math.sin(state.clock.elapsedTime * swaySpeed * 0.9) / 1000) * swayValue
     defaultCamera.rotation.x += (Math.sin(state.clock.elapsedTime * swaySpeed) / 1000) * swayValue
 
@@ -161,14 +159,14 @@ function VehicleAudio() {
   let rpmTarget = 0
   let controls
   let speed = 0
-  let boostActive = false
+  let isBoosting = false
   const gears = 10
   useFrame((_, delta) => {
     speed = mutation.speed
     controls = getState().controls
-    boostActive = mutation.boostActive
+    isBoosting = controls.boost && mutation.boost > 0
 
-    boostAudio.current.setVolume(sound ? (boostActive ? Math.pow(speed / maxSpeed, 1.5) + 0.5 : 0) * 5 : 0)
+    boostAudio.current.setVolume(sound ? (isBoosting ? Math.pow(speed / maxSpeed, 1.5) + 0.5 : 0) * 5 : 0)
     boostAudio.current.setPlaybackRate(Math.pow(speed / maxSpeed, 1.5) + 0.5)
     engineAudio.current.setVolume(sound ? 1 - speed / maxSpeed : 0)
     accelerateAudio.current.setVolume(sound ? (speed / maxSpeed) * 2 : 0)
@@ -176,7 +174,7 @@ function VehicleAudio() {
     const gearPosition = speed / (maxSpeed / gears)
     rpmTarget = ((gearPosition % 1) + Math.log(gearPosition)) / 6
     if (rpmTarget < 0) rpmTarget = 0
-    if (boostActive) rpmTarget += 0.1
+    if (isBoosting) rpmTarget += 0.1
     engineAudio.current.setPlaybackRate(MathUtils.lerp(engineAudio.current.playbackRate, rpmTarget + 1, delta * 10))
     accelerateAudio.current.setPlaybackRate(MathUtils.lerp(accelerateAudio.current.playbackRate, rpmTarget + 0.5, delta * 10))
     brakeAudio.current.setVolume(sound ? (controls.brake ? 1 : 0.5) : 0)
