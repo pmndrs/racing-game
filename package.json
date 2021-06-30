@@ -14,7 +14,6 @@
     "@react-three/cannon": "2.3.3",
     "@react-three/drei": "^7.0.2",
     "@react-three/fiber": "7.0.1",
-    "@react-three/postprocessing": "2.0.4",
     "@supabase/supabase-js": "^1.15.1",
     "inter-ui": "^3.19.0",
     "leva": "^0.9.12",
