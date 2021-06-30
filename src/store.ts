@@ -13,6 +13,7 @@ export const cameras = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE'] as const
 
 const controls = {
   backward: false,
+  boost: false,
   brake: false,
   forward: false,
   honk: false,
@@ -23,6 +24,7 @@ const controls = {
 export const debug = false as const
 export const dpr = 1.5 as const
 export const levelLayer = 1 as const
+export const maxBoost = 100 as const
 export const position = [-110, 0.75, 220] as const
 export const rotation = [0, Math.PI / 2 + 0.35, 0] as const
 export const shadows = true as const
@@ -36,7 +38,7 @@ export const vehicleConfig = {
   steer: 0.3,
   force: 1800,
   maxBrake: 65,
-  maxSpeed: 128,
+  maxSpeed: 88,
 } as const
 
 export type WheelInfo = Required<
@@ -136,8 +138,7 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
     reset: () => {
       mutation.start = 0
       mutation.finish = 0
-      mutation.boostActive = false
-      mutation.boostRemaining = 100
+      mutation.boost = maxBoost
 
       set((state) => {
         state.api.chassisBody?.position.set(...position)
@@ -181,30 +182,28 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
 })
 
 interface Mutation {
-  boostActive: boolean
-  boostRemaining: number
+  boost: number
   checkpoint1: number
-  tempCheckpoint1: number
   checkpointDifference: number
   finish: number
   sliding: boolean
   speed: number
   start: number
+  tempCheckpoint1: number
   velocity: [number, number, number]
 }
 
 export const mutation: Mutation = {
   // Everything in here is mutated to avoid even slight overhead
-  velocity: [0, 0, 0],
-  speed: 0,
-  start: 0,
+  boost: maxBoost,
   checkpoint1: 0,
-  tempCheckpoint1: 0,
   checkpointDifference: 0,
   finish: 0,
   sliding: false,
-  boostActive: false,
-  boostRemaining: 100,
+  speed: 0,
+  start: 0,
+  tempCheckpoint1: 0,
+  velocity: [0, 0, 0],
 }
 
 // Make the store shallow compare by default

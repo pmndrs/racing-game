@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { cameras, useStore, mutation } from '../store'
+import { cameras, useStore } from '../store'
 
 interface KeyConfig extends KeyMap {
   keys?: string[]
@@ -51,7 +51,7 @@ export function Keyboard() {
     { keys: ['ArrowRight', 'd', 'D'], fn: (right) => set((state) => ({ controls: { ...state.controls, right } })) },
     { keys: [' '], fn: (brake) => set((state) => ({ controls: { ...state.controls, brake } })) },
     { keys: ['h', 'H'], fn: (honk) => set((state) => ({ controls: { ...state.controls, honk } })) },
-    { keys: ['Shift'], fn: (boostActive) => (mutation.boostActive = boostActive) },
+    { keys: ['Shift'], fn: (boost) => set((state) => ({ controls: { ...state.controls, boost } })) },
     { keys: ['r', 'R'], fn: reset, up: false },
     { keys: ['.'], fn: () => set((state) => ({ editor: !state.editor })), up: false },
     { keys: ['i', 'I'], fn: () => set((state) => ({ help: !state.help, leaderboard: false })), up: false },

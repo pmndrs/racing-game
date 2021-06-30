@@ -200,28 +200,27 @@ body {
   margin-top: -40px;
 }
 
-.nitro-bar {
+.boost-bar {
   position: relative;
   top: 15px;
 }
 
-.nitro-bg-path {
+.boost-bg-path {
   stroke: #132237;
   stroke-width: 13px;
   stroke-dasharray: 295px;
 }
 
-.nitro-path {
+.boost-path {
   stroke-width: 9px;
-  stroke-dashoffset: 100%;
-  transition: stroke-dasharray 0.5s;
+  stroke-dasharray: 100%;
 }
 
-.nitro-path-blink {
-  animation: nitroBlink 0.5s infinite;
+.boost-path.blink {
+  animation: boostBlink 0.5s infinite;
 }
 
-@keyframes nitroBlink {
+@keyframes boostBlink {
   100%,
   0% {
     stroke: #500;
@@ -231,7 +230,7 @@ body {
   }
 }
 
-.nitro-text {
+.boost-text {
   stroke: #fff;
   fill: #fff;
   font-size: 13px;
