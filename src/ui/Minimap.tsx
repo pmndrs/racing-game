@@ -1,15 +1,17 @@
 import { OrthographicCamera, useFBO, useTexture } from '@react-three/drei'
 import { createPortal, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { Box3, Matrix4, Scene, Vector3 } from 'three'
+import { Box3, Matrix4, Scene, Vector2, Vector3 } from 'three'
 
-import type { Mesh, WebGLRenderTarget } from 'three'
+import type { Mesh, Sprite, WebGLRenderTarget } from 'three'
 
 import { useStore, levelLayer } from '../store'
 
 const m = new Matrix4()
 const v = new Vector3()
 const playerPosition = new Vector3()
+const playerRotation = new Vector3()
+const spriteRotation = new Vector2()
 
 function useLevelGeometricProperties(): [Box3, Vector3, Vector3] {
   const [box] = useState(() => new Box3())
@@ -54,11 +56,12 @@ function MinimapTexture({ buffer }: { buffer: WebGLRenderTarget }) {
 }
 
 export function Minimap({ size = 200 }): JSX.Element {
-  const player = useRef<Mesh>(null)
+  const player = useRef<Sprite>(null)
   const miniMap = useRef<Mesh>(null)
   const miniMapCamera = useRef<THREE.OrthographicCamera>(null)
   const [virtualScene] = useState(() => new Scene())
   const mask = useTexture('textures/mask.svg')
+  const cursor = useTexture('textures/cursor.svg')
   const buffer = useFBO(size * 2, size * 2)
   const { gl, camera, scene, size: screenSize } = useThree()
   const [, levelCenter, levelDimensions] = useLevelGeometricProperties()
@@ -75,6 +78,9 @@ export function Minimap({ size = 200 }): JSX.Element {
     gl.clearDepth()
     v.subVectors(chassisBody.current!.getWorldPosition(playerPosition), levelCenter)
     player.current!.position.set(screenPosition.x + (v.x / levelDimensions.x) * size, screenPosition.y - (v.z / levelDimensions.z) * size, 0)
+    chassisBody.current!.getWorldDirection(playerRotation)
+    spriteRotation.set(playerRotation.x, playerRotation.z)
+    player.current!.material.rotation = Math.PI / 2 - spriteRotation.angle()
     gl.render(virtualScene, miniMapCamera.current!)
   }, 1)
 
@@ -86,8 +92,8 @@ export function Minimap({ size = 200 }): JSX.Element {
           <sprite ref={miniMap} position={screenPosition} scale={[size, size, 1]}>
             <spriteMaterial map={buffer.texture} alphaMap={mask} />
           </sprite>
-          <sprite ref={player} position={screenPosition} scale={[size / 30, size / 30, 1]}>
-            <spriteMaterial color="white" alphaMap={mask} />
+          <sprite ref={player} position={screenPosition} scale={[size / 20, size / 20, 1]}>
+            <spriteMaterial color="white" alphaMap={cursor} />
           </sprite>
         </>,
         virtualScene,
