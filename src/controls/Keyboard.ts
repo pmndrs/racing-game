@@ -45,9 +45,9 @@ function useKeys(keyConfig: KeyConfig[]) {
 export function Keyboard() {
   const { reset, set } = useStore(({ actions: { reset }, set }) => ({ reset, set }))
   useKeys([
-    { keys: ['ArrowUp', 'w', 'W'], fn: (forward) => set((state) => ({ controls: { ...state.controls, forward } })) },
+    { keys: ['ArrowUp', 'w', 'W', 'z', 'Z'], fn: (forward) => set((state) => ({ controls: { ...state.controls, forward } })) },
     { keys: ['ArrowDown', 's', 'S'], fn: (backward) => set((state) => ({ controls: { ...state.controls, backward } })) },
-    { keys: ['ArrowLeft', 'a', 'A'], fn: (left) => set((state) => ({ controls: { ...state.controls, left } })) },
+    { keys: ['ArrowLeft', 'a', 'A', 'q', 'Q'], fn: (left) => set((state) => ({ controls: { ...state.controls, left } })) },
     { keys: ['ArrowRight', 'd', 'D'], fn: (right) => set((state) => ({ controls: { ...state.controls, right } })) },
     { keys: [' '], fn: (brake) => set((state) => ({ controls: { ...state.controls, brake } })) },
     { keys: ['h', 'H'], fn: (honk) => set((state) => ({ controls: { ...state.controls, honk } })) },
