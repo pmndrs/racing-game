@@ -3,8 +3,8 @@ import type { HTMLAttributes } from 'react'
 import { useStore } from '../store'
 
 const controlOptions = [
-  { keys: ['↑', 'W'], action: 'Forward' },
-  { keys: ['←', 'A'], action: 'Left' },
+  { keys: ['↑', 'W', 'Z'], action: 'Forward' },
+  { keys: ['←', 'A', 'Q'], action: 'Left' },
   { keys: ['→', 'D'], action: 'Right' },
   { keys: ['↓', 'S'], action: 'Backward' },
   { keys: ['Space'], action: 'Drift' },
