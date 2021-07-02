@@ -1,7 +1,5 @@
 # 🏎️ @pmndrs/racing-game
 
-I DID NOT CREATE THIS GAME. This is a community effort I'm just forking it to try a few things with this stack cause it looks really fun.
-
 ![img](thumbnail.webp)
 
 Live demo (current state): https://racing.pmnd.rs/
