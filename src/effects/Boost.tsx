@@ -44,7 +44,7 @@ export function Boost({ count = 12, opacity = 0.5, size = 0.1 }: BoostProps): JS
 
   return (
     // @ts-expect-error - https://github.com/three-types/three-ts-types/issues/92
-    <instancedMesh ref={ref} args={[null, null, count]}>
+    <instancedMesh ref={ref} args={[undefined, undefined, count]}>
       <boxGeometry args={[size, size, size]} />
       <meshBasicMaterial color="#5ecfff" transparent opacity={opacity} depthWrite={true} />
     </instancedMesh>
