@@ -3,8 +3,11 @@ import { addEffect } from '@react-three/fiber'
 
 import { maxBoost, mutation } from '../../store'
 
-const getBlink = () => mutation.boost <= 65
-const getColor = () => (mutation.boost > 80 ? '#00FF00' : mutation.boost > 65 ? '#FFE600' : '#FF0000')
+const criticalLevel = 30
+const warningLevel = 60
+
+const getBlink = () => mutation.boost <= criticalLevel
+const getColor = () => (mutation.boost > warningLevel ? '#00FF00' : mutation.boost > criticalLevel ? '#FFE600' : '#FF0000')
 const getLength = () => `${(100 * (1 - mutation.boost / maxBoost)).toFixed()}%`
 
 export const Boost = () => {
