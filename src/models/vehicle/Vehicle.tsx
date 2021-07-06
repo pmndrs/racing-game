@@ -14,7 +14,7 @@ import { useToggle } from '../../useToggle'
 import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
 
-import type { WheelInfo } from '../../store'
+import type { Controls, WheelInfo } from '../../store'
 import type { ChassisProps } from './Chassis'
 
 const { lerp } = MathUtils
@@ -69,12 +69,12 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
     }
   }, [defaultCamera])
 
+  let controls: Controls
+  let engineValue = 0
   let i = 0
   let isBoosting = false
-  let steeringValue = 0
-  let engineValue = 0
   let speed = 0
-  let controls
+  let steeringValue = 0
   let swaySpeed = 0
   let swayTarget = 0
   let swayValue = 0
@@ -157,7 +157,7 @@ function VehicleAudio() {
   const [sound, maxSpeed] = useStore((state) => [state.sound, state.vehicleConfig.maxSpeed])
 
   let rpmTarget = 0
-  let controls
+  let controls: Controls
   let speed = 0
   let isBoosting = false
   const gears = 10

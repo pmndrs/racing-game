@@ -3,7 +3,9 @@ import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type { InstancedMesh } from 'three'
 import type { MutableRefObject } from 'react'
+
 import { getState, mutation, useStore } from '../store'
+import type { Controls } from '../store'
 
 const v = new Vector3()
 const m = new Matrix4()
@@ -20,14 +22,14 @@ export function Dust({ count = 200, opacity = 0.1, size = 1 }: DustProps): JSX.E
   const wheels = useStore((state) => state.wheels)
   const ref = useRef<InstancedMesh>(null!)
 
-  let controls: ReturnType<typeof getState>['controls']
+  let brake: Controls['brake']
   let i = 0
   let index = 0
   let intensity = 0
   let time = 0
   useFrame((state, delta) => {
-    controls = getState().controls
-    intensity = MathUtils.lerp(intensity, (Number(mutation.sliding || controls.brake) * mutation.speed) / 40, delta * 8)
+    brake = getState().controls.brake
+    intensity = MathUtils.lerp(intensity, (Number(mutation.sliding || brake) * mutation.speed) / 40, delta * 8)
 
     if (state.clock.getElapsedTime() - time > 0.02 && wheels[2].current && wheels[3].current) {
       time = state.clock.getElapsedTime()

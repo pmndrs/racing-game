@@ -237,15 +237,15 @@ body {
   letter-spacing: 0.1px;
   font-weight: bold;
 }
-/* --------------- CONTROLS --------------- */
+/* --------------- HELP --------------- */
 
-.controls {
+.help {
   position: absolute;
   top: 60px;
   right: 60px;
 }
 
-.controls > .popup {
+.popup {
   position: fixed;
   right: 0;
   top: 0;
@@ -257,7 +257,7 @@ body {
   transform: translateY(-100%);
 }
 
-.controls > .popup.open {
+.popup.open {
   opacity: 1;
   transform: translateY(0);
 }

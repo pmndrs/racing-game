@@ -20,13 +20,11 @@ export function LeaderBoard(): JSX.Element {
   }, [leaderboard])
 
   return (
-    <div className="controls">
-      <div className={`popup ${leaderboard ? 'open' : ''}`}>
-        <button className="popup-close" onClick={close}>
-          L
-        </button>
-        <Scores className="popup-content leaderboard-bottom" scores={scores} />
-      </div>
+    <div className={`leaderboard popup ${leaderboard ? 'open' : ''}`}>
+      <button className="popup-close" onClick={close}>
+        L
+      </button>
+      <Scores className="popup-content leaderboard-bottom" scores={scores} />
     </div>
   )
 }
