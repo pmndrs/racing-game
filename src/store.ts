@@ -90,10 +90,8 @@ type BaseState = {
 
 export interface IState extends BaseState {
   actions: Record<ActionNames, () => void>
-  api: {
-    // TODO: This should be PublicApi
-    chassisBody: Api[1] | null
-  }
+  // TODO: This should be PublicApi
+  api: Api[1] | null
   camera: Camera
   chassisBody: RefObject<Object3D>
   controls: Controls
@@ -141,10 +139,10 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
       mutation.boost = maxBoost
 
       set((state) => {
-        state.api.chassisBody?.position.set(...position)
-        state.api.chassisBody?.velocity.set(0, 0, 0)
-        state.api.chassisBody?.angularVelocity.set(...angularVelocity)
-        state.api.chassisBody?.rotation.set(...rotation)
+        state.api?.position.set(...position)
+        state.api?.velocity.set(0, 0, 0)
+        state.api?.angularVelocity.set(...angularVelocity)
+        state.api?.rotation.set(...rotation)
 
         return { ...state, finished: 0 }
       })
@@ -153,9 +151,7 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
 
   return {
     actions,
-    api: {
-      chassisBody: null,
-    },
+    api: null,
     camera: cameras[0],
     chassisBody: createRef<Object3D>(),
     checkpoint: false,

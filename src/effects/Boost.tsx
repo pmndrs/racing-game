@@ -17,7 +17,7 @@ interface BoostProps {
 
 export function Boost({ count = 12, opacity = 0.5, size = 0.1 }: BoostProps): JSX.Element {
   const ref = useRef<InstancedMesh>(null!)
-  const controls = useStore((store) => store.controls)
+  const boost = useStore((store) => store.controls.boost)
 
   let i: number
   let isBoosting = false
@@ -26,7 +26,7 @@ export function Boost({ count = 12, opacity = 0.5, size = 0.1 }: BoostProps): JS
   let progress: number
 
   useFrame((state) => {
-    isBoosting = controls.boost && mutation.boost > 0
+    isBoosting = boost && mutation.boost > 0
     for (i = 0; i < count; i += positions.length) {
       n = MathUtils.randFloatSpread(0.05)
       for (j = 0; j < positions.length; j++) {
