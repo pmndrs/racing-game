@@ -40,15 +40,11 @@ body {
   text-align: center;
 }
 
-.hide {
-  display: none
-}
-
-.checkpoint > .green {
+.checkpoint .green {
   color: green
 }
 
-.checkpoint > .red {
+.checkpoint .red {
   color: red
 }
 
