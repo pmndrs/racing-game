@@ -51,7 +51,6 @@ export function Dust({ count = 200, opacity = 0.1, size = 1 }: DustProps): JSX.E
   })
 
   return (
-    // @ts-expect-error - https://github.com/three-types/three-ts-types/issues/92
     <instancedMesh ref={ref} args={[undefined, undefined, count]}>
       <sphereGeometry args={[size, 10, 10]} />
       <meshBasicMaterial color="white" transparent opacity={opacity} depthWrite={false} />
