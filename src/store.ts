@@ -81,7 +81,7 @@ export type Setter = SetState<IState>
 
 export type VehicleConfig = typeof vehicleConfig
 
-const booleans = ['checkpoint', 'debug', 'editor', 'help', 'leaderboard', 'map', 'ready', 'shadows', 'sound', 'stats'] as const
+const booleans = ['debug', 'editor', 'help', 'leaderboard', 'map', 'ready', 'shadows', 'sound', 'stats'] as const
 type Booleans = typeof booleans[number]
 
 type BaseState = {
@@ -92,8 +92,10 @@ export interface IState extends BaseState {
   actions: Record<ActionNames, () => void>
   // TODO: This should be PublicApi
   api: Api[1] | null
+  bestCheckpoint: number
   camera: Camera
   chassisBody: RefObject<Object3D>
+  checkpoint: number
   controls: Controls
   dpr: number
   finished: number
@@ -109,19 +111,10 @@ export interface IState extends BaseState {
 const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState>) => {
   const actions = {
     onCheckpoint: () => {
-      mutation.tempCheckpoint1 = Date.now() - mutation.start
-      if (mutation.checkpoint1 == 0) {
-        mutation.checkpoint1 = mutation.tempCheckpoint1
-        return
+      if (mutation.start) {
+        const checkpoint = Date.now() - mutation.start
+        set({ checkpoint })
       }
-
-      mutation.checkpointDifference = mutation.tempCheckpoint1 - mutation.checkpoint1
-      if (mutation.checkpointDifference < 0) {
-        mutation.checkpoint1 = mutation.tempCheckpoint1
-      }
-
-      set({ checkpoint: true })
-      setTimeout(() => set({ checkpoint: false }), 3000)
     },
     onFinish: () => {
       if (mutation.start && !mutation.finish) {
@@ -130,19 +123,19 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
       }
     },
     onStart: () => {
-      mutation.start = Date.now()
       mutation.finish = 0
+      mutation.start = Date.now()
     },
     reset: () => {
-      mutation.start = 0
-      mutation.finish = 0
       mutation.boost = maxBoost
+      mutation.finish = 0
+      mutation.start = 0
 
       set((state) => {
-        state.api?.position.set(...position)
-        state.api?.velocity.set(0, 0, 0)
         state.api?.angularVelocity.set(...angularVelocity)
+        state.api?.position.set(...position)
         state.api?.rotation.set(...rotation)
+        state.api?.velocity.set(0, 0, 0)
 
         return { ...state, finished: 0 }
       })
@@ -152,9 +145,10 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
   return {
     actions,
     api: null,
+    bestCheckpoint: 0,
     camera: cameras[0],
     chassisBody: createRef<Object3D>(),
-    checkpoint: false,
+    checkpoint: 0,
     controls,
     debug,
     dpr,
@@ -179,26 +173,20 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
 
 interface Mutation {
   boost: number
-  checkpoint1: number
-  checkpointDifference: number
   finish: number
   sliding: boolean
   speed: number
   start: number
-  tempCheckpoint1: number
   velocity: [number, number, number]
 }
 
 export const mutation: Mutation = {
   // Everything in here is mutated to avoid even slight overhead
   boost: maxBoost,
-  checkpoint1: 0,
-  checkpointDifference: 0,
   finish: 0,
   sliding: false,
   speed: 0,
   start: 0,
-  tempCheckpoint1: 0,
   velocity: [0, 0, 0],
 }
 
