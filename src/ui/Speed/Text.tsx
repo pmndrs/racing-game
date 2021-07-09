@@ -8,22 +8,21 @@ const getSpeed = () => `${mutation.speed.toFixed()}`
 export const Text = (): JSX.Element => {
   const ref = useRef<HTMLSpanElement>(null)
 
-  let currentSpeed = getSpeed()
-  let newSpeed: string
+  let speed = getSpeed()
 
   useEffect(() =>
     addEffect(() => {
-      newSpeed = getSpeed()
-      if (ref.current && newSpeed !== currentSpeed) {
-        ref.current.innerText = newSpeed
-        currentSpeed = newSpeed
+      if (!ref.current) return
+      speed = getSpeed()
+      if (ref.current.innerText !== speed) {
+        ref.current.innerText = speed
       }
     }),
   )
 
   return (
     <div className="speed-text">
-      <span ref={ref}>{currentSpeed}</span> mph
+      <span ref={ref}>{speed}</span> mph
     </div>
   )
 }

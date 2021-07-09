@@ -1,32 +1,34 @@
 import { useEffect, useRef } from 'react'
 import { addEffect } from '@react-three/fiber'
-import { mutation } from '../store'
+import { useStore } from '../store'
 import { readableTime } from './LeaderBoard'
+
+const getTime = (finished: number, start: number) => {
+  const time = start && !finished ? Date.now() - start : 0
+  return `${readableTime(time)}`
+}
 
 export function Clock() {
   const ref = useRef<HTMLSpanElement>(null)
+  const { finished, start } = useStore(({ finished, start }) => ({ finished, start }))
 
-  let currentText = '0.00'
+  let text = getTime(finished, start)
 
   useEffect(() => {
     let lastTime = 0
     return addEffect((time) => {
-      if (ref.current && time - lastTime >= 100) {
-        lastTime = time
-        const { start, finish } = mutation
-        const raceTime = start && !finish ? Date.now() - start : 0
-        const newText = `${readableTime(raceTime)}`
-        if (newText !== currentText) {
-          ref.current.innerText = newText
-          currentText = newText
-        }
+      if (!ref.current || time - lastTime < 100) return
+      lastTime = time
+      text = getTime(finished, start)
+      if (ref.current.innerText !== text) {
+        ref.current.innerText = text
       }
     })
-  }, [])
+  }, [finished, start])
 
   return (
     <div className="clock">
-      <span ref={ref}>{currentText}</span>
+      <span ref={ref}>{text}</span>
     </div>
   )
 }
