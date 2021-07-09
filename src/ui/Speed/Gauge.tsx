@@ -40,22 +40,21 @@ export const Gauge = () => {
 
   const getOffset = getOffsetFactory(maxSpeed)
 
-  let currentOffset = getOffset()
-  let newOffset: string
+  let offset = getOffset()
 
   useEffect(() =>
     addEffect(() => {
-      newOffset = getOffset()
-      if (ref.current && newOffset !== currentOffset) {
-        ref.current.setAttribute('offset', newOffset)
-        currentOffset = newOffset
+      if (!ref.current) return
+      offset = getOffset()
+      if (ref.current.getAttribute('offset') !== offset) {
+        ref.current.setAttribute('offset', offset)
       }
     }),
   )
 
   return (
     <div className="speed-gauge">
-      <Background offset={currentOffset} ref={ref} />
+      <Background offset={offset} ref={ref} />
       <Foreground />
     </div>
   )

@@ -103,6 +103,7 @@ export interface IState extends BaseState {
   level: RefObject<Group>
   session: Session | null
   set: Setter
+  start: number
   vehicleConfig: VehicleConfig
   wheelInfo: WheelInfo
   wheels: [RefObject<Object3D>, RefObject<Object3D>, RefObject<Object3D>, RefObject<Object3D>]
@@ -111,25 +112,23 @@ export interface IState extends BaseState {
 const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState>) => {
   const actions = {
     onCheckpoint: () => {
-      if (mutation.start) {
-        const checkpoint = Date.now() - mutation.start
+      const { start } = get()
+      if (start) {
+        const checkpoint = Date.now() - start
         set({ checkpoint })
       }
     },
     onFinish: () => {
-      if (mutation.start && !mutation.finish) {
-        mutation.finish = Date.now()
-        set({ finished: mutation.finish - mutation.start })
+      const { finished, start } = get()
+      if (start && !finished) {
+        set({ finished: Date.now() - start })
       }
     },
     onStart: () => {
-      mutation.finish = 0
-      mutation.start = Date.now()
+      set({ finished: 0, start: Date.now() })
     },
     reset: () => {
       mutation.boost = maxBoost
-      mutation.finish = 0
-      mutation.start = 0
 
       set((state) => {
         state.api?.angularVelocity.set(...angularVelocity)
@@ -137,7 +136,7 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
         state.api?.rotation.set(...rotation)
         state.api?.velocity.set(0, 0, 0)
 
-        return { ...state, finished: 0 }
+        return { ...state, finished: 0, start: 0 }
       })
     },
   }
@@ -164,6 +163,7 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
     set,
     shadows,
     sound: true,
+    start: 0,
     stats,
     vehicleConfig,
     wheelInfo,
@@ -173,20 +173,16 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
 
 interface Mutation {
   boost: number
-  finish: number
   sliding: boolean
   speed: number
-  start: number
   velocity: [number, number, number]
 }
 
 export const mutation: Mutation = {
   // Everything in here is mutated to avoid even slight overhead
   boost: maxBoost,
-  finish: 0,
   sliding: false,
   speed: 0,
-  start: 0,
   velocity: [0, 0, 0],
 }
 

@@ -14,32 +14,26 @@ export const Boost = () => {
   const ref = useRef<SVGPathElement>(null)
 
   let blink = getBlink()
-  let newBlink: boolean
   let stroke = getColor()
-  let newStroke: string
   let strokeDashoffset = getLength()
-  let newStrokeDashoffset: string
 
   useEffect(() =>
     addEffect(() => {
       if (!ref.current) return
 
-      newBlink = getBlink()
-      if (blink !== newBlink) {
-        ref.current.classList.toggle('blink', newBlink)
-        blink = newBlink
+      blink = getBlink()
+      if (ref.current.classList.contains('blink') !== blink) {
+        ref.current.classList.toggle('blink', blink)
       }
 
-      newStroke = getColor()
-      if (stroke !== newStroke) {
-        ref.current.style.stroke = newStroke
-        stroke = newStroke
+      stroke = getColor()
+      if (ref.current.style.stroke !== stroke) {
+        ref.current.style.stroke = stroke
       }
 
-      newStrokeDashoffset = getLength()
-      if (strokeDashoffset !== newStrokeDashoffset) {
-        ref.current.style.strokeDashoffset = newStrokeDashoffset
-        strokeDashoffset = newStrokeDashoffset
+      strokeDashoffset = getLength()
+      if (ref.current.style.strokeDashoffset !== strokeDashoffset) {
+        ref.current.style.strokeDashoffset = strokeDashoffset
       }
     }),
   )
