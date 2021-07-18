@@ -5,7 +5,7 @@ import { PositionalAudio } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
 
 import type { PropsWithChildren } from 'react'
-import type { WheelInfoOptions } from '@react-three/cannon'
+import type { BoxProps, WheelInfoOptions } from '@react-three/cannon'
 import type { PositionalAudio as PositionalAudioImpl } from 'three'
 
 import { Dust, Skid, Boost } from '../../effects'
@@ -15,12 +15,11 @@ import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
 
 import type { Controls, WheelInfo } from '../../store'
-import type { ChassisProps } from './Chassis'
 
 const { lerp } = MathUtils
 const v = new Vector3()
 
-type VehicleProps = PropsWithChildren<Pick<ChassisProps, 'angularVelocity' | 'position' | 'rotation'>>
+type VehicleProps = PropsWithChildren<Pick<BoxProps, 'angularVelocity' | 'position' | 'rotation'>>
 type DerivedWheelInfo = WheelInfo & Required<Pick<WheelInfoOptions, 'chassisConnectionPointLocal' | 'isFrontWheel'>>
 
 export function Vehicle({ angularVelocity, children, position, rotation }: VehicleProps) {
@@ -148,6 +147,8 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
   )
 }
 
+const gears = 10
+
 function VehicleAudio() {
   const engineAudio = useRef<PositionalAudioImpl>(null!)
   const boostAudio = useRef<PositionalAudioImpl>(null!)
@@ -160,7 +161,7 @@ function VehicleAudio() {
   let controls: Controls
   let speed = 0
   let isBoosting = false
-  const gears = 10
+
   useFrame((_, delta) => {
     speed = mutation.speed
     controls = getState().controls
@@ -193,7 +194,7 @@ function VehicleAudio() {
     const engine = engineAudio.current
     const honk = honkAudio.current
     const brake = brakeAudio.current
-    return () => [engine, honk, brake].forEach((sound) => sound && sound.isPlaying && sound.stop())
+    return () => [engine, honk, brake].forEach((audio) => audio && audio.isPlaying && audio.stop())
   }, [])
 
   return (
