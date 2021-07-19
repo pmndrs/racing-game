@@ -6,9 +6,8 @@ import { useRaycastVehicle } from '@react-three/cannon'
 import type { PropsWithChildren } from 'react'
 import type { BoxProps, WheelInfoOptions } from '@react-three/cannon'
 
-import { Audio, Dust, Skid, Boost } from '../../effects'
+import { AccelerateAudio, BoostAudio, Boost, BrakeAudio, Dust, EngineAudio, HonkAudio, Skid } from '../../effects'
 import { getState, mutation, useStore } from '../../store'
-import { useToggle } from '../../useToggle'
 import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
 
@@ -125,12 +124,14 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
     chassisBody.current!.children[0].rotation.z = (Math.cos(state.clock.getElapsedTime() * 20) * (speed / maxSpeed)) / 100
   })
 
-  const ToggledVehicleAudio = useToggle(Audio, 'ready')
-
   return (
     <group>
       <Chassis ref={chassisBody} {...{ angularVelocity, position, rotation }}>
-        <ToggledVehicleAudio />
+        <AccelerateAudio />
+        <BoostAudio />
+        <BrakeAudio />
+        <EngineAudio />
+        <HonkAudio />
         <Boost />
         {children}
       </Chassis>

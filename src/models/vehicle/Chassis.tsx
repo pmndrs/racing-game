@@ -60,10 +60,11 @@ interface ChassisGLTF extends GLTF {
   }
 }
 
+type MaterialMesh = Mesh<BoxBufferGeometry, MeshStandardMaterial>
+
+const gears = 10
 const c = new Color()
 const v = new Vector3()
-
-type MaterialMesh = Mesh<BoxBufferGeometry, MeshStandardMaterial>
 
 export const Chassis = forwardRef<Object3D, PropsWithChildren<BoxProps>>(({ args = [2, 1.1, 4.7], mass = 500, children, ...props }, ref) => {
   const glass = useRef<MaterialMesh>(null!)
@@ -71,7 +72,7 @@ export const Chassis = forwardRef<Object3D, PropsWithChildren<BoxProps>>(({ args
   const wheel = useRef<MaterialMesh>(null!)
   const needle = useRef<MaterialMesh>(null!)
   const crashAudio = useRef<PositionalAudioImpl>(null!)
-  const [camera, set, sound, vehicleConfig] = useStore((s) => [s.camera, s.set, s.sound, s.vehicleConfig])
+  const [camera, maxSpeed, set, sound] = useStore((s) => [s.camera, s.vehicleConfig.maxSpeed, s.set, s.sound])
   const { nodes: n, materials: m } = useGLTF('/models/chassis-draco.glb') as ChassisGLTF
 
   const onCollide = useCallback(
@@ -92,10 +93,12 @@ export const Chassis = forwardRef<Object3D, PropsWithChildren<BoxProps>>(({ args
 
   useLayoutEffect(() => {
     api.velocity.subscribe((velocity) => {
-      Object.assign(mutation, { velocity, speed: v.set(...velocity).length() })
-    }),
-      []
-  })
+      const speed = v.set(...velocity).length()
+      const gearPosition = speed / (maxSpeed / gears)
+      const rpmTarget = Math.max(((gearPosition % 1) + Math.log(gearPosition)) / 6, 0)
+      Object.assign(mutation, { rpmTarget, speed, velocity })
+    })
+  }, [maxSpeed])
 
   let controls: Controls
   useFrame((_, delta) => {
@@ -106,7 +109,7 @@ export const Chassis = forwardRef<Object3D, PropsWithChildren<BoxProps>>(({ args
     glass.current.material.opacity = MathUtils.lerp(glass.current.material.opacity, camera === 'FIRST_PERSON' ? 0.1 : 0.75, delta)
     glass.current.material.color.lerp(c.set(camera === 'FIRST_PERSON' ? 'white' : 'black'), delta)
     wheel.current.rotation.z = MathUtils.lerp(wheel.current.rotation.z, controls.left ? -Math.PI : controls.right ? Math.PI : 0, delta)
-    needle.current.rotation.y = (mutation.speed / vehicleConfig.maxSpeed) * -Math.PI * 2 - 0.9
+    needle.current.rotation.y = (mutation.speed / maxSpeed) * -Math.PI * 2 - 0.9
   })
 
   return (
