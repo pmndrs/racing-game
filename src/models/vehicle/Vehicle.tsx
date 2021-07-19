@@ -1,14 +1,12 @@
 import { MathUtils, PerspectiveCamera, Vector3 } from 'three'
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { PositionalAudio } from '@react-three/drei'
 import { useRaycastVehicle } from '@react-three/cannon'
 
 import type { PropsWithChildren } from 'react'
 import type { BoxProps, WheelInfoOptions } from '@react-three/cannon'
-import type { PositionalAudio as PositionalAudioImpl } from 'three'
 
-import { Dust, Skid, Boost } from '../../effects'
+import { Audio, Dust, Skid, Boost } from '../../effects'
 import { getState, mutation, useStore } from '../../store'
 import { useToggle } from '../../useToggle'
 import { Chassis } from './Chassis'
@@ -127,7 +125,7 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
     chassisBody.current!.children[0].rotation.z = (Math.cos(state.clock.getElapsedTime() * 20) * (speed / maxSpeed)) / 100
   })
 
-  const ToggledVehicleAudio = useToggle(VehicleAudio, 'ready')
+  const ToggledVehicleAudio = useToggle(Audio, 'ready')
 
   return (
     <group>
@@ -144,66 +142,5 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
       <Dust />
       <Skid />
     </group>
-  )
-}
-
-const gears = 10
-
-function VehicleAudio() {
-  const engineAudio = useRef<PositionalAudioImpl>(null!)
-  const boostAudio = useRef<PositionalAudioImpl>(null!)
-  const accelerateAudio = useRef<PositionalAudioImpl>(null!)
-  const honkAudio = useRef<PositionalAudioImpl>(null!)
-  const brakeAudio = useRef<PositionalAudioImpl>(null!)
-  const [sound, maxSpeed] = useStore((state) => [state.sound, state.vehicleConfig.maxSpeed])
-
-  let rpmTarget = 0
-  let controls: Controls
-  let speed = 0
-  let isBoosting = false
-
-  useFrame((_, delta) => {
-    speed = mutation.speed
-    controls = getState().controls
-    isBoosting = controls.boost && mutation.boost > 0
-
-    boostAudio.current.setVolume(sound ? (isBoosting ? Math.pow(speed / maxSpeed, 1.5) + 0.5 : 0) * 5 : 0)
-    boostAudio.current.setPlaybackRate(Math.pow(speed / maxSpeed, 1.5) + 0.5)
-    engineAudio.current.setVolume(sound ? 1 - speed / maxSpeed : 0)
-    accelerateAudio.current.setVolume(sound ? (speed / maxSpeed) * 2 : 0)
-
-    const gearPosition = speed / (maxSpeed / gears)
-    rpmTarget = ((gearPosition % 1) + Math.log(gearPosition)) / 6
-    if (rpmTarget < 0) rpmTarget = 0
-    if (isBoosting) rpmTarget += 0.1
-    engineAudio.current.setPlaybackRate(MathUtils.lerp(engineAudio.current.playbackRate, rpmTarget + 1, delta * 10))
-    accelerateAudio.current.setPlaybackRate(MathUtils.lerp(accelerateAudio.current.playbackRate, rpmTarget + 0.5, delta * 10))
-    brakeAudio.current.setVolume(sound ? (controls.brake ? 1 : 0.5) : 0)
-
-    if (sound) {
-      if (controls.honk) {
-        if (!honkAudio.current.isPlaying) honkAudio.current.play()
-      } else honkAudio.current.isPlaying && honkAudio.current.stop()
-      if (controls.brake && speed > 20) {
-        if (!brakeAudio.current.isPlaying) brakeAudio.current.play()
-      } else brakeAudio.current.isPlaying && brakeAudio.current.stop()
-    }
-  })
-
-  useEffect(() => {
-    const engine = engineAudio.current
-    const honk = honkAudio.current
-    const brake = brakeAudio.current
-    return () => [engine, honk, brake].forEach((audio) => audio && audio.isPlaying && audio.stop())
-  }, [])
-
-  return (
-    <>
-      <PositionalAudio ref={engineAudio} url="/sounds/engine.mp3" autoplay loop distance={5} />
-      <PositionalAudio ref={boostAudio} url="/sounds/boost.mp3" autoplay loop distance={5} />
-      <PositionalAudio ref={accelerateAudio} url="/sounds/accelerate.mp3" autoplay loop distance={5} />
-      <PositionalAudio ref={honkAudio} url="/sounds/honk.mp3" distance={10} />
-      <PositionalAudio ref={brakeAudio} url="/sounds/tire-brake.mp3" distance={10} />
-    </>
   )
 }
