@@ -11,7 +11,7 @@ const { lerp } = MathUtils
 
 export const AccelerateAudio = () => {
   const ref = useRef<PositionalAudioImpl>(null)
-  const [maxSpeed] = useStore(({ vehicleConfig: { maxSpeed } }) => [maxSpeed])
+  const maxSpeed = useStore(({ vehicleConfig: { maxSpeed } }) => maxSpeed)
 
   const getVolume = () => (2 * mutation.speed) / maxSpeed
 
