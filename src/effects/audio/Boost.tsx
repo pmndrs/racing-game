@@ -27,5 +27,5 @@ export const BoostAudio = () => {
     }
   }, [boost, sound])
 
-  return <PositionalAudio ref={ref} url="/sounds/boost.mp3" autoplay loop distance={5} />
+  return <PositionalAudio ref={ref} url="/sounds/boost.mp3" distance={5} />
 }

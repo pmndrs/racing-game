@@ -8,6 +8,7 @@ import type { BoxProps, WheelInfoOptions } from '@react-three/cannon'
 
 import { AccelerateAudio, BoostAudio, Boost, BrakeAudio, Dust, EngineAudio, HonkAudio, Skid } from '../../effects'
 import { getState, mutation, useStore } from '../../store'
+import { useToggle } from '../../useToggle'
 import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
 
@@ -124,13 +125,16 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
     chassisBody.current!.children[0].rotation.z = (Math.cos(state.clock.getElapsedTime() * 20) * (speed / maxSpeed)) / 100
   })
 
+  const ToggledAccelerateAudio = useToggle(AccelerateAudio, ['ready', 'sound'])
+  const ToggledEngineAudio = useToggle(EngineAudio, ['ready', 'sound'])
+
   return (
     <group>
       <Chassis ref={chassisBody} {...{ angularVelocity, position, rotation }}>
-        <AccelerateAudio />
+        <ToggledAccelerateAudio />
         <BoostAudio />
         <BrakeAudio />
-        <EngineAudio />
+        <ToggledEngineAudio />
         <HonkAudio />
         <Boost />
         {children}

@@ -11,19 +11,24 @@ const { lerp } = MathUtils
 
 export const EngineAudio = () => {
   const ref = useRef<PositionalAudioImpl>(null)
-  const [maxSpeed, sound] = useStore(({ sound, vehicleConfig: { maxSpeed } }) => [maxSpeed, sound])
+  const [maxSpeed] = useStore(({ vehicleConfig: { maxSpeed } }) => [maxSpeed])
+
+  const getVolume = () => 1 - mutation.speed / maxSpeed
 
   useFrame((_, delta) => {
-    ref.current?.setVolume(1 - mutation.speed / maxSpeed)
+    ref.current?.setVolume(getVolume())
     ref.current?.setPlaybackRate(lerp(ref.current.playbackRate, mutation.rpmTarget + 1, delta * 10))
   })
 
   useEffect(() => {
-    if (ref.current && sound && !ref.current.isPlaying) ref.current.play()
+    if (ref.current && !ref.current.isPlaying) {
+      ref.current.setVolume(getVolume())
+      ref.current.play()
+    }
     return () => {
       if (ref.current && ref.current.isPlaying) ref.current.stop()
     }
-  }, [sound])
+  }, [])
 
-  return <PositionalAudio ref={ref} url="/sounds/engine.mp3" autoplay loop distance={5} />
+  return <PositionalAudio autoplay ref={ref} url="/sounds/engine.mp3" loop distance={5} />
 }

@@ -3,11 +3,11 @@ import { useFrame } from '@react-three/fiber'
 import { useGLTF, useAnimations, PositionalAudio } from '@react-three/drei'
 import { useBox } from '@react-three/cannon'
 
-import { useStore } from '../../store'
-
 import type { BoxProps } from '@react-three/cannon'
 import type { Group, Mesh, MeshStandardMaterial } from 'three'
 import type { GLTF } from 'three-stdlib'
+
+import { useToggle } from '../../useToggle'
 
 interface TrainGLTF extends GLTF {
   nodes: {
@@ -44,7 +44,6 @@ title: Train , Locomotive SD40-2
 
 export function Train({ args = [38, 8, 10], position = [-145.84, 3.42, 54.67], rotation = [0, -0.09, 0] }: BoxProps): JSX.Element {
   const ref = useRef<Group>(null!)
-  const [ready, sound] = useStore((state) => [state.ready, state.sound])
   const { animations, nodes: n, materials: m } = useGLTF('/models/track-draco.glb') as TrainGLTF
   const [, api] = useBox(() => ({ mass: 10000, type: 'Kinematic', args, position, rotation }), ref, [args, position, rotation])
   const { actions } = useAnimations(animations, ref)
@@ -55,6 +54,8 @@ export function Train({ args = [38, 8, 10], position = [-145.84, 3.42, 54.67], r
     api.position.set(ref.current.position.x, ref.current.position.y, ref.current.position.z)
     api.rotation.set(ref.current.rotation.x, ref.current.rotation.y - 0.09, ref.current.rotation.z)
   })
+
+  const ToggledPositionalAudio = useToggle(PositionalAudio, ['ready', 'sound'])
 
   return (
     <group ref={ref} name="train" position={position} rotation={rotation} dispose={null}>
@@ -67,7 +68,7 @@ export function Train({ args = [38, 8, 10], position = [-145.84, 3.42, 54.67], r
       <mesh geometry={n.train_7.geometry} material={m.steelClone} {...config} />
       <mesh geometry={n.train_8.geometry} material={m.lightRedClone} {...config} />
       <mesh geometry={n.train_9.geometry} material={m.darkClone} {...config} />
-      {sound && ready && <PositionalAudio url="/sounds/train.mp3" loop autoplay distance={5} />}
+      <ToggledPositionalAudio url="/sounds/train.mp3" loop autoplay distance={5} />
     </group>
   )
 }
