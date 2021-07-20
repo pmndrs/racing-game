@@ -173,6 +173,7 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
 
 interface Mutation {
   boost: number
+  rpmTarget: number
   sliding: boolean
   speed: number
   velocity: [number, number, number]
@@ -181,6 +182,7 @@ interface Mutation {
 export const mutation: Mutation = {
   // Everything in here is mutated to avoid even slight overhead
   boost: maxBoost,
+  rpmTarget: 0,
   sliding: false,
   speed: 0,
   velocity: [0, 0, 0],
