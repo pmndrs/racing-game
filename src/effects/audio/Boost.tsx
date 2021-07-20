@@ -14,6 +14,7 @@ export const BoostAudio = () => {
     const rate = Math.pow(mutation.speed / maxSpeed, 1.5) + 0.5
     ref.current?.setVolume(rate * 1.5)
     ref.current?.setPlaybackRate(rate)
+    if (!mutation.boost && ref.current?.isPlaying) ref.current.stop()
   })
 
   useEffect(() => {
