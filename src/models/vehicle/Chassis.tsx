@@ -93,14 +93,16 @@ export const Chassis = forwardRef<Object3D, PropsWithChildren<BoxProps>>(({ args
     return () => setState({ api: null })
   }, [api])
 
-  useLayoutEffect(() => {
-    api.velocity.subscribe((velocity) => {
-      const speed = v.set(...velocity).length()
-      const gearPosition = speed / (maxSpeed / gears)
-      const rpmTarget = Math.max(((gearPosition % 1) + Math.log(gearPosition)) / 6, 0)
-      Object.assign(mutation, { rpmTarget, speed, velocity })
-    })
-  }, [maxSpeed])
+  useLayoutEffect(
+    () =>
+      api.velocity.subscribe((velocity) => {
+        const speed = v.set(...velocity).length()
+        const gearPosition = speed / (maxSpeed / gears)
+        const rpmTarget = Math.max(((gearPosition % 1) + Math.log(gearPosition)) / 6, 0)
+        Object.assign(mutation, { rpmTarget, speed, velocity })
+      }),
+    [maxSpeed],
+  )
 
   let camera: Camera
   let controls: Controls
