@@ -4,7 +4,7 @@ import { useFrame } from '@react-three/fiber'
 
 import type { InstancedMesh } from 'three'
 
-import { mutation, useStore } from '../store'
+import { mutation, getState } from '../store'
 
 const o = new Object3D()
 const positions = [new Vector3(-0.4, -0.5, -1.8), new Vector3(0.4, -0.5, -1.8)] as const
@@ -17,7 +17,6 @@ interface BoostProps {
 
 export function Boost({ count = 12, opacity = 0.5, size = 0.1 }: BoostProps): JSX.Element {
   const ref = useRef<InstancedMesh>(null!)
-  const boost = useStore((store) => store.controls.boost)
 
   let i: number
   let isBoosting = false
@@ -26,7 +25,7 @@ export function Boost({ count = 12, opacity = 0.5, size = 0.1 }: BoostProps): JS
   let progress: number
 
   useFrame((state) => {
-    isBoosting = boost && mutation.boost > 0
+    isBoosting = mutation.boost > 0 && getState().controls.boost
     for (i = 0; i < count; i += positions.length) {
       n = MathUtils.randFloatSpread(0.05)
       for (j = 0; j < positions.length; j++) {

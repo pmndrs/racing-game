@@ -13,9 +13,9 @@ import type { BoxBufferGeometry, Mesh, MeshStandardMaterial, Object3D, Positiona
 // TODO: Export this from the index file
 import type { CollideEvent } from '@react-three/cannon/dist/setup'
 
-import { getState, mutation, useStore } from '../../store'
+import { getState, setState, mutation, useStore } from '../../store'
 
-import type { Controls } from '../../store'
+import type { Camera, Controls } from '../../store'
 
 const { lerp } = MathUtils
 
@@ -74,7 +74,7 @@ export const Chassis = forwardRef<Object3D, PropsWithChildren<BoxProps>>(({ args
   const wheel = useRef<MaterialMesh>(null!)
   const needle = useRef<MaterialMesh>(null!)
   const crashAudio = useRef<PositionalAudioImpl>(null!)
-  const [camera, maxSpeed, set, sound] = useStore((s) => [s.camera, s.vehicleConfig.maxSpeed, s.set, s.sound])
+  const [maxSpeed, sound] = useStore((s) => [s.vehicleConfig.maxSpeed, s.sound])
   const { nodes: n, materials: m } = useGLTF('/models/chassis-draco.glb') as ChassisGLTF
 
   const onCollide = useCallback(
@@ -89,9 +89,9 @@ export const Chassis = forwardRef<Object3D, PropsWithChildren<BoxProps>>(({ args
   const [, api] = useBox(() => ({ mass, args, allowSleep: false, onCollide, ...props }), ref as MutableRefObject<Object3D>)
 
   useEffect(() => {
-    set({ api })
-    return () => set({ api: null })
-  }, [api, set])
+    setState({ api })
+    return () => setState({ api: null })
+  }, [api])
 
   useLayoutEffect(() => {
     api.velocity.subscribe((velocity) => {
@@ -102,8 +102,10 @@ export const Chassis = forwardRef<Object3D, PropsWithChildren<BoxProps>>(({ args
     })
   }, [maxSpeed])
 
+  let camera: Camera
   let controls: Controls
   useFrame((_, delta) => {
+    camera = getState().camera
     controls = getState().controls
     brake.current.material.color.lerp(c.set(controls.brake ? '#555' : 'white'), delta * 10)
     brake.current.material.emissive.lerp(c.set(controls.brake ? 'red' : 'red'), delta * 10)
