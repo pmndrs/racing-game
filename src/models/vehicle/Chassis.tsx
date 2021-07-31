@@ -15,7 +15,7 @@ import type { CollideEvent } from '@react-three/cannon/dist/setup'
 
 import { getState, setState, mutation, useStore } from '../../store'
 
-import type { Controls } from '../../store'
+import type { Camera, Controls } from '../../store'
 
 const { lerp } = MathUtils
 
@@ -102,7 +102,7 @@ export const Chassis = forwardRef<Object3D, PropsWithChildren<BoxProps>>(({ args
     })
   }, [maxSpeed])
 
-  let camera: string
+  let camera: Camera
   let controls: Controls
   useFrame((_, delta) => {
     camera = getState().camera

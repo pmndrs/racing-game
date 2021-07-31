@@ -12,7 +12,7 @@ import { useToggle } from '../../useToggle'
 import { Chassis } from './Chassis'
 import { Wheel } from './Wheel'
 
-import type { Controls, WheelInfo } from '../../store'
+import type { Camera, Controls, WheelInfo } from '../../store'
 
 const { lerp } = MathUtils
 const v = new Vector3()
@@ -59,7 +59,7 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
     }
   }, [defaultCamera])
 
-  let camera: string
+  let camera: Camera
   let editor: boolean
   let controls: Controls
   let engineValue = 0
