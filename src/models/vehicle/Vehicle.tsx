@@ -22,14 +22,7 @@ type DerivedWheelInfo = WheelInfo & Required<Pick<WheelInfoOptions, 'chassisConn
 
 export function Vehicle({ angularVelocity, children, position, rotation }: VehicleProps) {
   const defaultCamera = useThree((state) => state.camera)
-  const [camera, chassisBody, editor, vehicleConfig, wheelInfo, wheels] = useStore((s) => [
-    s.camera,
-    s.chassisBody,
-    s.editor,
-    s.vehicleConfig,
-    s.wheelInfo,
-    s.wheels,
-  ])
+  const [chassisBody, vehicleConfig, wheelInfo, wheels] = useStore((s) => [s.chassisBody, s.vehicleConfig, s.wheelInfo, s.wheels])
   const { back, force, front, height, maxBrake, steer, maxSpeed, width } = vehicleConfig
 
   const wheelInfos = wheels.map((_, index): DerivedWheelInfo => {
@@ -66,6 +59,8 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
     }
   }, [defaultCamera])
 
+  let camera: string
+  let editor: boolean
   let controls: Controls
   let engineValue = 0
   let i = 0
@@ -77,6 +72,8 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
   let swayValue = 0
 
   useFrame((state, delta) => {
+    camera = getState().camera
+    editor = getState().editor
     controls = getState().controls
     speed = mutation.speed
 
