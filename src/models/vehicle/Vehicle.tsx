@@ -1,4 +1,4 @@
-import { MathUtils, PerspectiveCamera, Vector3 } from 'three'
+import { MathUtils, Vector3 } from 'three'
 import { useLayoutEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { useRaycastVehicle } from '@react-three/cannon'
@@ -49,16 +49,6 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
 
   useLayoutEffect(() => api.sliding.subscribe((sliding) => (mutation.sliding = sliding)), [api])
 
-  useLayoutEffect(() => {
-    if (defaultCamera instanceof PerspectiveCamera) {
-      defaultCamera.rotation.set(0, Math.PI, 0)
-      defaultCamera.position.set(0, 10, -20)
-      defaultCamera.lookAt(chassisBody.current!.position)
-      defaultCamera.rotation.x -= 0.3
-      defaultCamera.rotation.z = Math.PI // resolves the weird spin in the beginning
-    }
-  }, [defaultCamera])
-
   let camera: Camera
   let editor: boolean
   let controls: Controls
@@ -104,7 +94,11 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
       defaultCamera.position.lerp(v, delta)
 
       // ctrl.left-ctrl.right swivel
-      defaultCamera.rotation.z = lerp(defaultCamera.rotation.z, Math.PI + (-steeringValue * speed) / (camera === 'DEFAULT' ? 40 : 60), delta)
+      defaultCamera.rotation.z = lerp(
+        defaultCamera.rotation.z,
+        (camera !== 'BIRD_EYE' ? 0 : Math.PI) + (-steeringValue * speed) / (camera === 'DEFAULT' ? 40 : 60),
+        delta,
+      )
     }
 
     // lean chassis
