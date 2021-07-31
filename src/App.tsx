@@ -2,11 +2,12 @@ import { useState } from 'react'
 import { Layers } from 'three'
 import { Canvas } from '@react-three/fiber'
 import { Physics, Debug } from '@react-three/cannon'
-import { Sky, Environment, PerspectiveCamera, OrthographicCamera, OrbitControls, Stats } from '@react-three/drei'
+import { Sky, Environment, PerspectiveCamera, OrbitControls, Stats } from '@react-three/drei'
 
 import type { DirectionalLight } from 'three'
 
 import { HideMouse, Keyboard } from './controls'
+import { Cameras } from './effects'
 import { Ramp, Track, Vehicle, Goal, Train, Heightmap } from './models'
 import { angularVelocity, levelLayer, position, rotation, useStore } from './store'
 import { Checkpoint, Clock, Speed, Minimap, Intro, Help, Editor, LeaderBoard, Finished } from './ui'
@@ -17,7 +18,7 @@ layers.enable(levelLayer)
 
 export function App() {
   const [light, setLight] = useState<DirectionalLight>()
-  const [actions, camera, dpr, editor, shadows] = useStore((s) => [s.actions, s.camera, s.dpr, s.editor, s.shadows])
+  const [actions, dpr, editor, shadows] = useStore((s) => [s.actions, s.dpr, s.editor, s.shadows])
   const { onCheckpoint, onFinish, onStart } = actions
 
   const ToggledCheckpoint = useToggle(Checkpoint, 'checkpoint')
@@ -52,8 +53,7 @@ export function App() {
           <ToggledDebug scale={1.0001} color="white">
             <Vehicle angularVelocity={[...angularVelocity]} position={[...position]} rotation={[...rotation]}>
               {light && <primitive object={light.target} />}
-              <PerspectiveCamera makeDefault={!editor && camera !== 'BIRD_EYE'} fov={75} rotation={[0, Math.PI, 0]} position={[0, 10, -20]} />
-              <OrthographicCamera makeDefault={!editor && camera === 'BIRD_EYE'} position={[0, 100, 0]} rotation={[(-1 * Math.PI) / 2, 0, Math.PI]} zoom={15} />
+              <Cameras />
             </Vehicle>
             <Train />
             <Ramp args={[30, 6, 8]} position={[2, -1, 168.55]} rotation={[0, 0.49, Math.PI / 15]} />
