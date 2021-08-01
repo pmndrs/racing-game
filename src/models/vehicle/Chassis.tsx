@@ -74,16 +74,16 @@ export const Chassis = forwardRef<Object3D, PropsWithChildren<BoxProps>>(({ args
   const wheel = useRef<MaterialMesh>(null!)
   const needle = useRef<MaterialMesh>(null!)
   const crashAudio = useRef<PositionalAudioImpl>(null!)
-  const [maxSpeed, sound] = useStore((s) => [s.vehicleConfig.maxSpeed, s.sound])
+  const [maxSpeed] = useStore((s) => [s.vehicleConfig.maxSpeed])
   const { nodes: n, materials: m } = useGLTF('/models/chassis-draco.glb') as ChassisGLTF
 
   const onCollide = useCallback(
     debounce<(e: CollideEvent) => void>((e) => {
-      if (e.body.userData.trigger || !sound || !crashAudio.current) return
+      if (e.body.userData.trigger || !getState().sound || !crashAudio.current) return
       crashAudio.current.setVolume(clamp(e.contact.impactVelocity / 10, 0.2, 1))
       if (!crashAudio.current.isPlaying) crashAudio.current.play()
     }, 200),
-    [sound],
+    [],
   )
 
   const [, api] = useBox(() => ({ mass, args, allowSleep: false, onCollide, ...props }), ref as MutableRefObject<Object3D>)
