@@ -6,7 +6,7 @@ import { useGLTF, PositionalAudio } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { Color, Vector3, MathUtils } from 'three'
 
-import type { PropsWithChildren, MutableRefObject } from 'react'
+import type { PropsWithChildren } from 'react'
 import type { BoxProps } from '@react-three/cannon'
 import type { GLTF } from 'three-stdlib'
 import type { BoxBufferGeometry, Mesh, MeshStandardMaterial, Object3D, PositionalAudio as PositionalAudioImpl } from 'three'
@@ -86,7 +86,7 @@ export const Chassis = forwardRef<Object3D, PropsWithChildren<BoxProps>>(({ args
     [],
   )
 
-  const [, api] = useBox(() => ({ mass, args, allowSleep: false, onCollide, ...props }), ref as MutableRefObject<Object3D>)
+  const [, api] = useBox(() => ({ mass, args, allowSleep: false, onCollide, ...props }), ref)
 
   useEffect(() => {
     setState({ api })

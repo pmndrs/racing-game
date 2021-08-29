@@ -4,7 +4,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { useRaycastVehicle } from '@react-three/cannon'
 
 import type { PropsWithChildren } from 'react'
-import type { BoxProps, WheelInfoOptions } from '@react-three/cannon'
+import type { BoxProps, RaycastVehicleProps, WheelInfoOptions } from '@react-three/cannon'
 
 import { AccelerateAudio, BoostAudio, Boost, BrakeAudio, Dust, EngineAudio, HonkAudio, Skid } from '../../effects'
 import { getState, mutation, useStore } from '../../store'
@@ -35,7 +35,7 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
     }
   })
 
-  const raycast = {
+  const raycast: RaycastVehicleProps = {
     chassisBody,
     indexForwardAxis: 2,
     indexRightAxis: 0,
@@ -44,8 +44,7 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
     wheelInfos,
   }
 
-  // @ts-expect-error - need to update use-cannon types
-  const [, api] = useRaycastVehicle(() => raycast, undefined, [wheelInfo])
+  const [, api] = useRaycastVehicle(() => raycast, null, [wheelInfo])
 
   useLayoutEffect(() => api.sliding.subscribe((sliding) => (mutation.sliding = sliding)), [api])
 
