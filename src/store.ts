@@ -2,8 +2,7 @@ import { createRef } from 'react'
 import create from 'zustand'
 import shallow from 'zustand/shallow'
 import type { RefObject } from 'react'
-// TODO: Export PublicApi
-import type { Api, WheelInfoOptions } from '@react-three/cannon'
+import type { PublicApi, WheelInfoOptions } from '@react-three/cannon'
 import type { Session } from '@supabase/supabase-js'
 import type { Group, Object3D } from 'three'
 import type { GetState, SetState, StateSelector } from 'zustand'
@@ -90,8 +89,7 @@ type BaseState = {
 
 export interface IState extends BaseState {
   actions: Record<ActionNames, () => void>
-  // TODO: This should be PublicApi
-  api: Api[1] | null
+  api: PublicApi | null
   bestCheckpoint: number
   camera: Camera
   chassisBody: RefObject<Object3D>

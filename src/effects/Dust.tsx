@@ -2,7 +2,6 @@ import { Vector3, Matrix4, Object3D, Quaternion, MathUtils } from 'three'
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type { InstancedMesh } from 'three'
-import type { MutableRefObject } from 'react'
 
 import { getState, mutation, useStore } from '../store'
 import type { Controls } from '../store'
@@ -20,7 +19,7 @@ interface DustProps {
 
 export function Dust({ count = 200, opacity = 0.1, size = 1 }: DustProps): JSX.Element {
   const wheels = useStore((state) => state.wheels)
-  const ref = useRef<InstancedMesh>(null!)
+  const ref = useRef<InstancedMesh>(null)
 
   let brake: Controls['brake']
   let i = 0
@@ -28,14 +27,15 @@ export function Dust({ count = 200, opacity = 0.1, size = 1 }: DustProps): JSX.E
   let intensity = 0
   let time = 0
   useFrame((state, delta) => {
+    if (!ref.current) return
     brake = getState().controls.brake
     intensity = MathUtils.lerp(intensity, (Number(mutation.sliding || brake) * mutation.speed) / 40, delta * 8)
 
     if (state.clock.getElapsedTime() - time > 0.02 && wheels[2].current && wheels[3].current) {
       time = state.clock.getElapsedTime()
       // Set new trail
-      setItemAt(ref, wheels[2].current.getWorldPosition(v), index++, intensity)
-      setItemAt(ref, wheels[3].current.getWorldPosition(v), index++, intensity)
+      setItemAt(ref.current, wheels[2].current.getWorldPosition(v), index++, intensity)
+      setItemAt(ref.current, wheels[3].current.getWorldPosition(v), index++, intensity)
       if (index === count) index = 0
     } else {
       // Shrink old one
@@ -59,11 +59,11 @@ export function Dust({ count = 200, opacity = 0.1, size = 1 }: DustProps): JSX.E
 }
 
 let n: number
-function setItemAt(ref: MutableRefObject<InstancedMesh>, position: Vector3, index: number, intensity: number): void {
+function setItemAt(mesh: InstancedMesh, position: Vector3, index: number, intensity: number): void {
   n = MathUtils.randFloatSpread(0.25)
   o.position.set(position.x + n, position.y - 0.4, position.z + n)
   o.scale.setScalar(Math.random() * intensity)
   o.updateMatrix()
-  ref.current.setMatrixAt(index, o.matrix)
-  ref.current.instanceMatrix.needsUpdate = true
+  mesh.setMatrixAt(index, o.matrix)
+  mesh.instanceMatrix.needsUpdate = true
 }

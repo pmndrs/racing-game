@@ -4,7 +4,6 @@ import { useCylinder } from '@react-three/cannon'
 
 import { useStore } from '../../store'
 
-import type { MutableRefObject } from 'react'
 import type { CylinderProps } from '@react-three/cannon'
 import type { Mesh, MeshStandardMaterial, Object3D } from 'three'
 import type { GLTF } from 'three-stdlib'
@@ -40,7 +39,7 @@ export const Wheel = forwardRef<Object3D, WheelProps>(({ leftSide, ...props }, r
       args: [radius, radius, 0.5, 16],
       ...props,
     }),
-    ref as MutableRefObject<Object3D>,
+    ref,
     [radius],
   )
   return (
