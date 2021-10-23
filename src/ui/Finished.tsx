@@ -38,29 +38,37 @@ export const Finished = (): JSX.Element => {
 
   return (
     <div className="finished">
-      <h1>Good job! Your time was {readableTime(time)} seconds</h1>
-      <Scores className="leaderboard" scores={scores} />
-      {isAuthenticated ? (
-        <>
-          {scoreId ? (
-            position ? (
-              <h1>You are number #{position}</h1>
-            ) : null
-          ) : (
-            <>
-              <h2>You belong on our leaderboard, {name}! </h2>
-              <button onClick={sendScore} style={{ margin: '0 auto', width: 'auto' }} className="popup-item-key">
-                Add my score
-              </button>
-            </>
-          )}
-        </>
-      ) : (
-        <Auth />
-      )}
-      <button className="restart" onClick={reset}>
-        <div>Restart</div>
-      </button>
+      <div className="finished-header">
+        <h1>Good job! Your time was {readableTime(time)} seconds</h1>
+      </div>
+      <div className="finished-leaderboard">
+        <Scores className="leaderboard" scores={scores} />
+      </div>
+      <div className="finished-auth">
+        {isAuthenticated ? (
+          <>
+            {scoreId ? (
+              position ? (
+                <h1>You are number #{position}</h1>
+              ) : null
+            ) : (
+              <>
+                <h2>You belong on our leaderboard, {name}! </h2>
+                <button onClick={sendScore} style={{ margin: '0 auto', width: 'auto' }} className="popup-item-key">
+                  Add my score
+                </button>
+              </>
+            )}
+          </>
+        ) : (
+          <Auth />
+        )}
+      </div>
+      <div className="finished-restart">
+        <button className="restart-btn" onClick={reset}>
+          Restart
+        </button>
+      </div>
     </div>
   )
 }

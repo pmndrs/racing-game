@@ -92,39 +92,51 @@ body {
 /* --------------- Leaderboard --------------- */
 
 .finished {
-  position: absolute;
-  z-index: 10;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 100vw;
-  height: 100vh;
-  background: #101010;
+  align-items: center;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  text-align: center;
+  background: #101010;
+  bottom: 0;
+  position: absolute;
+  width: 100vw;
+  z-index: 10;
+}
+
+.finished-header {
+  max-height: 120px;
+}
+
+.finished-leaderboard {
+  flex: 1;
+  overflow-y: scroll;
+}
+
+.finished-auth {
+  height: auto;
+}
+
+.finished-restart {
   align-items: center;
-  justify-content: center;
+  display: flex;
+  height: 60px;
 }
 
-.finished .add-me {
-  width: auto;
+.leaderboard-name img {
+  position: relative;
+  right: 2px;
+  margin-right: 2px;
 }
 
-.finished .restart {
-  position: fixed;
-  bottom: 40px;
-  width: auto;
-  background: transparent;
-  color: white;
+.leaderboard-bottom li {
+  margin-bottom: 10px;
+  text-align: center;
+  counter-increment: listCounter;
 }
 
-.leaderboard {
-  list-style: none;
-  padding: 0;
-  margin-top: 20px;
-  counter-reset: listCounter;
-  max-height: 70vh;
-  overflow: auto;
+.leaderboard b {
+  margin-right: 5px;
 }
 
 .leaderboard li {
@@ -141,22 +153,6 @@ body {
   counter-reset: listCounter;
   max-height: auto;
   overflow: auto;
-}
-
-.leaderboard-bottom li {
-  margin-bottom: 10px;
-  text-align: center;
-  counter-increment: listCounter;
-}
-
-.leaderboard-name img {
-  position: relative;
-  right: 2px;
-  margin-right: 2px;
-}
-
-.leaderboard b {
-  margin-right: 5px;
 }
 
 /* --------------- SPEEDOMETER --------------- */
@@ -303,8 +299,8 @@ body {
 }
 
 button {
-  width: 32px;
-  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
   color: inherit;
   border: none;
   font: inherit;
