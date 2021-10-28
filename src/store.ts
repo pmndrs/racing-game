@@ -80,7 +80,7 @@ export type Setter = SetState<IState>
 
 export type VehicleConfig = typeof vehicleConfig
 
-const booleans = ['debug', 'editor', 'help', 'leaderboard', 'map', 'ready', 'shadows', 'sound', 'stats'] as const
+const booleans = ['debug', 'editor', 'help', 'leaderboard', 'map', 'pickcolor', 'ready', 'shadows', 'sound', 'stats'] as const
 type Booleans = typeof booleans[number]
 
 type BaseState = {
@@ -94,6 +94,7 @@ export interface IState extends BaseState {
   camera: Camera
   chassisBody: RefObject<Object3D>
   checkpoint: number
+  color: string
   controls: Controls
   dpr: number
   finished: number
@@ -146,6 +147,7 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
     camera: cameras[0],
     chassisBody: createRef<Object3D>(),
     checkpoint: 0,
+    color: '#FFFF00',
     controls,
     debug,
     dpr,
@@ -156,6 +158,7 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
     leaderboard: false,
     level: createRef<Group>(),
     map: true,
+    pickcolor: false,
     ready: false,
     session: null,
     set,
