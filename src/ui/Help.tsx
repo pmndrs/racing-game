@@ -17,6 +17,7 @@ const controlOptions = [
   { keys: ['U'], action: 'Toggle Mute' },
   { keys: ['I'], action: 'Help' },
   { keys: ['L'], action: 'Leaderboards' },
+  { keys: ['P'], action: 'Pick Car Color' },
 ]
 
 export function Help(): JSX.Element {

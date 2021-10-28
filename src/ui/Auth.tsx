@@ -37,7 +37,7 @@ export function Auth() {
   const signIn = async (provider: Provider) => {
     try {
       await authenticateUser(provider)
-    } catch (error) {
+    } catch (error: any) {
       alert(error.error_description || error.message)
     }
   }

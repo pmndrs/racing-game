@@ -10,7 +10,7 @@ import { HideMouse, Keyboard } from './controls'
 import { Cameras } from './effects'
 import { Ramp, Track, Vehicle, Goal, Train, Heightmap } from './models'
 import { angularVelocity, levelLayer, position, rotation, useStore } from './store'
-import { Checkpoint, Clock, Speed, Minimap, Intro, Help, Editor, LeaderBoard, Finished } from './ui'
+import { Checkpoint, Clock, Speed, Minimap, Intro, Help, Editor, LeaderBoard, Finished, PickColor } from './ui'
 import { useToggle } from './useToggle'
 
 const layers = new Layers()
@@ -76,6 +76,7 @@ export function App() {
       <ToggledStats />
       <ToggledCheckpoint />
       <LeaderBoard />
+      <PickColor />
       <HideMouse />
       <Keyboard />
     </Intro>

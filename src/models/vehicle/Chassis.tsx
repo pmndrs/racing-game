@@ -73,6 +73,7 @@ export const Chassis = forwardRef<Object3D, PropsWithChildren<BoxProps>>(({ args
   const brake = useRef<MaterialMesh>(null!)
   const wheel = useRef<MaterialMesh>(null!)
   const needle = useRef<MaterialMesh>(null!)
+  const chassis_1 = useRef<MaterialMesh>(null!)
   const crashAudio = useRef<PositionalAudioImpl>(null!)
   const [maxSpeed] = useStore((s) => [s.vehicleConfig.maxSpeed])
   const { nodes: n, materials: m } = useGLTF('/models/chassis-draco.glb') as ChassisGLTF
@@ -116,12 +117,13 @@ export const Chassis = forwardRef<Object3D, PropsWithChildren<BoxProps>>(({ args
     glass.current.material.color.lerp(c.set(camera === 'FIRST_PERSON' ? 'white' : 'black'), delta)
     wheel.current.rotation.z = lerp(wheel.current.rotation.z, controls.left ? -Math.PI : controls.right ? Math.PI : 0, delta)
     needle.current.rotation.y = (mutation.speed / maxSpeed) * -Math.PI * 2 - 0.9
+    chassis_1.current.material.color.lerp(c.set(getState().color), 0.1)
   })
 
   return (
     <group ref={ref} dispose={null}>
       <group position={[0, -0.2, -0.2]}>
-        <mesh castShadow receiveShadow geometry={n.Chassis_1.geometry} material={m.BodyPaint} material-color="#f0c050" />
+        <mesh ref={chassis_1} castShadow receiveShadow geometry={n.Chassis_1.geometry} material={m.BodyPaint} material-color="#f0c050" />
         <mesh castShadow geometry={n.Chassis_2.geometry} material={n.Chassis_2.material} material-color="#353535" />
         <mesh castShadow ref={glass} geometry={n.Glass.geometry} material={m.Glass} material-transparent />
         <mesh ref={brake} geometry={n.BrakeLights.geometry} material={m.BrakeLight} material-transparent />

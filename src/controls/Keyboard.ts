@@ -54,9 +54,10 @@ export function Keyboard() {
     { keys: ['Shift'], fn: (boost) => set((state) => ({ controls: { ...state.controls, boost } })) },
     { keys: ['r', 'R'], fn: reset, up: false },
     { keys: ['.'], fn: () => set((state) => ({ editor: !state.editor })), up: false },
-    { keys: ['i', 'I'], fn: () => set((state) => ({ help: !state.help, leaderboard: false })), up: false },
-    { keys: ['l', 'L'], fn: () => set((state) => ({ help: false, leaderboard: !state.leaderboard })), up: false },
+    { keys: ['i', 'I'], fn: () => set((state) => ({ help: !state.help, leaderboard: false, pickcolor: false })), up: false },
+    { keys: ['l', 'L'], fn: () => set((state) => ({ help: false, leaderboard: !state.leaderboard, pickcolor: false })), up: false },
     { keys: ['m', 'M'], fn: () => set((state) => ({ map: !state.map })), up: false },
+    { keys: ['p', 'P'], fn: () => set((state) => ({ help: false, pickcolor: !state.pickcolor, leaderboard: false })), up: false },
     { keys: ['u', 'U'], fn: () => set((state) => ({ sound: !state.sound })), up: false },
     {
       keys: ['c', 'C'],
