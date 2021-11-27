@@ -3,7 +3,6 @@ import { useLayoutEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { MeshDistortMaterial, PositionalAudio, useGLTF } from '@react-three/drei'
 
-import type { GroupProps } from '@react-three/fiber'
 import type { GLTF } from 'three-stdlib'
 import type { Group, Mesh, MeshStandardMaterial } from 'three'
 
@@ -59,7 +58,7 @@ interface TrackGLTF extends GLTF {
   }
 }
 
-export function Track(props: GroupProps): JSX.Element {
+export function Track(): JSX.Element {
   const level = useStore((state) => state.level)
   const { nodes: n, materials: m } = useGLTF('/models/track-draco.glb') as TrackGLTF
   const config = { receiveShadow: true, castShadow: true, 'material-roughness': 1 }
@@ -75,7 +74,7 @@ export function Track(props: GroupProps): JSX.Element {
   const ToggledPositionalAudio = useToggle(PositionalAudio, ['ready', 'sound'])
 
   return (
-    <group {...props} dispose={null}>
+    <group dispose={null}>
       <mesh geometry={n.track_2.geometry} material={m['Material.001']} {...config} />
       <mesh geometry={n.tube.geometry} material={m['default']} {...config} />
       <group ref={level}>
