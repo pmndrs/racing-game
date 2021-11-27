@@ -120,7 +120,7 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
     onFinish: () => {
       const { finished, start } = get()
       if (start && !finished) {
-        set({ finished: Date.now() - start })
+        set({ finished: Math.max(Date.now() - start, 0) })
       }
     },
     onStart: () => {
