@@ -8,7 +8,7 @@ import type { DirectionalLight } from 'three'
 
 import { HideMouse, Keyboard } from './controls'
 import { Cameras } from './effects'
-import { Ramp, Track, Vehicle, Goal, Train, Heightmap } from './models'
+import { BoundingBox, Ramp, Track, Vehicle, Goal, Train, Heightmap } from './models'
 import { angularVelocity, levelLayer, position, rotation, useStore } from './store'
 import { Checkpoint, Clock, Speed, Minimap, Intro, Help, Editor, LeaderBoard, Finished, PickColor } from './ui'
 import { useToggle } from './useToggle'
@@ -61,6 +61,7 @@ export function App() {
             <Goal args={[0.001, 10, 18]} onCollideBegin={onStart} rotation={[0, 0.55, 0]} position={[-27, 1, 180]} />
             <Goal args={[0.001, 10, 18]} onCollideBegin={onFinish} rotation={[0, -1.2, 0]} position={[-104, 1, -189]} />
             <Goal args={[0.001, 10, 18]} onCollideBegin={onCheckpoint} rotation={[0, -0.5, 0]} position={[-50, 1, -5]} />
+            <BoundingBox {...{ depth: 512, height: 100, position: [0, 40, 0], width: 512 }} />
           </ToggledDebug>
         </Physics>
         <Track />
