@@ -30,6 +30,7 @@ export const getScores = (limit = 50): PromiseLike<SavedScore[]> =>
   client
     .from('scores')
     .select()
+    .gt('time', 1337)
     .limit(limit)
     .order('time')
     .then(({ data }) => data || [])
