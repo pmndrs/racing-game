@@ -1,10 +1,14 @@
 import { HexColorPicker } from 'react-colorful'
 import { setState, useStore } from '../store'
+import { useToggle } from '../useToggle'
 
 export function PickColor(): JSX.Element {
-  const setColor = (color: string) => setState({ color })
   const [color, pickcolor] = useStore((state) => [state.color, state.pickcolor])
+
+  const setColor = (color: string) => setState({ color })
   const close = () => setState({ pickcolor: false })
+
+  const ToggledColorPicker = useToggle(HexColorPicker, 'pickcolor')
 
   return (
     <div className={`pickcolor popup ${pickcolor ? 'open' : ''}`}>
@@ -12,7 +16,7 @@ export function PickColor(): JSX.Element {
         P
       </button>
       <div className="pickcolor-container popup-content">
-        <HexColorPicker color={color} onChange={setColor} />
+        <ToggledColorPicker color={color} onChange={setColor} />
       </div>
     </div>
   )
