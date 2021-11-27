@@ -2,7 +2,6 @@
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "allowJs": true,
     "skipLibCheck": true,
     // https://esbuild.github.io/content-types/#es-module-interop
     "esModuleInterop": true,
