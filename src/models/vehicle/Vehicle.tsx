@@ -37,9 +37,6 @@ export function Vehicle({ angularVelocity, children, position, rotation }: Vehic
 
   const raycast: RaycastVehicleProps = {
     chassisBody,
-    indexForwardAxis: 2,
-    indexRightAxis: 0,
-    indexUpAxis: 1,
     wheels,
     wheelInfos,
   }
