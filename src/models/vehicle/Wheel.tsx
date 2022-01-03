@@ -1,6 +1,6 @@
 import { forwardRef } from 'react'
 import { useGLTF } from '@react-three/drei'
-import { useCylinder } from '@react-three/cannon'
+import { useCompoundBody } from '@react-three/cannon'
 
 import { useStore } from '../../store'
 
@@ -29,14 +29,13 @@ export const Wheel = forwardRef<Object3D, WheelProps>(({ leftSide, ...props }, r
   const { radius } = useStore((state) => state.wheelInfo)
   const { nodes, materials } = useGLTF('/models/wheel-draco.glb') as WheelGLTF
   const scale = radius / 0.34
-  useCylinder(
+  useCompoundBody(
     () => ({
       mass: 50,
       type: 'Kinematic',
       material: 'wheel',
       collisionFilterGroup: 0,
-      rotation: [Math.PI / 2, 0, Math.PI / 3],
-      args: [radius, radius, 0.5, 16],
+      shapes: [{ args: [radius, radius, 0.5, 16], rotation: [0, 0, -Math.PI / 2], type: 'Cylinder' }],
       ...props,
     }),
     ref,
