@@ -41,11 +41,11 @@ body {
 }
 
 .checkpoint .green {
-  color: green
+  color: green;
 }
 
 .checkpoint .red {
-  color: red
+  color: red;
 }
 
 /* --------------- AUTH --------------- */
@@ -278,8 +278,18 @@ body {
 .popup-item {
   display: flex;
   justify-content: space-between;
-  width: 250px;
+  width: 274px;
+  height: 25px;
+  padding-right: 24px;
   margin: 0em 0;
+}
+
+.with-error {
+  color: rgb(112, 7, 7);
+}
+
+.popup-item.hovered {
+  padding-right: 0;
 }
 
 .popup-item-keys {
@@ -289,6 +299,8 @@ body {
 }
 
 .popup-item-key {
+  position: relative;
+  min-height: auto;
   display: inline-block;
   font-size: 0.7em;
   min-width: 24px;
@@ -303,6 +315,20 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.popup-item-key_hovered:before {
+  width: 100%;
+  content: '-';
+  position: absolute;
+  background-color: #fff;
+}
+
+.hovered-item {
+  cursor: pointer;
+  background: transparent;
+  color: #999;
+  border: 1px dashed #999;
 }
 
 button {
@@ -438,6 +464,20 @@ button {
   background-size: 24px 24px;
   opacity: 1;
   animation: hideSoundIcon 3s forwards;
+}
+
+.key-input {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 100px;
+  background-color: #101010;
+  border: 1px solid #a0a0a0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @keyframes hideSoundIcon {
