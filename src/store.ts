@@ -92,15 +92,15 @@ export interface Key {
   values: string[]
 }
 
+export interface KeyConfig extends KeyMap {
+  keys: Key[]
+  action: string
+}
+
 export interface KeyMap {
   fn: (pressed: boolean) => void
   up?: boolean
   pressed?: boolean
-}
-
-export interface KeyConfig extends KeyMap {
-  keys: Key[]
-  action: string
 }
 
 export interface IState extends BaseState {
