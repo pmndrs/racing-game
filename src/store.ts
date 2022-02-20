@@ -69,7 +69,7 @@ export const wheelInfo: WheelInfo = {
   useCustomSlidingRotationalSpeed: true,
 }
 
-const actionNames = ['onCheckpoint', 'onFinish', 'onStart', 'reset'] as const
+const actionNames = ['onCheckpoint', 'onFinish', 'onStart', 'reset', 'addKeyBinding', 'removeKeyBinding'] as const
 export type ActionNames = typeof actionNames[number]
 
 export type Camera = typeof cameras[number]
@@ -87,8 +87,24 @@ type BaseState = {
   [K in Booleans]: boolean
 }
 
+export interface Key {
+  name: string
+  values: string[]
+}
+
+export interface KeyConfig extends KeyMap {
+  keys: Key[]
+  action: string
+}
+
+export interface KeyMap {
+  fn: (pressed: boolean) => void
+  up?: boolean
+  pressed?: boolean
+}
+
 export interface IState extends BaseState {
-  actions: Record<ActionNames, () => void>
+  actions: Record<ActionNames, (() => void) | ((action: string, newKey: Key) => void) | ((action: string, name: string) => void)>
   api: PublicApi | null
   bestCheckpoint: number
   camera: Camera
@@ -96,6 +112,8 @@ export interface IState extends BaseState {
   checkpoint: number
   color: string
   controls: Controls
+  keyboardBindings: KeyConfig[]
+  keyBindingsWithError: number[]
   dpr: number
   finished: number
   get: Getter
@@ -106,6 +124,28 @@ export interface IState extends BaseState {
   vehicleConfig: VehicleConfig
   wheelInfo: WheelInfo
   wheels: [RefObject<Object3D>, RefObject<Object3D>, RefObject<Object3D>, RefObject<Object3D>]
+  keyInput: string | null
+}
+
+function deduplicateKeys(newKey: Key, keysList: KeyConfig[]): KeyConfig[] {
+  const deduplicatedList = keysList.map((key) => {
+    const index = key.keys.findIndex((keyCode) => keyCode.name === newKey.name)
+    if (index !== -1) {
+      key.keys.splice(index, 1)
+    }
+
+    return key
+  })
+  return deduplicatedList
+}
+
+function checkKeybindings(keysList: KeyConfig[]): number[] {
+  return keysList.reduce<number[]>((akk, value, index) => {
+    if (value.keys.length < 1) {
+      akk.push(index)
+    }
+    return akk
+  }, [])
 }
 
 const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState>) => {
@@ -138,7 +178,108 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
         return { ...state, finished: 0, start: 0 }
       })
     },
+    addKeyBinding: (action: string, newKey: Key) => {
+      set((state) => {
+        const index = state.keyboardBindings.findIndex(({ action: stateAction }) => action === stateAction)
+
+        const keyboardBindingsCopy = deduplicateKeys(newKey, state.keyboardBindings)
+
+        keyboardBindingsCopy[index].keys.push(newKey)
+
+        const keyBindingsWithError = checkKeybindings(keyboardBindingsCopy)
+
+        return { ...state, keyboardBindings: keyboardBindingsCopy, keyBindingsWithError }
+      })
+    },
+    removeKeyBinding: (action: string, name: string) => {
+      set((state) => {
+        const index = state.keyboardBindings.findIndex(({ action: stateAction }) => action === stateAction)
+
+        const keyIndex = state.keyboardBindings[index].keys.findIndex(({ name: stateName }) => name === stateName)
+
+        const keyboardBindingsCopy = [...state.keyboardBindings]
+
+        keyboardBindingsCopy[index].keys.splice(keyIndex, 1)
+
+        const keyBindingsWithError = checkKeybindings(keyboardBindingsCopy)
+
+        return { ...state, keyboardBindings: keyboardBindingsCopy, keyBindingsWithError }
+      })
+    },
   }
+
+  const keyboardBindings: KeyConfig[] = [
+    {
+      action: 'Forward',
+      keys: [
+        { name: '↑', values: ['ArrowUp'] },
+        { name: 'W', values: ['KeyW'] },
+        { name: 'Z', values: ['KeyZ'] },
+      ],
+
+      fn: (forward) => set((state) => ({ controls: { ...state.controls, forward } })),
+    },
+    {
+      action: 'Backward',
+      keys: [
+        { name: '↓', values: ['ArrowDown'] },
+        { name: 'S', values: ['KeyS'] },
+      ],
+      fn: (backward) => set((state) => ({ controls: { ...state.controls, backward } })),
+    },
+    {
+      action: 'Left',
+      keys: [
+        { name: '←', values: ['ArrowLeft'] },
+        { name: 'A', values: ['KeyA'] },
+        { name: 'Q', values: ['KeyQ'] },
+      ],
+      fn: (left) => set((state) => ({ controls: { ...state.controls, left } })),
+    },
+    {
+      action: 'Right',
+      keys: [
+        { name: '→', values: ['ArrowRight'] },
+        { name: 'D', values: ['KeyD'] },
+      ],
+      fn: (right) => set((state) => ({ controls: { ...state.controls, right } })),
+    },
+    { action: 'Drift', keys: [{ name: 'Space ␣', values: ['Space'] }], fn: (brake) => set((state) => ({ controls: { ...state.controls, brake } })) },
+    { action: 'Honk', keys: [{ name: 'H', values: ['KeyH'] }], fn: (honk) => set((state) => ({ controls: { ...state.controls, honk } })) },
+    {
+      action: 'Turbo Boost',
+      keys: [{ name: 'Shift ⇧', values: ['ShiftLeft', 'ShiftRight'] }],
+      fn: (boost) => set((state) => ({ controls: { ...state.controls, boost } })),
+    },
+    { action: 'Reset', keys: [{ name: 'R', values: ['KeyR'] }], fn: actions.reset, up: false },
+    { action: 'Editor', keys: [{ name: '.', values: ['Period'] }], fn: () => set((state) => ({ editor: !state.editor })), up: false },
+    {
+      action: 'Help',
+      keys: [{ name: 'I', values: ['KeyI'] }],
+      fn: () => set((state) => ({ help: !state.help, leaderboard: false, pickcolor: false })),
+      up: false,
+    },
+    {
+      action: 'Leaderboards',
+      keys: [{ name: 'L', values: ['KeyL'] }],
+      fn: () => set((state) => ({ help: false, leaderboard: !state.leaderboard, pickcolor: false })),
+      up: false,
+    },
+    { action: 'Map', keys: [{ name: 'M', values: ['KeyM'] }], fn: () => set((state) => ({ map: !state.map })), up: false },
+    {
+      action: 'Pick Car Color',
+      keys: [{ name: 'P', values: ['KeyP'] }],
+      fn: () => set((state) => ({ help: false, pickcolor: !state.pickcolor, leaderboard: false })),
+      up: false,
+    },
+    { action: 'Toggle Mute', keys: [{ name: 'U', values: ['KeyU'] }], fn: () => set((state) => ({ sound: !state.sound })), up: false },
+    {
+      action: 'Toggle Camera',
+      keys: [{ name: 'C', values: ['KeyC'] }],
+      fn: () => set((state) => ({ camera: cameras[(cameras.indexOf(state.camera) + 1) % cameras.length] })),
+      up: false,
+    },
+  ]
 
   return {
     actions,
@@ -149,11 +290,14 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
     checkpoint: 0,
     color: '#FFFF00',
     controls,
+    keyboardBindings,
+    keyBindingsWithError: [],
     debug,
     dpr,
     editor: false,
     finished: 0,
     get,
+    keyInput: null,
     help: false,
     leaderboard: false,
     level: createRef<Group>(),
