@@ -11,8 +11,8 @@
   "main": "src/main.jsx",
   "dependencies": {
     "@pmndrs/branding": "^0.0.8",
-    "@react-three/cannon": "^4.7.0",
-    "@react-three/drei": "^8.10.6",
+    "@react-three/cannon": "^4.9.0",
+    "@react-three/drei": "^8.12.0",
     "@react-three/fiber": "^7.0.26",
     "@supabase/supabase-js": "^1.30.4",
     "inter-ui": "^3.19.3",
@@ -38,7 +38,7 @@
     "husky": "^7.0.4",
     "lint-staged": "^12.3.4",
     "prettier": "^2.5.1",
-    "three-stdlib": "^2.8.7",
+    "three-stdlib": "^2.8.8",
     "typescript": "^4.5.5",
     "vite": "^2.8.4",
     "vite-react-jsx": "^1.1.2"
