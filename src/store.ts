@@ -92,15 +92,15 @@ export interface Key {
   values: string[]
 }
 
-export interface KeyConfig extends KeyMap {
-  keys: Key[]
-  action: string
-}
-
 export interface KeyMap {
   fn: (pressed: boolean) => void
   up?: boolean
   pressed?: boolean
+}
+
+export interface KeyConfig extends KeyMap {
+  keys: Key[]
+  action: string
 }
 
 export interface IState extends BaseState {
@@ -180,7 +180,9 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
 
         const keyboardBindingsCopy = deduplicateKeys(newKey, state.keyboardBindings)
 
-        keyboardBindingsCopy[index].keys.push(newKey)
+        if (index !== -1) {
+          keyboardBindingsCopy[index].keys.push(newKey)
+        }
 
         const keyBindingsWithError = checkKeybindings(keyboardBindingsCopy)
 
@@ -199,7 +201,9 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
 
         const keyboardBindingsCopy = [...state.keyboardBindings]
 
-        keyboardBindingsCopy[index].keys.splice(keyIndex, 1)
+        if (index !== -1) {
+          keyboardBindingsCopy[index].keys.splice(keyIndex, 1)
+        }
 
         const keyBindingsWithError = checkKeybindings(keyboardBindingsCopy)
 
