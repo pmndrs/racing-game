@@ -92,15 +92,15 @@ export interface Key {
   values: string[]
 }
 
-export interface KeyConfig extends KeyMap {
-  keys: Key[]
-  action: string
-}
-
 export interface KeyMap {
   fn: (pressed: boolean) => void
   up?: boolean
   pressed?: boolean
+}
+
+export interface KeyConfig extends KeyMap {
+  keys: Key[]
+  action: string
 }
 
 export interface IState extends BaseState {
@@ -128,15 +128,7 @@ export interface IState extends BaseState {
 }
 
 function deduplicateKeys(newKey: Key, keysList: KeyConfig[]): KeyConfig[] {
-  const deduplicatedList = keysList.map((key) => {
-    const index = key.keys.findIndex((keyCode) => keyCode.name === newKey.name)
-    if (index !== -1) {
-      key.keys.splice(index, 1)
-    }
-
-    return key
-  })
-  return deduplicatedList
+  return keysList.map((key) => ({ ...key, keys: [...key.keys.filter((keyCode) => keyCode.name !== newKey.name)] }))
 }
 
 function checkKeybindings(keysList: KeyConfig[]): number[] {
@@ -184,7 +176,9 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
 
         const keyboardBindingsCopy = deduplicateKeys(newKey, state.keyboardBindings)
 
-        keyboardBindingsCopy[index].keys.push(newKey)
+        if (index !== -1) {
+          keyboardBindingsCopy[index].keys.push(newKey)
+        }
 
         const keyBindingsWithError = checkKeybindings(keyboardBindingsCopy)
 
@@ -199,7 +193,9 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
 
         const keyboardBindingsCopy = [...state.keyboardBindings]
 
-        keyboardBindingsCopy[index].keys.splice(keyIndex, 1)
+        if (index !== -1) {
+          keyboardBindingsCopy[index].keys.splice(keyIndex, 1)
+        }
 
         const keyBindingsWithError = checkKeybindings(keyboardBindingsCopy)
 
@@ -208,7 +204,7 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
     },
   }
 
-  const keyboardBindings: KeyConfig[] = [
+  const defaultKeyboardBindings: KeyConfig[] = [
     {
       action: 'Forward',
       keys: [
@@ -290,7 +286,7 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
     checkpoint: 0,
     color: '#FFFF00',
     controls,
-    keyboardBindings,
+    keyboardBindings: defaultKeyboardBindings,
     keyBindingsWithError: [],
     debug,
     dpr,

@@ -6,7 +6,7 @@ import type { FC } from 'react'
 
 import { useStore } from '../store'
 import { setupSession, unAuthenticateUser } from '../data'
-import { Keys } from './Help'
+import { Keys } from './Keys'
 import { Auth } from './Auth'
 
 export const Intro: FC = ({ children }) => {
