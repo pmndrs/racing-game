@@ -595,14 +595,14 @@
   resolved "https://registry.yarnpkg.com/@react-spring/types/-/types-9.4.3.tgz#8926d7a09812374127b1f8a904a755c7579124e6"
   integrity sha512-dzJrPvUc42K2un9y6D1IsrPQO5tKsbWwUo+wsATnXjG3ePWyuDBIOMJuPe605NhIXUmPH+Vik2wMoZz06hD1uA==
 
-"@react-three/cannon@^4.9.0":
-  version "4.9.0"
-  resolved "https://registry.yarnpkg.com/@react-three/cannon/-/cannon-4.9.0.tgz#fafbcd4d07e7a4298fbb35110086cc842dcb86ba"
-  integrity sha512-xMJ7ZTzZfZzwtBFx81QxuAfh1uUYiDKnJGzesArQHJu7qNO/qiRBJNzJZEijBG6seGn0/EdfBBfO8nccAOSHhg==
+"@react-three/cannon@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.npmjs.org/@react-three/cannon/-/cannon-5.1.0.tgz#94fe4985f3ad47a2834af31afef51ac90abfb2c1"
+  integrity sha512-p3oOY7FrFSlGfmkv9wATdJbGEugAfhaWROKUFW4XvKm7RAmU+RAMhSAXfk5iV1P2EIr8ZtMC0zJ53yfz/WNv2w==
   dependencies:
-    cannon-es "^0.18.0"
-    cannon-es-debugger "^1.0.0"
-    events "^3.3.0"
+    "@react-three/fiber" "^7.0.26"
+    react ">=17.0"
+    three "^0.137.0"
 
 "@react-three/drei@^8.12.0":
   version "8.12.0"
@@ -1040,16 +1040,6 @@ caniuse-lite@^1.0.30001312:
   version "1.0.30001313"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001313.tgz#a380b079db91621e1b7120895874e2fd62ed2e2f"
   integrity sha512-rI1UN0koZUiKINjysQDuRi2VeSCce3bYJNmDcj3PIKREiAmjakugBul1QSkg/fPrlULYl6oWfGg3PbgOSY9X4Q==
-
-cannon-es-debugger@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/cannon-es-debugger/-/cannon-es-debugger-1.0.0.tgz#28c6679b30dcf608e978225239f447a8fe55ccb4"
-  integrity sha512-sE9lDOBAYFKlh+0w+cvWKwUhJef8HYnUSVPWPL0jD15MAuVRQKno4QYZSGxgOoJkMR3mQqxL4bxys2b3RSWH8g==
-
-cannon-es@^0.18.0:
-  version "0.18.0"
-  resolved "https://registry.yarnpkg.com/cannon-es/-/cannon-es-0.18.0.tgz#ae831ff9df2352d5faabb269c11ea0f10bc35c7e"
-  integrity sha512-GiQ1bd0etZsMVSnUhNc+p+FEh0R/cULpp8uRSAhEK4Kax+y/31Au03m6h1h1xdDivAMnFg8YDwevHgzLynOHlw==
 
 chalk@^2.0.0:
   version "2.4.2"
@@ -1620,11 +1610,6 @@ esutils@^2.0.2:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/esutils/-/esutils-2.0.3.tgz#74d2eb4de0b8da1293711910d50775b9b710ef64"
   integrity sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==
-
-events@^3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/events/-/events-3.3.0.tgz#31a95ad0a924e2d2c419a813aeb2c4e878ea7400"
-  integrity sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==
 
 execa@^5.1.1:
   version "5.1.1"
@@ -2611,7 +2596,7 @@ react-use-measure@^2.1.1:
   dependencies:
     debounce "^1.2.1"
 
-react@^17.0.2:
+react@>=17.0, react@^17.0.2:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react/-/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"
   integrity sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==
@@ -2971,7 +2956,7 @@ three-stdlib@^2.8.7, three-stdlib@^2.8.8:
     potpack "^1.0.1"
     zstddec "^0.0.2"
 
-three@^0.137.5:
+three@^0.137.0, three@^0.137.5:
   version "0.137.5"
   resolved "https://registry.yarnpkg.com/three/-/three-0.137.5.tgz#a1e34bedd0412f2d8797112973dfadac78022ce6"
   integrity sha512-rTyr+HDFxjnN8+N/guZjDgfVxgHptZQpf6xfL/Mo7a5JYIFwK6tAq3bzxYYB4Ae0RosDZlDuP+X5aXDXz+XnHQ==
