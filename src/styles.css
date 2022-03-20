@@ -466,15 +466,18 @@ button {
   animation: hideSoundIcon 3s forwards;
 }
 
-.key-input {
+.key-input-wrapper {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 300px;
-  height: 100px;
   background-color: #101010;
   border: 1px solid #a0a0a0;
+}
+
+.key-input {
+  width: 300px;
+  height: 100px;
   display: flex;
   justify-content: center;
   align-items: center;

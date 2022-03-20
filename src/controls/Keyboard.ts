@@ -4,22 +4,22 @@ import type { KeyConfig, KeyMap } from '../store'
 
 function useKeys(keyConfig: KeyConfig[]) {
   useEffect(() => {
-    const codeMap = keyConfig.reduce<{ [key: string]: KeyMap }>((out, { keys, fn, up = true }) => {
+    const keyMap = keyConfig.reduce<{ [key: string]: KeyMap }>((out, { keys, fn, up = true }) => {
       keys && keys.forEach((key) => key.values.forEach((value) => (out[value] = { fn, pressed: false, up })))
       return out
     }, {})
 
     const downHandler = ({ code, target }: KeyboardEvent) => {
-      if (!codeMap[code] || (target as HTMLElement).nodeName === 'INPUT') return
-      const { fn, pressed, up } = codeMap[code]
-      codeMap[code].pressed = true
+      if (!keyMap[code] || (target as HTMLElement).nodeName === 'INPUT') return
+      const { fn, pressed, up } = keyMap[code]
+      keyMap[code].pressed = true
       if (up || !pressed) fn(true)
     }
 
     const upHandler = ({ code, target }: KeyboardEvent) => {
-      if (!codeMap[code] || (target as HTMLElement).nodeName === 'INPUT') return
-      const { fn, up } = codeMap[code]
-      codeMap[code].pressed = false
+      if (!keyMap[code] || (target as HTMLElement).nodeName === 'INPUT') return
+      const { fn, up } = keyMap[code]
+      keyMap[code].pressed = false
       if (up) fn(false)
     }
 
@@ -34,7 +34,7 @@ function useKeys(keyConfig: KeyConfig[]) {
 }
 
 export function Keyboard() {
-  const [keyboardBindings] = useStore((state) => [state.keyboardBindings])
+  const keyboardBindings = useStore((state) => state.keyboardBindings)
   useKeys(keyboardBindings)
   return null
 }
