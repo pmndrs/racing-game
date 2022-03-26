@@ -128,7 +128,7 @@ export interface IState extends BaseState {
 }
 
 function deduplicateKeys(newKey: Key, keysList: KeyConfig[]): KeyConfig[] {
-  return keysList.map((key) => ({ ...key, keys: [...key.keys.filter((keyCode) => keyCode.name !== newKey.name)] }))
+  return keysList.map((key) => ({ ...key, keys: key.keys.filter((keyCode) => keyCode.name !== newKey.name) }))
 }
 
 function checkKeybindings(keysList: KeyConfig[]): number[] {
@@ -174,11 +174,13 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
       set((state) => {
         const index = state.keyboardBindings.findIndex(({ action: stateAction }) => action === stateAction)
 
+        if (index === -1) {
+          return state
+        }
+
         const keyboardBindingsCopy = deduplicateKeys(newKey, state.keyboardBindings)
 
-        if (index !== -1) {
-          keyboardBindingsCopy[index].keys.push(newKey)
-        }
+        keyboardBindingsCopy[index].keys.push(newKey)
 
         const keyBindingsWithError = checkKeybindings(keyboardBindingsCopy)
 
@@ -189,13 +191,15 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
       set((state) => {
         const index = state.keyboardBindings.findIndex(({ action: stateAction }) => action === stateAction)
 
+        if (index === -1) {
+          return state
+        }
+
         const keyIndex = state.keyboardBindings[index].keys.findIndex(({ name: stateName }) => name === stateName)
 
         const keyboardBindingsCopy = [...state.keyboardBindings]
 
-        if (index !== -1) {
-          keyboardBindingsCopy[index].keys.splice(keyIndex, 1)
-        }
+        keyboardBindingsCopy[index].keys.splice(keyIndex, 1)
 
         const keyBindingsWithError = checkKeybindings(keyboardBindingsCopy)
 
