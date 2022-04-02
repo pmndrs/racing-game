@@ -11,7 +11,7 @@
   "main": "src/main.jsx",
   "dependencies": {
     "@pmndrs/branding": "^0.0.8",
-    "@react-three/cannon": "^6.0.0",
+    "@react-three/cannon": "^6.1.0",
     "@react-three/drei": "^9.0.1",
     "@react-three/fiber": "^8.0.6",
     "@supabase/supabase-js": "^1.30.4",

@@ -357,10 +357,10 @@
   resolved "https://registry.yarnpkg.com/@pmndrs/branding/-/branding-0.0.8.tgz#1ebdafdfe03fa2a394fc038313f083a9a4d15186"
   integrity sha512-AIWJJDiUhIWNJqhN+bz1FIlQRURqQDIaJ2FokEIHAJ/k0XIYI6VM5UgVBRupS4YkMXtvdBAYnfsDpFx8C7N4Xw==
 
-"@pmndrs/cannon-worker-api@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/@pmndrs/cannon-worker-api/-/cannon-worker-api-2.0.0.tgz#22726e35ae01891347b19cd41e226adaaa168aa9"
-  integrity sha512-trofPx0sNHWP6+ZnHqgNE2e40oV3q1ljk+O1qUoGKuRGpt4E3JtNdK3FCQyeYmdcw3s303Er7sF5jULuL1xjOA==
+"@pmndrs/cannon-worker-api@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.npmjs.org/@pmndrs/cannon-worker-api/-/cannon-worker-api-2.1.0.tgz#c4650a59a9f4e919157c85a0dfcd37894dd2b31f"
+  integrity sha512-sXqDYEWfY99LYwnHcr3nPeTSqkXii2MBFG2O2Yv/+PIy63tiBJz5CIijkPr1+dmLV2YGSQjSzQFcaTNFMcOcRA==
 
 "@radix-ui/popper@0.1.0":
   version "0.1.0"
@@ -607,12 +607,12 @@
   resolved "https://registry.yarnpkg.com/@react-spring/types/-/types-9.4.3.tgz#8926d7a09812374127b1f8a904a755c7579124e6"
   integrity sha512-dzJrPvUc42K2un9y6D1IsrPQO5tKsbWwUo+wsATnXjG3ePWyuDBIOMJuPe605NhIXUmPH+Vik2wMoZz06hD1uA==
 
-"@react-three/cannon@^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.npmjs.org/@react-three/cannon/-/cannon-6.0.0.tgz#5a750e247db22c41dce059e9a3584bf13998b780"
-  integrity sha512-z2YLEmWBGOl2ywYkHasTr8IYWvlPWyybEzDT5y0syyroD9wOe2NASeJJVRgwVHKuAL33/zRNQZCircwPc8CJrQ==
+"@react-three/cannon@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.npmjs.org/@react-three/cannon/-/cannon-6.1.0.tgz#ea45c12e9b817d62a7bd833469afd9725b13ae64"
+  integrity sha512-btqXfHiNZjPRIgzw66JOg4fVgyfvQq1qj3dKwsThhhb4dB2Fg5679RIh7+Q58Z/CqnSJD9s+sUrU98bT+ZS0qg==
   dependencies:
-    "@pmndrs/cannon-worker-api" "^2.0.0"
+    "@pmndrs/cannon-worker-api" "^2.1.0"
     cannon-es "^0.19.0"
     cannon-es-debugger "^1.0.0"
 

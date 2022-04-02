@@ -12,7 +12,7 @@ import { Auth } from './Auth'
 type ReadyProps = { setReady: Dispatch<SetStateAction<boolean>> }
 
 const Ready: FC<ReadyProps> = ({ setReady }) => {
-  useEffect(() => () => void setReady(true), [])
+  useEffect(() => () => setReady(true))
   return null
 }
 
