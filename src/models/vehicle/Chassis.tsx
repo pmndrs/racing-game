@@ -10,8 +10,7 @@ import type { PropsWithChildren } from 'react'
 import type { BoxProps } from '@react-three/cannon'
 import type { GLTF } from 'three-stdlib'
 import type { BoxBufferGeometry, Mesh, MeshStandardMaterial, Object3D, PositionalAudio as PositionalAudioImpl } from 'three'
-// TODO: Export this from the index file
-import type { CollideEvent } from '@react-three/cannon/dist/setup'
+import type { CollideEvent } from '@react-three/cannon'
 
 import { getState, setState, mutation, useStore } from '../../store'
 
