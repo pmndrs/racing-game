@@ -1,4 +1,4 @@
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { useGLTF, useTexture } from '@react-three/drei'
 import 'inter-ui'
 import './styles.css'
@@ -9,4 +9,4 @@ useGLTF.preload('/models/track-draco.glb')
 useGLTF.preload('/models/chassis-draco.glb')
 useGLTF.preload('/models/wheel-draco.glb')
 
-ReactDOM.render(<App />, document.getElementById('root'))
+createRoot(document.getElementById('root')!).render(<App />)

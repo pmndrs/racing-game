@@ -352,19 +352,19 @@ button {
   margin: 10px auto;
 }
 
-.fullscreen .continue-link {
+.fullscreen .start-link {
   text-decoration: none;
   transition: all 1s;
   width: 20%;
   text-align: center;
 }
 
-.fullscreen.notready .continue-link {
+.fullscreen.loading .start-link {
   cursor: auto;
   color: #606060;
 }
 
-.fullscreen.ready .continue-link {
+.fullscreen.loaded .start-link {
   cursor: pointer;
   color: white;
 }
