@@ -2,33 +2,26 @@ import { Suspense, useEffect, useState } from 'react'
 import { Footer } from '@pmndrs/branding'
 import { useProgress } from '@react-three/drei'
 
-import type { Dispatch, FC, SetStateAction } from 'react'
+import type { FC } from 'react'
 
 import { useStore } from '../store'
 import { setupSession, unAuthenticateUser } from '../data'
 import { Keys } from './Help'
 import { Auth } from './Auth'
 
-type ReadyProps = { setReady: Dispatch<SetStateAction<boolean>> }
-
-const Ready: FC<ReadyProps> = ({ setReady }) => {
-  useEffect(() => () => setReady(true))
-  return null
-}
-
-const Loader: FC = () => {
-  const { progress } = useProgress()
-  return <div>loading {progress.toFixed()} %</div>
-}
-
 export const Intro: FC = ({ children }) => {
-  const [ready, setReady] = useState(false)
   const [clicked, setClicked] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const { progress } = useProgress()
   const [session, set] = useStore((state) => [state.session, state.set])
 
   useEffect(() => {
-    if (clicked && ready) set({ ready: true })
-  }, [ready, clicked])
+    if (clicked && !loading) set({ ready: true })
+  }, [clicked, loading])
+
+  useEffect(() => {
+    if (progress === 100) setLoading(false)
+  }, [progress])
 
   useEffect(() => {
     setupSession(set)
@@ -36,13 +29,13 @@ export const Intro: FC = ({ children }) => {
 
   return (
     <>
-      <Suspense fallback={<Ready setReady={setReady} />}>{children}</Suspense>
-      <div className={`fullscreen bg ${ready ? 'ready' : 'notready'} ${clicked && 'clicked'}`}>
+      <Suspense fallback={null}>{children}</Suspense>
+      <div className={`fullscreen bg ${loading ? 'loading' : 'loaded'} ${clicked && 'clicked'}`}>
         <div className="stack">
           <div className="intro-keys">
             <Keys style={{ paddingBottom: 20 }} />
-            <a className="continue-link" href="#" onClick={() => ready && setClicked(true)}>
-              {!ready ? <Loader /> : 'Click to continue'}
+            <a className="start-link" href="#" onClick={() => setClicked(true)}>
+              {loading ? `loading ${progress.toFixed()} %` : 'Click to start'}
             </a>
           </div>
           {session?.user?.aud !== 'authenticated' ? (
