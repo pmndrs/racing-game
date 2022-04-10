@@ -284,12 +284,20 @@ body {
   margin: 0em 0;
 }
 
-.with-error {
-  color: rgb(112, 7, 7);
+.popup-item:hover {
+  padding-right: 0;
 }
 
-.popup-item.hovered {
-  padding-right: 0;
+.keys-row:hover .add-button {
+  display: flex;
+}
+
+.keys-row .add-button {
+  display: none;
+}
+
+.with-error {
+  color: rgb(112, 7, 7);
 }
 
 .popup-item-keys {
@@ -301,7 +309,6 @@ body {
 .popup-item-key {
   position: relative;
   min-height: auto;
-  display: inline-block;
   font-size: 0.7em;
   min-width: 24px;
   border: 1px solid transparent;
@@ -309,7 +316,6 @@ body {
   border-radius: 3px;
   padding: 2px 5px;
   margin: 2px;
-
   background: white;
   color: black;
   display: flex;
@@ -317,7 +323,7 @@ body {
   justify-content: center;
 }
 
-.popup-item-key_hovered:before {
+.key-button:hover:before {
   width: 100%;
   content: '-';
   position: absolute;
