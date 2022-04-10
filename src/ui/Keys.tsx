@@ -6,20 +6,6 @@ import type { Key } from '../store'
 
 import { useStore } from '../store'
 
-function Button({ value, onClick }: { value: string; onClick: () => void }): JSX.Element {
-  const [isHovered, setIsHovered] = useState(false)
-  return (
-    <button
-      onClick={onClick}
-      className={`popup-item-key${isHovered ? ' popup-item-key_hovered' : ''}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <span>{value}</span>
-    </button>
-  )
-}
-
 function Row({
   action,
   keys,
@@ -33,38 +19,31 @@ function Row({
   onAdd: (action: string) => void
   onRemove: (action: string, name: string) => void
 }): JSX.Element {
-  const [isHovered, setIsHovered] = useState(false)
   return (
-    <div
-      className={`popup-item${isHovered ? ' hovered' : ''}${hasError ? ' with-error' : ''}`}
-      onMouseOver={() => {
-        setIsHovered(true)
-      }}
-      onMouseLeave={() => {
-        setIsHovered(false)
-      }}
-    >
+    <div className={`keys-row popup-item${hasError ? ' with-error' : ''}`}>
       <div>{action}</div>
       <div className="popup-item-keys">
         {keys.map(({ name }) => (
-          <Button
+          <button
             key={name}
-            value={name}
             onClick={() => {
               onRemove(action, name)
             }}
-          />
+            className="key-button popup-item-key"
+          >
+            <span>{name}</span>
+          </button>
         ))}
-        {isHovered && (
+        {
           <button
-            className="popup-item-key hovered-item"
+            className="add-button popup-item-key hovered-item"
             onClick={() => {
               onAdd(action)
             }}
           >
             <span>+</span>
           </button>
-        )}
+        }
       </div>
     </div>
   )
