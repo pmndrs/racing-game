@@ -34,16 +34,14 @@ function Row({
             <span>{name}</span>
           </button>
         ))}
-        {
-          <button
-            className="add-button popup-item-key hovered-item"
-            onClick={() => {
-              onAdd(action)
-            }}
-          >
-            <span>+</span>
-          </button>
-        }
+        <button
+          className="add-button popup-item-key hovered-item"
+          onClick={() => {
+            onAdd(action)
+          }}
+        >
+          <span>+</span>
+        </button>
       </div>
     </div>
   )
