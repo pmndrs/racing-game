@@ -11,7 +11,7 @@ type Props = {
 }
 
 export const BoundingBox = ({ depth, height, position: [x, y, z], width }: Props) => {
-  const { reset: onCollide } = useStore(({ actions: { reset } }) => ({ reset }))
+  const { reset: onCollide } = useStore(({ actions: { reset } }) => ({ reset: reset as () => void }))
 
   const sharedProps = {
     isTrigger: true,
