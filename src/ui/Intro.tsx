@@ -2,14 +2,14 @@ import { Suspense, useEffect, useState } from 'react'
 import { Footer } from '@pmndrs/branding'
 import { useProgress } from '@react-three/drei'
 
-import type { FC } from 'react'
+import type { ReactNode } from 'react'
 
 import { useStore } from '../store'
 import { setupSession, unAuthenticateUser } from '../data'
 import { Keys } from './Keys'
 import { Auth } from './Auth'
 
-export const Intro: FC = ({ children }) => {
+export function Intro({ children }: { children: ReactNode }): JSX.Element {
   const [clicked, setClicked] = useState(false)
   const [loading, setLoading] = useState(true)
   const { progress } = useProgress()

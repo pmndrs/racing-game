@@ -1,26 +1,28 @@
 import { useEffect } from 'react'
-import { useStore } from '../store'
-import type { KeyConfig, KeyMap } from '../store'
+import { keys } from '../keys'
+import { isControl, useStore } from '../store'
+import type { BindableActionName } from '../store'
 
-function useKeys(keyConfig: KeyConfig[]) {
+export function Keyboard() {
+  const [actionInputMap, actions, binding] = useStore(({ actionInputMap, actions, binding }) => [actionInputMap, actions, binding])
+
   useEffect(() => {
-    const keyMap = keyConfig.reduce<{ [key: string]: KeyMap }>((out, { keys, fn, up = true }) => {
-      keys && keys.forEach((key) => key.values.forEach((value) => (out[value] = { fn, pressed: false, up })))
-      return out
-    }, {})
+    if (binding) return
+    const keyMap: Partial<Record<string, BindableActionName>> = keys(actionInputMap).reduce(
+      (out, actionName) => ({ ...out, ...actionInputMap[actionName].reduce((inputs, input) => ({ ...inputs, [input]: actionName }), {}) }),
+      {},
+    )
 
-    const downHandler = ({ code, target }: KeyboardEvent) => {
-      if (!keyMap[code] || (target as HTMLElement).nodeName === 'INPUT') return
-      const { fn, pressed, up } = keyMap[code]
-      keyMap[code].pressed = true
-      if (up || !pressed) fn(true)
+    const downHandler = ({ key, target }: KeyboardEvent) => {
+      const actionName = keyMap[key.toLowerCase()]
+      if (!actionName || (target as HTMLElement).nodeName === 'INPUT' || !isControl(actionName)) return
+      actions[actionName](true)
     }
 
-    const upHandler = ({ code, target }: KeyboardEvent) => {
-      if (!keyMap[code] || (target as HTMLElement).nodeName === 'INPUT') return
-      const { fn, up } = keyMap[code]
-      keyMap[code].pressed = false
-      if (up) fn(false)
+    const upHandler = ({ key, target }: KeyboardEvent) => {
+      const actionName = keyMap[key.toLowerCase()]
+      if (!actionName || (target as HTMLElement).nodeName === 'INPUT') return
+      actions[actionName](false)
     }
 
     window.addEventListener('keydown', downHandler, { passive: true })
@@ -30,11 +32,7 @@ function useKeys(keyConfig: KeyConfig[]) {
       window.removeEventListener('keydown', downHandler)
       window.removeEventListener('keyup', upHandler)
     }
-  }, [keyConfig])
-}
+  }, [actionInputMap, binding])
 
-export function Keyboard() {
-  const keyboardBindings = useStore((state) => state.keyboardBindings)
-  useKeys(keyboardBindings)
   return null
 }

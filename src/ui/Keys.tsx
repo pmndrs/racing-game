@@ -1,43 +1,75 @@
 import { useState, useCallback, useEffect } from 'react'
-
 import type { HTMLAttributes } from 'react'
 
-import type { Key } from '../store'
+import { keys } from '../keys'
+import { setState, useStore } from '../store'
+import type { ActionInputMap, BindableActionName } from '../store'
 
-import { useStore } from '../store'
+const inputDisplayNameMap = {
+  alt: 'Alt ⌥',
+  arrowdown: '↓',
+  arrowleft: '←',
+  arrowright: '→',
+  arrowup: '↑',
+  backspace: 'Backspace ⌫',
+  capslock: 'CapsLock ⇪',
+  control: 'Control ⌃',
+  enter: 'Enter ↵',
+  meta: 'Meta ⌘',
+  shift: 'Shift ⇧',
+  ' ': 'Space ␣',
+  tab: 'Tab ⇥',
+} as const
 
-function Row({
-  action,
-  keys,
-  hasError,
-  onRemove,
-  onAdd,
-}: {
-  action: string
-  keys: Key[]
+type InputWithDisplayName = keyof typeof inputDisplayNameMap
+const isInputWithDisplayName = (v: PropertyKey): v is InputWithDisplayName => Object.hasOwnProperty.call(inputDisplayNameMap, v)
+
+const actionDisplayMap: Record<BindableActionName, { displayName: string; order: number }> = {
+  backward: { displayName: 'Backward', order: 1 },
+  boost: { displayName: 'Turbo Boost', order: 6 },
+  brake: { displayName: 'Drift', order: 4 },
+  camera: { displayName: 'Toggle Camera', order: 14 },
+  editor: { displayName: 'Editor', order: 8 },
+  forward: { displayName: 'Forward', order: 0 },
+  help: { displayName: 'Help', order: 9 },
+  honk: { displayName: 'Honk', order: 5 },
+  leaderboard: { displayName: 'Leaderboards', order: 10 },
+  left: { displayName: 'Left', order: 2 },
+  map: { displayName: 'Map', order: 11 },
+  pickcolor: { displayName: 'Pick Car Color', order: 12 },
+  reset: { displayName: 'Reset', order: 7 },
+  right: { displayName: 'Right', order: 3 },
+  sound: { displayName: 'Toggle Mute', order: 13 },
+}
+
+type RowProps = {
+  actionName: BindableActionName
   hasError: boolean
-  onAdd: (action: string) => void
-  onRemove: (action: string, name: string) => void
-}): JSX.Element {
+  inputs: string[]
+  onAdd: (actionName: BindableActionName) => void
+  onRemove: (actionName: BindableActionName, inpput: string) => void
+}
+
+function Row({ actionName, hasError, inputs, onAdd, onRemove }: RowProps): JSX.Element {
   return (
     <div className={`keys-row popup-item${hasError ? ' with-error' : ''}`}>
-      <div>{action}</div>
+      <div>{actionDisplayMap[actionName].displayName}</div>
       <div className="popup-item-keys">
-        {keys.map(({ name }) => (
+        {inputs.map((input, key) => (
           <button
-            key={name}
+            key={key}
             onClick={() => {
-              onRemove(action, name)
+              onRemove(actionName, input)
             }}
             className="key-button popup-item-key"
           >
-            <span>{name}</span>
+            <span>{isInputWithDisplayName(input) ? inputDisplayNameMap[input] : input.toUpperCase()}</span>
           </button>
         ))}
         <button
           className="add-button popup-item-key hovered-item"
           onClick={() => {
-            onAdd(action)
+            onAdd(actionName)
           }}
         >
           <span>+</span>
@@ -47,78 +79,43 @@ function Row({
   )
 }
 
-function Rows({ onSelect }: { onSelect: (action: string) => void }) {
-  const [keyboardBindingsList, removeKeyBinding, keyBindingsWithError] = useStore((state) => [
-    state.keyboardBindings,
-    state.actions.removeKeyBinding as (action: string, name: string) => void,
-    state.keyBindingsWithError,
-  ])
+function Rows({ onAdd }: { onAdd: (actionName: BindableActionName) => void }) {
+  const [actionInputMap] = useStore(({ actionInputMap }) => [actionInputMap])
 
-  const addClickHandler = useCallback((action) => {
-    onSelect(action)
+  const onRemove = useCallback((actionName: BindableActionName, input: string) => {
+    setState(({ actionInputMap, ...rest }) => {
+      return { actionInputMap: { ...actionInputMap, [actionName]: actionInputMap[actionName].filter((v) => v !== input) }, ...rest }
+    })
   }, [])
 
   return (
     <>
-      {keyboardBindingsList.map(({ keys, action }, index) => (
-        <Row key={action} action={action} keys={keys} onRemove={removeKeyBinding} onAdd={addClickHandler} hasError={keyBindingsWithError.includes(index)} />
-      ))}
+      {keys(actionInputMap)
+        .sort((a, b) => actionDisplayMap[a].order - actionDisplayMap[b].order)
+        .map((actionName, key) => (
+          <Row
+            key={key}
+            actionName={actionName}
+            inputs={actionInputMap[actionName]}
+            onRemove={onRemove}
+            onAdd={onAdd}
+            hasError={!actionInputMap[actionName].length}
+          />
+        ))}
     </>
   )
 }
 
-const keyMap: Record<string, string> = {
-  ArrowUp: '↑',
-  ArrowDown: '↓',
-  ArrowLeft: '←',
-  ArrowRight: '→',
-  Tab: 'Tab ⇥',
-  CapsLock: 'CapsLock ⇪',
-  ShiftLeft: 'Shift ⇧',
-  ShiftRight: 'Shift ⇧',
-  ControlLeft: 'Control ⌃',
-  ControlRight: 'Control ⌃',
-  AltLeft: 'Alt ⌥',
-  AltRight: 'Alt ⌥',
-  MetaLeft: 'Meta ⌘',
-  MetaRight: 'Meta ⌘',
-  Space: 'Space ␣',
-  Enter: 'Enter ↵',
-  Backspace: 'Backspace ⌫',
-  Escape: 'Esc ⎋',
-}
+type KeyInputProps = { onKeyup: (event: KeyboardEvent) => void }
 
-const codesAlternativesList: Record<string, string[]> = {
-  ShiftLeft: ['ShiftLeft', 'ShiftRight'],
-  ShiftRight: ['ShiftLeft', 'ShiftRight'],
-  ControlLeft: ['ControlLeft', 'ControlRight'],
-  ControlRight: ['ControlLeft', 'ControlRight'],
-  AltLeft: ['AltLeft', 'AltRight'],
-  AltRight: ['AltLeft', 'AltRight'],
-}
-
-function populateCodes(code: string): string[] {
-  const codes = codesAlternativesList[code]
-  return codes ? codes : [code]
-}
-
-function getKeyName(key: string, code: string): string {
-  const value = keyMap[code]
-  return value ? value : key.toUpperCase()
-}
-
-function produceKeyFromCode(key: string, code: string): Key {
-  return { name: getKeyName(key, code), values: populateCodes(code) }
-}
-
-function Modal({ onSelect }: { onSelect: (event: KeyboardEvent) => void }) {
+function KeyInput({ onKeyup }: KeyInputProps): JSX.Element {
   useEffect(() => {
-    window.addEventListener('keydown', onSelect, { passive: true })
+    window.addEventListener('keyup', onKeyup, { passive: true })
 
     return () => {
-      window.removeEventListener('keydown', onSelect)
+      window.removeEventListener('keyup', onKeyup)
     }
-  }, [onSelect])
+  }, [onKeyup])
 
   return (
     <div className="key-input-wrapper">
@@ -127,31 +124,48 @@ function Modal({ onSelect }: { onSelect: (event: KeyboardEvent) => void }) {
   )
 }
 
-type KeyProps = HTMLAttributes<HTMLDivElement>
+type KeysProps = HTMLAttributes<HTMLDivElement>
 
-export function Keys(props: KeyProps): JSX.Element {
-  const [addKeyBinding] = useStore((state) => [state.actions.addKeyBinding as (action: string, newKey: Key) => void])
-  const [selectedAction, setSelectedAction] = useState<string | null>(null)
-
-  const selectActionHandler = useCallback((action) => {
-    setSelectedAction(action)
-  }, [])
-
-  const selectKeyHandler = useCallback(
-    (event: KeyboardEvent) => {
-      const { key, code } = event
-      addKeyBinding(selectedAction!, produceKeyFromCode(key, code))
-      setSelectedAction(null)
+export function Keys(props: KeysProps): JSX.Element {
+  const [selectedAction, setSelectedAction] = useState<BindableActionName | null>(null)
+  const [actions, binding] = useStore(({ actions, binding }) => [actions, binding])
+  const onAdd = useCallback(
+    (action: BindableActionName) => {
+      setSelectedAction(action)
+      if (!binding) actions.binding()
     },
-    [selectedAction],
+    [binding],
+  )
+
+  const onKeyup = useCallback(
+    ({ key }: KeyboardEvent) => {
+      if (!selectedAction) return
+      const input = key.toLowerCase()
+      if (input === 'escape') return setSelectedAction(null)
+      setState(({ actionInputMap, ...rest }) => {
+        return {
+          actionInputMap: keys(actionInputMap).reduce<ActionInputMap>(
+            (o, actionName) => ({
+              ...o,
+              [actionName]: actionName === selectedAction ? actionInputMap[actionName].concat(input) : actionInputMap[actionName].filter((v) => v !== input),
+            }),
+            {} as ActionInputMap,
+          ),
+          ...rest,
+        }
+      })
+      setSelectedAction(null)
+      if (binding) actions.binding()
+    },
+    [binding, selectedAction],
   )
 
   return (
     <>
       <div {...props}>
-        <Rows onSelect={selectActionHandler} />
+        <Rows onAdd={onAdd} />
       </div>
-      {selectedAction && <Modal onSelect={selectKeyHandler} />}
+      {selectedAction && <KeyInput onKeyup={onKeyup} />}
     </>
   )
 }

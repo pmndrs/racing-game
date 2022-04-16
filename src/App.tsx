@@ -16,7 +16,7 @@ import { useToggle } from './useToggle'
 const layers = new Layers()
 layers.enable(levelLayer)
 
-export function App() {
+export function App(): JSX.Element {
   const [light, setLight] = useState<DirectionalLight | null>(null)
   const [actions, dpr, editor, shadows] = useStore((s) => [s.actions, s.dpr, s.editor, s.shadows])
   const { onCheckpoint, onFinish, onStart } = actions
