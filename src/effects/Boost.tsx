@@ -16,7 +16,7 @@ interface BoostProps {
 }
 
 export function Boost({ count = 12, opacity = 0.5, size = 0.1 }: BoostProps): JSX.Element {
-  const ref = useRef<InstancedMesh>(null!)
+  const ref = useRef<InstancedMesh>(null)
 
   let i: number
   let isBoosting = false
@@ -35,8 +35,10 @@ export function Boost({ count = 12, opacity = 0.5, size = 0.1 }: BoostProps): JS
         o.scale.setScalar(isBoosting ? (1 - progress) * 2 : 0)
         o.matrixWorldNeedsUpdate = true
         o.updateMatrixWorld()
-        ref.current.setMatrixAt(i + j, o.matrixWorld)
-        ref.current.instanceMatrix.needsUpdate = true
+        if (ref.current) {
+          ref.current.setMatrixAt(i + j, o.matrixWorld)
+          ref.current.instanceMatrix.needsUpdate = true
+        }
       }
     }
   })

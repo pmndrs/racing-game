@@ -4,30 +4,19 @@ import shallow from 'zustand/shallow'
 import type { RefObject } from 'react'
 import type { PublicApi, WheelInfoOptions } from '@react-three/cannon'
 import type { Session } from '@supabase/supabase-js'
-import type { Group, Object3D } from 'three'
+import type { Group } from 'three'
 import type { GetState, SetState, StateSelector } from 'zustand'
+
+import { keys } from './keys'
 
 export const angularVelocity = [0, 0.5, 0] as const
 export const cameras = ['DEFAULT', 'FIRST_PERSON', 'BIRD_EYE'] as const
 
-const controls = {
-  backward: false,
-  boost: false,
-  brake: false,
-  forward: false,
-  honk: false,
-  left: false,
-  right: false,
-}
-
-export const debug = false as const
 export const dpr = 1.5 as const
 export const levelLayer = 1 as const
 export const maxBoost = 100 as const
 export const position = [-110, 0.75, 220] as const
 export const rotation = [0, Math.PI / 2 + 0.35, 0] as const
-export const shadows = true as const
-export const stats = false as const
 
 export const vehicleConfig = {
   width: 1.7,
@@ -39,6 +28,8 @@ export const vehicleConfig = {
   maxBrake: 65,
   maxSpeed: 88,
 } as const
+
+type VehicleConfig = typeof vehicleConfig
 
 export type WheelInfo = Required<
   Pick<
@@ -69,50 +60,89 @@ export const wheelInfo: WheelInfo = {
   useCustomSlidingRotationalSpeed: true,
 }
 
-const actionNames = ['onCheckpoint', 'onFinish', 'onStart', 'reset', 'addKeyBinding', 'removeKeyBinding'] as const
-export type ActionNames = typeof actionNames[number]
+export const booleans = {
+  binding: false,
+  debug: false,
+  editor: false,
+  help: false,
+  leaderboard: false,
+  map: true,
+  pickcolor: false,
+  ready: false,
+  shadows: true,
+  stats: false,
+  sound: true,
+}
+
+type Booleans = keyof typeof booleans
+
+const exclusiveBooleans = ['help', 'leaderboard', 'pickcolor'] as const
+type ExclusiveBoolean = typeof exclusiveBooleans[number]
+const isExclusiveBoolean = (v: unknown): v is ExclusiveBoolean => exclusiveBooleans.includes(v as ExclusiveBoolean)
 
 export type Camera = typeof cameras[number]
+
+const controls = {
+  backward: false,
+  boost: false,
+  brake: false,
+  forward: false,
+  honk: false,
+  left: false,
+  right: false,
+}
 export type Controls = typeof controls
+type Control = keyof Controls
+export const isControl = (v: PropertyKey): v is Control => Object.hasOwnProperty.call(controls, v)
+
+export type BindableActionName = Control | ExclusiveBoolean | Extract<Booleans, 'editor' | 'map' | 'sound'> | 'camera' | 'reset'
+
+export type ActionInputMap = Record<BindableActionName, string[]>
+
+const actionInputMap: ActionInputMap = {
+  backward: ['arrowdown', 's'],
+  boost: ['shift'],
+  brake: [' '],
+  camera: ['c'],
+  editor: ['.'],
+  forward: ['arrowup', 'w', 'z'],
+  help: ['i'],
+  honk: ['h'],
+  leaderboard: ['l'],
+  left: ['arrowleft', 'a', 'q'],
+  map: ['m'],
+  pickcolor: ['p'],
+  reset: ['r'],
+  right: ['arrowright', 'd', 'e'],
+  sound: ['u'],
+}
 
 type Getter = GetState<IState>
 export type Setter = SetState<IState>
 
-export type VehicleConfig = typeof vehicleConfig
+type BaseState = Record<Booleans, boolean>
 
-const booleans = ['debug', 'editor', 'help', 'leaderboard', 'map', 'pickcolor', 'ready', 'shadows', 'sound', 'stats'] as const
-type Booleans = typeof booleans[number]
+type BooleanActions = Record<Booleans, () => void>
+type ControlActions = Record<Control, (v: boolean) => void>
+type TimerActions = Record<'onCheckpoint' | 'onFinish' | 'onStart', () => void>
 
-type BaseState = {
-  [K in Booleans]: boolean
-}
-
-export interface Key {
-  name: string
-  values: string[]
-}
-
-export interface KeyMap {
-  fn: (pressed: boolean) => void
-  up?: boolean
-  pressed?: boolean
-}
-
-export interface KeyConfig extends KeyMap {
-  keys: Key[]
-  action: string
-}
+type Actions = BooleanActions &
+  ControlActions &
+  TimerActions & {
+    camera: () => void
+    reset: () => void
+  }
 
 export interface IState extends BaseState {
-  actions: Record<ActionNames, (() => void) | ((action: string, newKey: Key) => void) | ((action: string, name: string) => void)>
+  actions: Actions
   api: PublicApi | null
   bestCheckpoint: number
   camera: Camera
-  chassisBody: RefObject<Object3D>
+  chassisBody: RefObject<Group>
   checkpoint: number
   color: string
   controls: Controls
-  keyboardBindings: KeyConfig[]
+  actionInputMap: ActionInputMap
   keyBindingsWithError: number[]
   dpr: number
   finished: number
@@ -123,25 +153,28 @@ export interface IState extends BaseState {
   start: number
   vehicleConfig: VehicleConfig
   wheelInfo: WheelInfo
-  wheels: [RefObject<Object3D>, RefObject<Object3D>, RefObject<Object3D>, RefObject<Object3D>]
+  wheels: [RefObject<Group>, RefObject<Group>, RefObject<Group>, RefObject<Group>]
   keyInput: string | null
 }
 
-function deduplicateKeys(newKey: Key, keysList: KeyConfig[]): KeyConfig[] {
-  return keysList.map((key) => ({ ...key, keys: key.keys.filter((keyCode) => keyCode.name !== newKey.name) }))
-}
-
-function checkKeybindings(keysList: KeyConfig[]): number[] {
-  return keysList.reduce<number[]>((akk, value, index) => {
-    if (value.keys.length < 1) {
-      akk.push(index)
-    }
-    return akk
-  }, [])
-}
+const setExclusiveBoolean = (set: Setter, boolean: ExclusiveBoolean) => () =>
+  set((state) => ({ ...exclusiveBooleans.reduce((o, key) => ({ ...o, [key]: key === boolean ? !state[boolean] : false }), state) }))
 
 const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState>) => {
-  const actions = {
+  const controlActions = keys(controls).reduce<Record<Control, (value: boolean) => void>>((o, control) => {
+    o[control] = (value: boolean) => set((state) => ({ controls: { ...state.controls, [control]: value } }))
+    return o
+  }, {} as Record<Control, (value: boolean) => void>)
+
+  const booleanActions = keys(booleans).reduce<Record<Booleans, () => void>>((o, boolean) => {
+    o[boolean] = isExclusiveBoolean(boolean) ? setExclusiveBoolean(set, boolean) : () => set((state) => ({ ...state, [boolean]: !state[boolean] }))
+    return o
+  }, {} as Record<Booleans, () => void>)
+
+  const actions: Actions = {
+    ...booleanActions,
+    ...controlActions,
+    camera: () => set((state) => ({ camera: cameras[(cameras.indexOf(state.camera) + 1) % cameras.length] })),
     onCheckpoint: () => {
       const { start } = get()
       if (start) {
@@ -170,149 +203,31 @@ const useStoreImpl = create<IState>((set: SetState<IState>, get: GetState<IState
         return { ...state, finished: 0, start: 0 }
       })
     },
-    addKeyBinding: (action: string, newKey: Key) => {
-      set((state) => {
-        const index = state.keyboardBindings.findIndex(({ action: stateAction }) => action === stateAction)
-
-        if (index === -1) {
-          return state
-        }
-
-        const keyboardBindingsCopy = deduplicateKeys(newKey, state.keyboardBindings)
-
-        keyboardBindingsCopy[index].keys.push(newKey)
-
-        const keyBindingsWithError = checkKeybindings(keyboardBindingsCopy)
-
-        return { ...state, keyboardBindings: keyboardBindingsCopy, keyBindingsWithError }
-      })
-    },
-    removeKeyBinding: (action: string, name: string) => {
-      set((state) => {
-        const index = state.keyboardBindings.findIndex(({ action: stateAction }) => action === stateAction)
-
-        if (index === -1) {
-          return state
-        }
-
-        const keyIndex = state.keyboardBindings[index].keys.findIndex(({ name: stateName }) => name === stateName)
-
-        const keyboardBindingsCopy = [...state.keyboardBindings]
-
-        keyboardBindingsCopy[index].keys.splice(keyIndex, 1)
-
-        const keyBindingsWithError = checkKeybindings(keyboardBindingsCopy)
-
-        return { ...state, keyboardBindings: keyboardBindingsCopy, keyBindingsWithError }
-      })
-    },
   }
 
-  const defaultKeyboardBindings: KeyConfig[] = [
-    {
-      action: 'Forward',
-      keys: [
-        { name: '↑', values: ['ArrowUp'] },
-        { name: 'W', values: ['KeyW'] },
-        { name: 'Z', values: ['KeyZ'] },
-      ],
-
-      fn: (forward) => set((state) => ({ controls: { ...state.controls, forward } })),
-    },
-    {
-      action: 'Backward',
-      keys: [
-        { name: '↓', values: ['ArrowDown'] },
-        { name: 'S', values: ['KeyS'] },
-      ],
-      fn: (backward) => set((state) => ({ controls: { ...state.controls, backward } })),
-    },
-    {
-      action: 'Left',
-      keys: [
-        { name: '←', values: ['ArrowLeft'] },
-        { name: 'A', values: ['KeyA'] },
-        { name: 'Q', values: ['KeyQ'] },
-      ],
-      fn: (left) => set((state) => ({ controls: { ...state.controls, left } })),
-    },
-    {
-      action: 'Right',
-      keys: [
-        { name: '→', values: ['ArrowRight'] },
-        { name: 'D', values: ['KeyD'] },
-      ],
-      fn: (right) => set((state) => ({ controls: { ...state.controls, right } })),
-    },
-    { action: 'Drift', keys: [{ name: 'Space ␣', values: ['Space'] }], fn: (brake) => set((state) => ({ controls: { ...state.controls, brake } })) },
-    { action: 'Honk', keys: [{ name: 'H', values: ['KeyH'] }], fn: (honk) => set((state) => ({ controls: { ...state.controls, honk } })) },
-    {
-      action: 'Turbo Boost',
-      keys: [{ name: 'Shift ⇧', values: ['ShiftLeft', 'ShiftRight'] }],
-      fn: (boost) => set((state) => ({ controls: { ...state.controls, boost } })),
-    },
-    { action: 'Reset', keys: [{ name: 'R', values: ['KeyR'] }], fn: actions.reset, up: false },
-    { action: 'Editor', keys: [{ name: '.', values: ['Period'] }], fn: () => set((state) => ({ editor: !state.editor })), up: false },
-    {
-      action: 'Help',
-      keys: [{ name: 'I', values: ['KeyI'] }],
-      fn: () => set((state) => ({ help: !state.help, leaderboard: false, pickcolor: false })),
-      up: false,
-    },
-    {
-      action: 'Leaderboards',
-      keys: [{ name: 'L', values: ['KeyL'] }],
-      fn: () => set((state) => ({ help: false, leaderboard: !state.leaderboard, pickcolor: false })),
-      up: false,
-    },
-    { action: 'Map', keys: [{ name: 'M', values: ['KeyM'] }], fn: () => set((state) => ({ map: !state.map })), up: false },
-    {
-      action: 'Pick Car Color',
-      keys: [{ name: 'P', values: ['KeyP'] }],
-      fn: () => set((state) => ({ help: false, pickcolor: !state.pickcolor, leaderboard: false })),
-      up: false,
-    },
-    { action: 'Toggle Mute', keys: [{ name: 'U', values: ['KeyU'] }], fn: () => set((state) => ({ sound: !state.sound })), up: false },
-    {
-      action: 'Toggle Camera',
-      keys: [{ name: 'C', values: ['KeyC'] }],
-      fn: () => set((state) => ({ camera: cameras[(cameras.indexOf(state.camera) + 1) % cameras.length] })),
-      up: false,
-    },
-  ]
-
   return {
+    ...booleans,
+    actionInputMap,
     actions,
     api: null,
     bestCheckpoint: 0,
     camera: cameras[0],
-    chassisBody: createRef<Object3D>(),
+    chassisBody: createRef<Group>(),
     checkpoint: 0,
     color: '#FFFF00',
     controls,
-    keyboardBindings: defaultKeyboardBindings,
     keyBindingsWithError: [],
-    debug,
     dpr,
-    editor: false,
     finished: 0,
     get,
     keyInput: null,
-    help: false,
-    leaderboard: false,
     level: createRef<Group>(),
-    map: true,
-    pickcolor: false,
-    ready: false,
     session: null,
     set,
-    shadows,
-    sound: true,
     start: 0,
-    stats,
     vehicleConfig,
     wheelInfo,
-    wheels: [createRef<Object3D>(), createRef<Object3D>(), createRef<Object3D>(), createRef<Object3D>()],
+    wheels: [createRef<Group>(), createRef<Group>(), createRef<Group>(), createRef<Group>()],
   }
 })
 

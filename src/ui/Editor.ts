@@ -1,8 +1,8 @@
 import { button, folder, useControls } from 'leva'
-import { debug, dpr, shadows, stats, useStore, vehicleConfig, wheelInfo } from '../store'
+import { booleans, dpr, useStore, vehicleConfig, wheelInfo } from '../store'
 
 const { directionLocal, axleLocal, rollInfluence, ...filteredWheelInfo } = wheelInfo
-
+const { debug, shadows, stats } = booleans
 const initialValues = {
   debug,
   dpr,

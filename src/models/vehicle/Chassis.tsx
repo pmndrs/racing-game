@@ -9,7 +9,7 @@ import { Color, Vector3, MathUtils } from 'three'
 import type { PropsWithChildren } from 'react'
 import type { BoxProps } from '@react-three/cannon'
 import type { GLTF } from 'three-stdlib'
-import type { BoxBufferGeometry, Mesh, MeshStandardMaterial, Object3D, PositionalAudio as PositionalAudioImpl } from 'three'
+import type { BoxBufferGeometry, Group, Mesh, MeshStandardMaterial, PositionalAudio as PositionalAudioImpl } from 'three'
 import type { CollideEvent } from '@react-three/cannon'
 
 import { getState, setState, mutation, useStore } from '../../store'
@@ -67,10 +67,10 @@ const gears = 10
 const c = new Color()
 const v = new Vector3()
 
-export const Chassis = forwardRef<Object3D, PropsWithChildren<BoxProps>>(({ args = [2, 1.1, 4.7], mass = 500, children, ...props }, ref) => {
+export const Chassis = forwardRef<Group, PropsWithChildren<BoxProps>>(({ args = [2, 1.1, 4.7], mass = 500, children, ...props }, ref) => {
   const glass = useRef<MaterialMesh>(null!)
   const brake = useRef<MaterialMesh>(null!)
-  const wheel = useRef<MaterialMesh>(null!)
+  const wheel = useRef<Group>(null)
   const needle = useRef<MaterialMesh>(null!)
   const chassis_1 = useRef<MaterialMesh>(null!)
   const crashAudio = useRef<PositionalAudioImpl>(null!)
@@ -114,7 +114,7 @@ export const Chassis = forwardRef<Object3D, PropsWithChildren<BoxProps>>(({ args
     brake.current.material.opacity = lerp(brake.current.material.opacity, controls.brake ? 1 : 0.3, delta * 10)
     glass.current.material.opacity = lerp(glass.current.material.opacity, camera === 'FIRST_PERSON' ? 0.1 : 0.75, delta)
     glass.current.material.color.lerp(c.set(camera === 'FIRST_PERSON' ? 'white' : 'black'), delta)
-    wheel.current.rotation.z = lerp(wheel.current.rotation.z, controls.left ? -Math.PI : controls.right ? Math.PI : 0, delta)
+    if (wheel.current) wheel.current.rotation.z = lerp(wheel.current.rotation.z, controls.left ? -Math.PI : controls.right ? Math.PI : 0, delta)
     needle.current.rotation.y = (mutation.speed / maxSpeed) * -Math.PI * 2 - 0.9
     chassis_1.current.material.color.lerp(c.set(getState().color), 0.1)
   })
