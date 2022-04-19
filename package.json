@@ -11,9 +11,9 @@
   "main": "src/main.jsx",
   "dependencies": {
     "@pmndrs/branding": "^0.0.8",
-    "@react-three/cannon": "^6.1.0",
-    "@react-three/drei": "^9.0.1",
-    "@react-three/fiber": "^8.0.11",
+    "@react-three/cannon": "^6.3.0",
+    "@react-three/drei": "^9.4.4",
+    "@react-three/fiber": "^8.0.12",
     "@supabase/supabase-js": "^1.30.4",
     "inter-ui": "^3.19.3",
     "leva": "^0.9.21",
@@ -28,7 +28,7 @@
   "devDependencies": {
     "@types/lodash-es": "^4.17.6",
     "@types/react": "^18.0.5",
-    "@types/react-dom": "^17.0.14",
+    "@types/react-dom": "^18.0.1",
     "@types/three": "^0.139.0",
     "@typescript-eslint/eslint-plugin": "^5.19.0",
     "@typescript-eslint/parser": "^5.19.0",
