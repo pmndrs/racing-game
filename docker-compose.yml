@@ -1,0 +1,8 @@
+version: '3.7'
+services:
+    dev:
+        stdin_open: true
+        build: .
+        ports:
+            - 3000:3000
+        command: yarn run vite --host
