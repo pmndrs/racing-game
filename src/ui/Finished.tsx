@@ -6,7 +6,7 @@ import { Auth } from './Auth'
 import type { SavedScore } from '../data'
 
 export const Finished = (): JSX.Element => {
-  const { finished: time, reset, session } = useStore(({ actions: { reset }, finished, session }) => ({ finished, reset, session }))
+  const [reset, session, time] = useStore(({ actions: { reset }, finished, session }) => [reset, session, finished])
   const [scoreId, setScoreId] = useState<SavedScore['id']>('')
   const [scores, setScores] = useState<SavedScore[]>([])
   const [position, setPosition] = useState<number>(0)
